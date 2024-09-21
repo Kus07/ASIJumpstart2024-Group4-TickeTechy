@@ -1,6 +1,5 @@
 ﻿using ASI.Basecode.Data;
 using ASI.Basecode.Data.Interfaces;
-using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
@@ -35,12 +34,12 @@ namespace ASI.Basecode.WebApp
             // Services
             this._services.TryAddSingleton<TokenValidationParametersFactory>();
             this._services.AddScoped<IUserService, UserService>();
-            this._services.AddScoped<ISampleCrudService, SampleCrudService>();
+            //this._services.AddScoped<ISampleCrudService, SampleCrudService>();
           
 
             // Repositories
-            this._services.AddScoped<IUserRepository, UserRepository>();
-            this._services.AddSingleton<ISampleCrudRepository, SampleCrudRepository>();
+            //this._services.AddScoped<IUserRepository, UserRepository>();
+            //this._services.AddSingleton<ISampleCrudRepository, SampleCrudRepository>();
 
             // Manager Class
             this._services.AddScoped<SignInManager>();

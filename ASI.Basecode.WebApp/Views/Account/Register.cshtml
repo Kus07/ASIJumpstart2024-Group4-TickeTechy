@@ -1,64 +1,237 @@
-﻿@using ASI.Basecode.Services.ServiceModels
-@model             ASI.Basecode.Services.ServiceModels.LoginViewModel
+﻿@model ASI.Basecode.Services.ServiceModels.RegisterViewModel
 @{
-    ViewBag.LoginView = true;
-    ViewData["Title"] = "Register Page";
+    Layout = null;
 }
-@section styles {
-    <link rel="stylesheet" href="~/css/login.css" />
-}
-<div class="container py-5 h-100 register-box">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
-                <div class="row g-0">
-                    <div class="card-body p-md-5 mx-md-4">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TickeTechy Registration</title>
 
-                        <div class="text-center">
-                            <img src="/img/asi-logo-invert.svg"
-                                 style="width: 185px;" alt="logo">
-                        </div>
+    <link rel="icon" href="~/images/TicketTechy Logo.jpeg" />
 
-                        <form method="post" action="/Account/Register">
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="userId">UserId</label>
-                                <input type="text" id="userId" class="form-control"
-                                       asp-for="UserId" placeholder="Enter userid" />
-                                <span asp-validation-for="UserId" class="text-danger"></span>
-                            </div>
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="name">Name</label>
-                                <input type="text" id="name" class="form-control"
-                                       asp-for="Name" placeholder="Enter name" />
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </div>
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="password">Password</label>
-                                <input type="password" id="password" class="form-control"
-                                       asp-for="Password" placeholder="Enter password" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="confirmpassword">Confirm Password</label>
-                                <input type="password" id="confirmpassword" class="form-control" 
-                                       asp-for="ConfirmPassword" placeholder="Confirm Password" />
-                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                            </div>
-                            <div class="text-center pt-1 mb-5 pb-1 d-flex flex-column align-items-center">
-                                <button class="btn btn-primary btn-block login-btn gradient-custom-2 mb-3" type="submit">
-                                    Register
-                                </button>
-                                <a asp-controller="Account" asp-action="Login">
-                                    &#8592 Back
-                                </a>
-                            </div>
-                        </form>
-                    </div>
+    <!-- External Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" />
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Inline CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('https://wac.co.jp/wp-content/uploads/2024/05/bp-contact-img.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+        }
+
+        .form-container {
+            background-color: rgba(228, 244, 254, 0.4);
+            border-radius: 0.75rem;
+            width: 650px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: rgba(228, 244, 254, 1);
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Grid Layout for Inputs */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .input-group {
+            position: relative;
+            text-align: left;
+        }
+
+            .input-group label {
+                display: block;
+                color: white;
+                margin-bottom: 0.2rem;
+            }
+
+            .input-group input {
+                border-radius: 0.375rem;
+                border: 1px solid rgba(55, 65, 81, 1);
+                outline: 0;
+                background-color: rgba(255, 255, 255, 0.2);
+                padding: 0.75rem 1rem;
+                color: rgba(243, 244, 246, 1);
+                width: 100%;
+            }
+
+                .input-group input:focus {
+                    border-color: rgba(167, 139, 250);
+                }
+
+        .forgot {
+            text-align: right;
+            line-height: 1rem;
+            margin: 8px 0 14px 0;
+        }
+
+            .forgot a {
+                color: rgba(243, 244, 246, 1);
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+                .forgot a:hover {
+                    color: rgba(167, 139, 250, 1);
+                    text-decoration: underline;
+                }
+
+        .sign-in {
+            display: block;
+            width: 100%;
+            background-color: #e4f4fe;
+            padding: 0.75rem;
+            text-align: center;
+            color: rgba(17, 24, 39, 1);
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .sign-in:hover {
+                background-color: #c5e6fa;
+            }
+
+        .sign-up {
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(156, 163, 175, 1);
+            margin-top: 0.5rem;
+        }
+
+            .sign-up a {
+                color: rgba(243, 244, 246, 1);
+                text-decoration: none;
+            }
+
+                .sign-up a:hover {
+                    color: rgba(167, 139, 250, 1);
+                    text-decoration: underline;
+                }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Add logo above the Register title -->
+        <img src="~/images/TickeTechy logo with text.png" alt="TicketTechy Logo" class="logo" style="width: 250px; border-radius: 30px;" />
+        <h1 class="title">REGISTER</h1>
+        <p class="tagline">Create your account.</p>
+        <form class="form" action="/Account/Register" method="post">
+            <div asp-validation-summary="ModelOnly" style="color: red !important;"></div>
+
+            <!-- 2-column grid for input fields -->
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" style="color: red !important;"></span>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" style="color: red !important;"></span>
+                </div>
+                <div class="input-group">
+                    <label for="contact">Contact No.</label>
+                    <input asp-for="Contact" class="form-control" />
+                    <span asp-validation-for="Contact" style="color: red !important;"></span>
+                </div>
+                <div class="input-group">
+                    <label for="firstName">First Name</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" style="color: red !important;"></span>
+                </div>
+                <div class="input-group">
+                    <label for="lastName">Last Name</label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" style="color: red !important;"></span>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input asp-for="Password" type="password" class="form-control" id="password" />
+                    <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
+                    <span asp-validation-for="Password" style="color: red !important;"></span>
+                </div>
+                <div class="input-group">
+                    <label for="password">Confirm Password</label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="password" />
+                    <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
+                    <span asp-validation-for="ConfirmPassword" style="color: red !important;"></span>
                 </div>
             </div>
-        </div>
+
+            <button type="submit" class="sign-in">Sign up</button>
+            <p class="sign-up">
+                Already have an account? <a asp-controller="Account" asp-action="Login">Sign in</a>
+            </p>
+        </form>
     </div>
-</div>
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('togglePassword');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>
+
 @section scripts {
     <script>
         // Check for error message and display Toastr notification

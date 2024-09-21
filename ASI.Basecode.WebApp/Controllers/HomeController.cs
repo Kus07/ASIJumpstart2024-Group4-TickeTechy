@@ -1,8 +1,13 @@
-﻿using ASI.Basecode.WebApp.Mvc;
+﻿using ASI.Basecode.Resources.Messages;
+using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.Manager;
+using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -10,31 +15,21 @@ namespace ASI.Basecode.WebApp.Controllers
     /// <summary>
     /// Home Controller
     /// </summary>
-    public class HomeController : ControllerBase<HomeController>
+    public class HomeController : BaseController
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="httpContextAccessor"></param>
-        /// <param name="loggerFactory"></param>
-        /// <param name="configuration"></param>
-        /// <param name="localizer"></param>
-        /// <param name="mapper"></param>
-        public HomeController(IHttpContextAccessor httpContextAccessor,
-                              ILoggerFactory loggerFactory,
-                              IConfiguration configuration,
-                              IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
-        {
+        /// <param name="mailManager"></param>
+        /// <param name="userService"></param>
+       
+        private readonly IUserService _userService;
 
+        public HomeController(MailManager mailManager, IUserService userService) : base(mailManager)
+        {
+            _userService = userService;
         }
 
-        /// <summary>
-        /// Returns Home View.
-        /// </summary>
-        /// <returns> Home View </returns>
-        public IActionResult Index()
-        {
-            return View();
-        }
+
     }
 }

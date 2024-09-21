@@ -2,29 +2,76 @@
 using ASI.Basecode.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Linq;
 
 namespace Basecode.Data.Repositories
 {
-    public class BaseRepository
+    public class BaseRepository<T> : IBaseRepository<T>
+         where T : class
     {
-        protected IUnitOfWork UnitOfWork { get; set; }
-
-        protected AsiBasecodeDBContext Context => (AsiBasecodeDBContext)UnitOfWork.Database;
-
-        public BaseRepository(IUnitOfWork unitOfWork)
+        private DbContext _db;
+        private DbSet<T> _table;
+        public DbSet<T> Table { get { return _table; } }
+        public BaseRepository()
         {
-            if (unitOfWork == null) throw new ArgumentNullException(nameof(unitOfWork));
-            UnitOfWork = unitOfWork;
+            _db = new AllianceJumpstartContext();
+            _table = _db.Set<T>();
+        }
+        public T Get(object id)
+        {
+            return _table.Find(id);
         }
 
-        protected virtual DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class
+        public List<T> GetAll()
         {
-            return Context.Set<TEntity>();
+            return _table.ToList();
         }
 
-        protected virtual void SetEntityState(object entity, EntityState entityState)
+
+        public ErrorCode Create(T t)
         {
-            Context.Entry(entity).State = entityState;
+            _table.Add(t);
+            _db.SaveChanges();
+            return ErrorCode.Success;
+
+        }
+
+
+        public ErrorCode Delete(object id)
+        {
+            try
+            {
+                var obj = Get(id);
+                _table.Remove(obj);
+                _db.SaveChanges();
+                return ErrorCode.Success;
+            }
+            catch (Exception ex)
+            {
+                return ErrorCode.Error;
+            }
+        }
+
+        public ErrorCode Update(object id, T t)
+        {
+            try
+            {
+                var oldObj = Get(id);
+                _db.Entry(oldObj).CurrentValues.SetValues(t);
+                _db.SaveChanges();
+                return ErrorCode.Success;
+            }
+            catch (Exception ex)
+            {
+                return ErrorCode.Error;
+            }
+        }
+
+        public IEnumerable<T> FindByCondition(Expression<Func<T, bool>> expression)
+        {
+            return _table.Where(expression).AsNoTracking().ToList();
         }
     }
 }

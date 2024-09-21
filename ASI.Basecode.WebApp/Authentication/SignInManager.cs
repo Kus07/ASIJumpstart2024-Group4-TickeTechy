@@ -58,7 +58,7 @@ namespace ASI.Basecode.WebApp.Authentication
         public Task<ClaimsIdentity> GetClaimsIdentity(string username, string password)
         {
             ClaimsIdentity claimsIdentity = null;
-            MUser userData = new MUser();
+            UserDetail userData = new UserDetail();
 
             user.loginResult = LoginResult.Success;//TODO this._accountService.AuthenticateUser(username, password, ref userData);
 
@@ -67,7 +67,7 @@ namespace ASI.Basecode.WebApp.Authentication
                 return Task.FromResult<ClaimsIdentity>(null);
             }
 
-            user.userData = userData;
+            //user.userData = userData;
             claimsIdentity = CreateClaimsIdentity(userData);
             return Task.FromResult(claimsIdentity);
         }
@@ -77,21 +77,21 @@ namespace ASI.Basecode.WebApp.Authentication
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Instance of ClaimsIdentity</returns>
-        public ClaimsIdentity CreateClaimsIdentity(MUser user)
+        public ClaimsIdentity CreateClaimsIdentity(UserDetail user)
         {
             var token = _configuration.GetTokenAuthentication();
-            var userId = user.UserId.ToString();
+            var userId = user.Id.ToString();
             var name = string.Join(" ", user.FirstName, user.LastName);
             //TODO
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, userId, ClaimValueTypes.String, Const.Issuer),
                 new Claim(ClaimTypes.Name, name, ClaimValueTypes.String, Const.Issuer),
-                new Claim(ClaimTypes.Role, user.UserRole.ToString(), ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.Role, user.Users.Role.RoleName.ToString(), ClaimValueTypes.String, Const.Issuer),
 
                 new Claim("UserId", userId, ClaimValueTypes.String, Const.Issuer),
                 new Claim("UserName", name, ClaimValueTypes.String, Const.Issuer),
-                new Claim("UserRole", user.UserRole.ToString(), ClaimValueTypes.String, Const.Issuer),
+                new Claim("UserRole", user.Users.Role.RoleName.ToString(), ClaimValueTypes.String, Const.Issuer),
             };
             return new ClaimsIdentity(claims, Const.AuthenticationScheme);
         }
@@ -124,7 +124,7 @@ namespace ASI.Basecode.WebApp.Authentication
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="isPersistent">if set to <c>true</c> [is persistent].</param>
-        public async Task SignInAsync(MUser user, bool isPersistent = false)
+        public async Task SignInAsync(UserDetail user, bool isPersistent = false)
         {
             var claimsIdentity = this.CreateClaimsIdentity(user);
             var principal = this.CreateClaimsPrincipal(claimsIdentity);

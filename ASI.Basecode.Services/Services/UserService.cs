@@ -1,106 +1,59 @@
-﻿using ASI.Basecode.Data.Interfaces;
-using ASI.Basecode.Data.Models;
-using ASI.Basecode.Data.Repositories;
-using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Services.Manager;
-using ASI.Basecode.Services.ServiceModels;
-using AutoMapper;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using static ASI.Basecode.Resources.Constants.Enums;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.Interfaces;
 
 namespace ASI.Basecode.Services.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IUserRepository repository, IMapper mapper)
+        public UserService(IHttpContextAccessor httpContextAccessor)
         {
-            _mapper = mapper;
-            _userRepository = repository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public IEnumerable<UserViewModel> RetrieveAll(int? id = null, string firstName = null)
+        public async Task AuthenticateUser(User user)
         {
-            var data = _userRepository.GetUsers()
-                .Where(x => x.Deleted != true
-                        && (!id.HasValue || x.UserId == id)
-                        && (string.IsNullOrEmpty(firstName) || x.FirstName.Contains(firstName)))
-                .Select(s => new UserViewModel
-                {
-                    Id = s.UserId,
-                    Name = string.Concat(s.FirstName, " ", s.LastName),
-                    Description = s.Remarks,
-                });
-            return data;
-        }
+            var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim("UserId", user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, user.RoleId.ToString())
+                    };
 
-        public UserViewModel RetrieveUser(int id)
-        {
-            var data = _userRepository.GetUsers().FirstOrDefault(x => x.Deleted != true && x.UserId == id);
-            var model = new UserViewModel
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new Microsoft.AspNetCore.Authentication.AuthenticationProperties
             {
-                Id = data.UserId,
-                UserCode = data.UserCode,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                Password = PasswordManager.DecryptPassword(data.Password)
+                // Optional settings
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
             };
-            return model;
+
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext != null)
+            {
+                await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            }
         }
 
-        /// <summary>
-        /// Adds the specified model.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        public void Add(UserViewModel model)
+        public async Task LogoutUser()
         {
-            var newModel = new MUser();
-            newModel.UserCode = model.UserCode;
-            newModel.FirstName = model.FirstName;
-            newModel.LastName = model.LastName;
-            newModel.Password = PasswordManager.EncryptPassword(model.Password);
-            newModel.UserRole = 1;
+            var httpContext = _httpContextAccessor.HttpContext;
 
-            _userRepository.AddUser(newModel);
+            if(httpContext != null)
+            {
+                await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
         }
+        
 
-        /// <summary>
-        /// Updates the specified model.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        public void Update(UserViewModel model)
-        {
-            var existingData = _userRepository.GetUsers().Where(s => s.Deleted != true && s.UserId == model.Id).FirstOrDefault();
-            existingData.UserCode = model.UserCode;
-            existingData.FirstName = model.FirstName;
-            existingData.LastName = model.LastName;
-            existingData.Password = PasswordManager.EncryptPassword(model.Password);
-
-            _userRepository.UpdateUser(existingData);
-        }
-
-        /// <summary>
-        /// Deletes the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        public void Delete(int id)
-        {
-            _userRepository.DeleteUser(id);
-        }
-
-        public LoginResult AuthenticateUser(string userCode, string password, ref MUser user)
-        {
-            user = new MUser();
-            var passwordKey = PasswordManager.EncryptPassword(password);
-            user = _userRepository.GetUsers().Where(x => x.UserCode == userCode &&
-                                                     x.Password == passwordKey).FirstOrDefault();
-
-            return user != null ? LoginResult.Success : LoginResult.Failed;
-        }
     }
 }

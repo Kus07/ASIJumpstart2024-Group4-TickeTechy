@@ -18,14 +18,15 @@ using static ASI.Basecode.Resources.Constants.Enums;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
-    public class AccountController : ControllerBase<AccountController>
+    public class AccountController : BaseController
     {
-        private readonly SessionManager _sessionManager;
-        private readonly SignInManager _signInManager;
-        private readonly TokenValidationParametersFactory _tokenValidationParametersFactory;
-        private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
-        private readonly IConfiguration _appConfiguration;
-        private readonly IUserService _userService;
+        //private readonly SessionManager _sessionManager;
+        //private readonly SignInManager _signInManager;
+        //private readonly TokenValidationParametersFactory _tokenValidationParametersFactory;
+        //private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
+        //private readonly IConfiguration _appConfiguration;
+        //private readonly IUserService _userService;
+        private readonly MailManager _mailManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -40,34 +41,41 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="tokenValidationParametersFactory">The token validation parameters factory.</param>
         /// <param name="tokenProviderOptionsFactory">The token provider options factory.</param>
         public AccountController(
-                            SignInManager signInManager,
-                            IHttpContextAccessor httpContextAccessor,
-                            ILoggerFactory loggerFactory,
-                            IConfiguration configuration,
-                            IMapper mapper,
-                            IUserService userService,
-                            TokenValidationParametersFactory tokenValidationParametersFactory,
-                            TokenProviderOptionsFactory tokenProviderOptionsFactory) : base(httpContextAccessor, loggerFactory, configuration, mapper)
+                            MailManager mailManager
+                            //SignInManager signInManager,
+                            //IHttpContextAccessor httpContextAccessor,
+                            //ILoggerFactory loggerFactory,
+                            //IConfiguration configuration,
+                            //IMapper mapper,
+                            //IUserService userService,
+                            //TokenValidationParametersFactory tokenValidationParametersFactory,
+                            //TokenProviderOptionsFactory tokenProviderOptionsFactory
+            ) : base(mailManager)
         {
-            this._sessionManager = new SessionManager(this._session);
-            this._signInManager = signInManager;
-            this._tokenProviderOptionsFactory = tokenProviderOptionsFactory;
-            this._tokenValidationParametersFactory = tokenValidationParametersFactory;
-            this._appConfiguration = configuration;
-            this._userService = userService;
+            //this._sessionManager = new SessionManager(this._session);
+            //this._signInManager = signInManager;
+            //this._tokenProviderOptionsFactory = tokenProviderOptionsFactory;
+            //this._tokenValidationParametersFactory = tokenValidationParametersFactory;
+            //this._appConfiguration = configuration;
+            //this._userService = userService;
+            this._mailManager = mailManager;
         }
 
         /// <summary>
         /// Login Method
         /// </summary>
         /// <returns>Created response view</returns>
-        [HttpGet]
+        //[HttpGet]
+        //[AllowAnonymous]
+
+        // @Angelo - to be changed
+
         [AllowAnonymous]
         public ActionResult Login()
         {
-            TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
-            this._sessionManager.Clear();
-            this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
+            //TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
+            //this._sessionManager.Clear();
+            //this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
             return this.View();
         }
 
@@ -81,9 +89,9 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(Models.LoginViewModel model, string returnUrl)
         {
-            this._session.SetString("HasSession", "Exist");
+            //this._session.SetString("HasSession", "Exist");
 
-            MUser user = null;
+            //MUser user = null;
 
             //User user = new() { Id = 0, UserId = "0", Name = "Name", Password = "Password" };
 
@@ -91,21 +99,22 @@ namespace ASI.Basecode.WebApp.Controllers
             //this._session.SetString("UserName", model.UserId);
 
             //return RedirectToAction("Index", "Home");
-            var loginResult = _userService.AuthenticateUser(model.UserCode, model.Password, ref user);
-            if (loginResult == LoginResult.Success)
-            {
-                // 認証OK
-                await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", string.Join(" ", user.FirstName, user.LastName));
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                // 認証NG
-                TempData["ErrorMessage"] = "Incorrect UserId or Password";
-                return View();
-            }
+            //var loginResult = _userService.AuthenticateUser(model.UserCode, model.Password, ref user);
+            //if (loginResult == LoginResult.Success)
+            //{
+            //    // 認証OK
+            //    await this._signInManager.SignInAsync(user);
+            //    this._session.SetString("UserName", string.Join(" ", user.FirstName, user.LastName));
+            //    return RedirectToAction("Index", "Home");
+            //}
+            //else
+            //{
+            //    // 認証NG
+            //    TempData["ErrorMessage"] = "Incorrect UserId or Password";
+            //    return View();
+            //}
             //return View();
+            return View();
         }
 
         [HttpGet]
@@ -142,7 +151,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignOutUser()
         {
-            await this._signInManager.SignOutAsync();
+            //await this._signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
     }

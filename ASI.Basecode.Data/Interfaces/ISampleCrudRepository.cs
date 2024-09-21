@@ -9,9 +9,9 @@ namespace ASI.Basecode.Data.Interfaces
 {
     public interface ISampleCrudRepository
     {
-        IEnumerable<SampleCrud> RetrieveAll();
-        void Add(SampleCrud model);
-        void Update(SampleCrud model);
-        void Delete(int id);
+        //IEnumerable<SampleCrud> RetrieveAll();
+        //void Add(SampleCrud model);
+        //void Update(SampleCrud model);
+        //void Delete(int id);
     }
 }
