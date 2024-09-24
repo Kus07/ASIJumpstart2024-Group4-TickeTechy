@@ -23,6 +23,7 @@ namespace ASI.Basecode.Data
         public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<TicketAssigned> TicketAssigneds { get; set; }
         public virtual DbSet<TicketMessage> TicketMessages { get; set; }
@@ -30,9 +31,13 @@ namespace ASI.Basecode.Data
         public virtual DbSet<UserDetail> UserDetails { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-       => optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=JULES-IRWIN\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
-
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=JULES-IRWIN\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -142,6 +147,17 @@ namespace ASI.Basecode.Data
                     .HasColumnName("roleName");
             });
 
+            modelBuilder.Entity<Status>(entity =>
+            {
+                entity.ToTable("Status");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.StatusName)
+                    .HasMaxLength(50)
+                    .HasColumnName("statusName");
+            });
+
             modelBuilder.Entity<Ticket>(entity =>
             {
                 entity.ToTable("Ticket");
@@ -162,9 +178,7 @@ namespace ASI.Basecode.Data
                     .HasMaxLength(50)
                     .HasColumnName("priority");
 
-                entity.Property(e => e.Status)
-                    .HasMaxLength(50)
-                    .HasColumnName("status");
+                entity.Property(e => e.StatusId).HasColumnName("status_id");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
@@ -177,6 +191,12 @@ namespace ASI.Basecode.Data
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Ticket_Category");
+
+                entity.HasOne(d => d.Status)
+                    .WithMany(p => p.Tickets)
+                    .HasForeignKey(d => d.StatusId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Ticket_Status");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Tickets)
@@ -253,9 +273,7 @@ namespace ASI.Basecode.Data
                     .HasMaxLength(50)
                     .HasColumnName("forgotPassOTP");
 
-                entity.Property(e => e.Password)
-                    .HasMaxLength(50)
-                    .HasColumnName("password");
+                entity.Property(e => e.Password).HasColumnName("password");
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 

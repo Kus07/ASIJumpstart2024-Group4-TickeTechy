@@ -1,0 +1,5 @@
+Generate DB Context (Run in Package Manager Console if nay changes sa table DB):
+Scaffold-DbContext "Server=JULES-IRWIN\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -f
+
+Update Table/Model:
+ Scaffold-DbContext "Server=JULES-IRWIN\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -t tablename -f

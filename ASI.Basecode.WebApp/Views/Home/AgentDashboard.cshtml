@@ -34,7 +34,7 @@
                                 {
                                     <tr>
                                         <td>@ticket.Ticket.User.Username</td>
-                                        <td><span class="badge bg-success">@ticket.Ticket.Status</span></td>
+                                        <td style="color: white;"><span class="badge bg-success">@ticket.Ticket.Status.StatusName</span></td>
                                         <td>@ticket.Ticket.Description</td>
                                         <td>
                                             <a asp-controller="Ticket" asp-action="View" asp-route-id="@ticket.Ticket.Id" class="btn btn-sm btn-info">View Ticket</a>

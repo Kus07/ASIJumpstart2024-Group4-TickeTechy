@@ -5,16 +5,13 @@ using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Linq;
 using System;
-using System.Data.Entity;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -60,7 +57,9 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult Tickets()
         {
             var userId = GetUserId();
-            var tickets = _ticketRepo.GetAll().Where(t => t.UserId == userId).ToList();
+            var tickets = _ticketRepo.GetAll()
+                                     .Where(t => t.UserId == userId)
+                                     .ToList();
             var categories = _categoryRepo.GetAll().ToList();
 
             // Create a list of TicketViewModel with the category names included
@@ -72,7 +71,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Description = ticket.Description,
                 Priority = ticket.Priority,
                 AttachmentPath = ticket.Attachments,
-                Status = ticket.Status,
+                Status = ticket.Status.StatusName,
                 CreatedAt = (DateTime)ticket.CreatedAt,
                 CategoryName = categories.FirstOrDefault(c => c.Id == ticket.CategoryId)?.CategoryName
             }).ToList();

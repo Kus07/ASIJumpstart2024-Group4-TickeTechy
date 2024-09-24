@@ -15,6 +15,14 @@
             CustomErr,
         }
 
+        public enum TicketStatus
+        {
+            OPEN = 1,
+            ONGOING = 2,
+            RESOLVED = 3,
+            CLOSED = 4
+        }
+
         /// <summary>
         /// Login Result
         /// </summary>

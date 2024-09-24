@@ -11,6 +11,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using static ASI.Basecode.Resources.Constants.Enums;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -51,18 +52,57 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult View(int id)
         {
             var ticket = _ticketRepo.Get(id);
-            var customerFirstName = _userDetailRepo.Table.Where(m => m.UserId == ticket.UserId).Select(m => m.FirstName).FirstOrDefault();
+            int userId = GetUserId();
+
+            // trappings
+            if (ticket == null)
+            {
+                TempData["error"] = "Invalid ticket ID";
+                if (User.IsInRole("1"))
+                {
+                    return RedirectToAction("CustomerDashboard", "Home");
+                }
+                else if (User.IsInRole("2"))
+                {
+                    return RedirectToAction("AgentDashboard", "Home");
+                }
+            }
+
             var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id)
                 .Include(m => m.Ticket)
                 .FirstOrDefault();
+            if (User.IsInRole("2"))
+            {
+                if (ticketAssigned.AgentId != userId)
+                {
+                    TempData["error"] = "Unauthorized access";
+                    return RedirectToAction("AgentDashboard", "Home");
+                }
+            }
+            else if (User.IsInRole("1"))
+            {
+                if (ticket.UserId != userId)
+                {
+                    TempData["error"] = "Unauthorized access";
+                    return RedirectToAction("CustomerDashboard", "Home");
+                }
+            }
+
+            var customerFirstName = _userDetailRepo.Table.Where(m => m.UserId == ticket.UserId).Select(m => m.FirstName).FirstOrDefault();
             var agentName = _userDetailRepo.Table.Where(m => m.UserId == ticketAssigned.AgentId).Select(m => m.FirstName).FirstOrDefault();
             var agents = _userRepo.Table.Where(m => m.RoleId == 2).Include(m => m.Department).ToList();
+            var messages = _ticketMessageRepo.Table
+                .Where(m => m.TicketId == ticket.Id)
+                .OrderBy(m => m.CreatedAt)  
+                .ToList(); 
+            
             var model = new ViewTicketModel()
             {
                 Ticket = ticket,
                 Customer = customerFirstName,
                 Agent = agentName,
-                Agents = agents
+                Agents = agents,
+                Messages = messages
             };
 
             return View(model);
@@ -86,6 +126,34 @@ namespace ASI.Basecode.WebApp.Controllers
             TempData["error"] = "Invalid ID.";
             return RedirectToAction("View", "Ticket", new {id = ticket.Id});
         }
+
+        [HttpPost]
+        public IActionResult SendMessage(int ticketId, string message)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return Json(new { success = false, responseText = "Message cannot be empty" });
+            }
+
+            var ticket = _ticketRepo.Get(ticketId);
+            int currUserId = GetUserId();
+
+            var ticketMessage = new TicketMessage()
+            {
+                CreatedAt = DateTime.Now,
+                Message = message,
+                TicketId = ticketId,
+                UserId = currUserId,
+            };
+
+            _ticketMessageRepo.Create(ticketMessage);
+
+            ticket.StatusId = Convert.ToInt32(TicketStatus.ONGOING);
+
+            _ticketRepo.Update(ticket.Id, ticket);
+            return Json(new { success = true, responseText = "Message sent successfully!" });
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -127,7 +195,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Attachments = attachmentPath,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Status = "Open"
+                StatusId = Convert.ToInt32(TicketStatus.OPEN),
             };
 
             var result = _ticketRepo.Create(ticket);
