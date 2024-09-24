@@ -1,0 +1,275 @@
+﻿@model ASI.Basecode.Services.ServiceModels.AdminViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-body">
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
+            @TempData["error"]
+        </div>
+    }
+    @if (ViewBag.Errors != null)
+    {
+        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
+            @ViewBag.Errors
+        </div>
+    }
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-success" style="border-radius: 0;" role="alert">
+            @TempData["message"]
+        </div>
+    }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h4>Customers</h4>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="customersTable">
+                                <thead>
+                                    <tr>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var customer in Model.Customers)
+                                    {
+                                        <tr>
+                                            <td>@customer.FirstName</td>
+                                            <td>@customer.LastName</td>
+                                            <td>@customer.Users.Email</td>
+                                            <td>@customer.ContactNo</td>
+                                            <td>
+                                                <a class="btn btn-info editCustomerBtn"
+                                                   style="color: white;" id="showEditCustomerModalBtn" data-toggle="modal"
+                                                   data-target="#editCustomerModal"
+                                                   data-id="@customer.Users.Id"
+                                                   data-firstname="@customer.FirstName"
+                                                   data-lastname="@customer.LastName"
+                                                   data-email="@customer.Users.Email"
+                                                   data-username="@customer.Users.Username"
+                                                   data-password="@customer.Users.Password"
+                                                   data-phone="@customer.ContactNo">Edit</a>
+                                                ||
+                                                <a class="btn btn-danger deleteCustomerBtn" style="color: white;"
+                                                   id="showDeleteCustomerModalBtn" data-toggle="modal" data-id="@customer.Users.Id" data-customername="@customer.FirstName"
+                                                   data-target="#deleteCustomerModal">Delete</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Add Customer Button -->
+                        <div class="mt-3 text-right">
+                            <button type="button" class="btn btn-info" id="showAddCustomerModalBtn">
+                                <i class="icon icon-plus"></i> Add Customer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
+            </div>
+            <div class="modal-body">
+                <!-- Form for adding a new customer -->
+                @using (Html.BeginForm("AddCustomer", "Admin", FormMethod.Post, new { @id = "addCustomerForm", @enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="customerName">First Name</label>
+                        @Html.TextBox("firstName", null, new { @class = "form-control", @id = "firstName" })
+                    </div>
+                    <div class="form-group">
+                        <label for="customerName">Last Name</label>
+                        @Html.TextBox("lastName", null, new { @class = "form-control", @id = "lastName" })
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        @Html.TextBox("email", null, new { @class = "form-control", @id = "email", @type = "email" })
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        @Html.TextBox("contactNo", null, new { @class = "form-control", @id = "phone", @type = "number" })
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Username</label>
+                        @Html.TextBox("username", null, new { @class = "form-control", @id = "username" })
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary" id="addCustomerBtn">Add</button>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonAdd">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Customer Modal -->
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteCustomerModalLabel">Confirm Deletion</h5>
+            </div>
+            <div class="modal-body">
+                <p id="output">Are you sure you want to delete this customer?</p>
+                <p>This action cannot be undone.</p>
+            </div>
+            @using (Html.BeginForm("DeleteCustomer", "Admin", FormMethod.Post, new { @id = "deleteCustomerForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="customerId" name="CustomerId" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonDelete">Cancel</button>
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteCustomerBtn">Delete</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Edit Customer Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1" role="dialog" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCustomerModalLabel">Edit Customer</h5>
+            </div>
+            <div class="modal-body">
+                <!-- Form for editing customer details -->
+                @using (Html.BeginForm("EditCustomer", "Admin", FormMethod.Post, new { @id = "editCustomerForm", @enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("CustomerId", null, new { @id = "customerIdUpdate" })
+
+                    <div class="form-group">
+                        <label for="editCustomerFirstName">First Name</label>
+                        @Html.TextBox("firstName", null, new { @class = "form-control", @id = "editCustomerFirstName" })
+                    </div>
+                    <div class="form-group">
+                        <label for="editCustomerLastName">Last Name</label>
+                        @Html.TextBox("lastName", null, new { @class = "form-control", @id = "editCustomerLastName" })
+                    </div>
+                    <div class="form-group">
+                        <label for="editUsername">Username</label>
+                        @Html.TextBox("username", null, new { @class = "form-control", @id = "editUsername" })
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        @Html.TextBox("email", null, new { @class = "form-control", @id = "editEmail" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editPhone">Phone</label>
+                        @Html.TextBox("contactNo", null, new { @class = "form-control", @id = "editPhone" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editPassword">Password</label>
+                        @Html.TextBox("password", null, new { @class = "form-control", @id = "editPassword" })
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary" id="saveCustomerBtn">Save Changes</button>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonEdit">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+
+<script>
+    $(document).ready(function () {
+        let table = new DataTable('#customersTable');
+
+        // Modal close functionality
+        $('#closeModalButtonAdd, #closeModalFooterButtonAdd').click(function () {
+            $('#addCustomerModal').modal('hide');
+        });
+
+        $('#closeModalButtonEdit, #closeModalFooterButtonEdit').click(function () {
+            $('#editCustomerModal').modal('hide');
+        });
+
+        $('#closeModalButtonDelete, #closeModalFooterButtonDelete').click(function () {
+            $('#deleteCustomerModal').modal('hide');
+        });
+
+        // Show Add Customer Modal
+        $('#showAddCustomerModalBtn').click(function () {
+            $('#addCustomerModal').modal('show');
+        });
+
+        // Event delegation for Delete Customer Modal
+        $('#customersTable tbody').on('click', '.deleteCustomerBtn', function () {
+            $('#deleteCustomerModal').modal('show');
+            var id = $(this).data('id');
+            var customerName = $(this).data('customername');
+
+            // Set the data attribute 'customerId' in the confirm delete button
+            $('#confirmDeleteCustomerBtn').data('customerid', id);
+
+            // Set the customer name in the modal output
+            $('#output').text('Are you sure you want to delete this customer? (' + customerName + ')');
+        });
+
+        // Confirm Delete Customer
+        $('#confirmDeleteCustomerBtn').click(function () {
+            var customerId = $(this).data('customerid');
+
+            // Set the hidden input values
+            $('#customerId').val(customerId);
+
+            // Submit the form
+            $('#deleteCustomerForm').submit();
+        });
+
+        // Event delegation for Edit Customer Modal
+        $('#customersTable tbody').on('click', '.editCustomerBtn', function () {
+            var firstName = $(this).data('firstname');
+            var lastName = $(this).data('lastname');
+            var username = $(this).data('username');
+            var email = $(this).data('email');
+            var phone = $(this).data('phone');
+            var password = $(this).data('password');
+            var customerId = $(this).data('id');
+            $('#customerIdUpdate').val(customerId);
+            $('#editCustomerFirstName').val(firstName);
+            $('#editCustomerLastName').val(lastName);
+            $('#editUsername').val(username);
+            $('#editEmail').val(email);
+            $('#editPhone').val(phone);
+            $('#editPassword').val(password);
+            $('#editCustomerModal').modal('show');
+        });
+    });
+</script>

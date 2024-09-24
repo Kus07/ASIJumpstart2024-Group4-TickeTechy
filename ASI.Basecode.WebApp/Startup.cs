@@ -85,7 +85,7 @@ namespace ASI.Basecode.WebApp
             // Register SQL database configuration context as services.
             services.AddDbContext<AllianceJumpstartContext>(options =>
             {
-                options.UseSqlServer(
+                options.UseLazyLoadingProxies().UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(120));
             });

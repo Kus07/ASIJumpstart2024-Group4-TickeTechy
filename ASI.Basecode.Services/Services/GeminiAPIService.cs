@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ASI.Basecode.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,10 +9,13 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TickeTechy.Services.Implementations
+namespace ASI.Basecode.Services.Services
 {
-    public class GeminiAPIService
+    public class GeminiAPIService : IGeminiAPIService
     {
+        /// <summary>
+        /// Assign ticket to a agent using Gemini AI API 
+        /// </summary>
         [HttpPost]
         public async Task<int> AssignTicket(string description, string category)
         {
@@ -22,7 +26,6 @@ namespace TickeTechy.Services.Implementations
 
                 string input = $"Ticket Description: {description}, Ticket Category: {category}";
 
-                // Set up the client for API request
                 using (var client = new HttpClient())
                 {
                     var values = new Dictionary<string, string>

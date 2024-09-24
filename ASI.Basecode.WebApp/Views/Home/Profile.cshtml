@@ -1,0 +1,197 @@
+﻿@model ASI.Basecode.Data.Models.UserDetail
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .card {
+        width: 350px;
+        background-color: #efefef;
+        border: none;
+        cursor: pointer;
+        transition: all 0.5s;
+    }
+
+    .image img {
+        transition: all 0.5s;
+        width: 120px; /* Ensure the profile image is not too big */
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .card:hover .image img {
+        transform: scale(1.1);
+    }
+
+    .name {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .idd {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .idd1 {
+        font-size: 12px;
+    }
+
+    .number {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .follow {
+        font-size: 12px;
+        font-weight: 500;
+        color: #444444;
+    }
+
+    .btn1 {
+        height: 40px;
+        width: 150px;
+        border: none;
+        background-color: #000;
+        color: #aeaeae;
+        font-size: 15px;
+    }
+
+    .text span {
+        font-size: 13px;
+        color: #545454;
+        font-weight: 500;
+    }
+
+    .icons i {
+        font-size: 19px;
+    }
+
+    .join {
+        font-size: 14px;
+        color: #a0a0a0;
+        font-weight: bold;
+    }
+
+    .date {
+        background-color: #ccc;
+    }
+</style>
+
+<div>
+    @if (TempData["error"] != null)
+    {
+        <br />
+        <br />
+        <br />
+        <br />
+        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
+            @TempData["error"]
+        </div>
+    }
+    @if (ViewBag.Errors != null)
+    {
+        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
+            @ViewBag.Errors
+        </div>
+    }
+    @if (TempData["message"] != null)
+    {
+        <br />
+        <br />
+        <br />
+        <br />
+        <div class="alert alert-success" style="border-radius: 0;" role="alert">
+            @TempData["message"]
+        </div>
+    }
+</div>
+
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+
+    <div class="card p-4">
+        <div class="image d-flex flex-column justify-content-center align-items-center">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+            {
+                <img src="@Model.ProfilePicturePath" alt="Profile Picture" />
+            }
+            else
+            {
+                <img src="https://i.imgur.com/wvxPV9S.png" alt="Default Profile Picture" />
+            }            <span class="name mt-3">@Model.FirstName @Model.LastName</span>
+            <span class="idd">@@@Model.Users.Username</span>
+            <span class="email mt-2">Email: @Model.Users.Email</span>
+            <span class="contact mt-2">Contact No: @Model.ContactNo</span>
+            <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                <span class="idd1">@Model.Users.Role.RoleName</span>
+            </div>
+            <div class="d-flex flex-row justify-content-center align-items-center mt-3">
+                @if (User.IsInRole("1"))
+                {
+                    <span class="number">@ViewBag.TicketCount <span class="follow">Tickets created</span></span>
+                }
+                else if (User.IsInRole("2"))
+                {
+                    <span class="number">@ViewBag.TicketCount <span class="follow">Tickets</span></span>
+                }
+            </div>
+            <div class="d-flex mt-2">
+                <button class="btn1 btn-dark" onclick="window.location.href='@Url.Action("EditProfile", "Home")'">Edit Profile</button>
+            </div>
+            <div class="d-flex mt-2">
+                <button class="btn1 btn-dark" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+            </div>
+        </div>
+        <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
+            <span><i class="fa fa-twitter"></i></span>
+            <span><i class="fa fa-facebook-f"></i></span>
+            <span><i class="fa fa-instagram"></i></span>
+            <span><i class="fa fa-linkedin"></i></span>
+        </div>
+        <div class="px-2 rounded mt-4 date">
+            <span class="join">
+                Joined @Model.Users.CreatedAt?.ToString("MMMM yyyy")
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-controller="Home" asp-action="ChangePassword">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

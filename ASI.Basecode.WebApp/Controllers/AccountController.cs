@@ -2,6 +2,7 @@
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Models;
 using ASI.Basecode.WebApp.Mvc;
@@ -12,7 +13,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Data.Entity;
 using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static ASI.Basecode.Resources.Constants.Enums;
 
@@ -20,12 +25,12 @@ namespace ASI.Basecode.WebApp.Controllers
 {
     public class AccountController : BaseController
     {
-        //private readonly SessionManager _sessionManager;
-        //private readonly SignInManager _signInManager;
-        //private readonly TokenValidationParametersFactory _tokenValidationParametersFactory;
-        //private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
-        //private readonly IConfiguration _appConfiguration;
-        //private readonly IUserService _userService;
+        private readonly SessionManager _sessionManager;
+        private readonly SignInManager _signInManager;
+        private readonly TokenValidationParametersFactory _tokenValidationParametersFactory;
+        private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
+        private readonly IConfiguration _appConfiguration;
+        private readonly IUserService _userService;
         private readonly MailManager _mailManager;
 
         /// <summary>
@@ -40,43 +45,55 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <param name="mapper">The mapper.</param>
         /// <param name="tokenValidationParametersFactory">The token validation parameters factory.</param>
         /// <param name="tokenProviderOptionsFactory">The token provider options factory.</param>
-        public AccountController(
-                            MailManager mailManager
-                            //SignInManager signInManager,
-                            //IHttpContextAccessor httpContextAccessor,
-                            //ILoggerFactory loggerFactory,
-                            //IConfiguration configuration,
-                            //IMapper mapper,
-                            //IUserService userService,
-                            //TokenValidationParametersFactory tokenValidationParametersFactory,
-                            //TokenProviderOptionsFactory tokenProviderOptionsFactory
-            ) : base(mailManager)
+        /// <param name="mailManager">The mail manager.</param>
+        /// 
+        public AccountController(MailManager mailManager, IUserService userService,
+                                SignInManager signInManager,
+                            IHttpContextAccessor httpContextAccessor,
+                            ILoggerFactory loggerFactory,
+                            IConfiguration configuration,
+                            TokenValidationParametersFactory tokenValidationParametersFactory,
+                            TokenProviderOptionsFactory tokenProviderOptionsFactory
+            ) : base(mailManager, httpContextAccessor)
         {
-            //this._sessionManager = new SessionManager(this._session);
-            //this._signInManager = signInManager;
-            //this._tokenProviderOptionsFactory = tokenProviderOptionsFactory;
-            //this._tokenValidationParametersFactory = tokenValidationParametersFactory;
-            //this._appConfiguration = configuration;
-            //this._userService = userService;
             this._mailManager = mailManager;
+            _userService = userService;
+            _signInManager = signInManager;
+            this._tokenProviderOptionsFactory = tokenProviderOptionsFactory;
+            this._tokenValidationParametersFactory = tokenValidationParametersFactory;
+            this._appConfiguration = configuration; 
+            this._sessionManager = new SessionManager(this._session);
         }
 
         /// <summary>
         /// Login Method
         /// </summary>
         /// <returns>Created response view</returns>
-        //[HttpGet]
-        //[AllowAnonymous]
-
-        // @Angelo - to be changed
-
+        /// 
+        [HttpGet]
         [AllowAnonymous]
-        public ActionResult Login()
+        public IActionResult Login()
         {
-            //TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
-            //this._sessionManager.Clear();
-            //this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
-            return this.View();
+            ViewData["title"] = "TickeTechy Login";
+            if (User.Identity.IsAuthenticated)
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                // Redirect based on role
+                switch (role)
+                {
+                    case "1":
+                        return RedirectToAction("CustomerDashboard", "Home");
+                    case "2":
+                        return RedirectToAction("AgentDashboard", "Home");
+                    case "3":
+                        return RedirectToAction("AdminDashboard", "Admin");
+                    case "4":
+                        return RedirectToAction("AdminDashboard", "Admin");
+                    default:
+                        return RedirectToAction("Error", "Shared");
+                }
+            }
+            return View();
         }
 
         /// <summary>
@@ -87,36 +104,42 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Created response view </returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(Models.LoginViewModel model, string returnUrl)
+        public async Task<IActionResult> Login(Services.ServiceModels.LoginViewModel model)
         {
-            //this._session.SetString("HasSession", "Exist");
+            if (ModelState.IsValid)
+            {
+                var user = _userRepo.Table.Where(u => u.Email == model.Email && u.Password == model.Password).FirstOrDefault();
 
-            //MUser user = null;
+                if (user != null)
+                {
+                    var userDetails = _userDetailRepo.Table.Include(m => m.Users).Where(m => m.UserId == user.Id).FirstOrDefault();
+                    //await _userService.AuthenticateUser(user);
+                    await this._signInManager.SignInAsync(userDetails);
 
-            //User user = new() { Id = 0, UserId = "0", Name = "Name", Password = "Password" };
-
-            //await this._signInManager.SignInAsync(user);
-            //this._session.SetString("UserName", model.UserId);
-
-            //return RedirectToAction("Index", "Home");
-            //var loginResult = _userService.AuthenticateUser(model.UserCode, model.Password, ref user);
-            //if (loginResult == LoginResult.Success)
-            //{
-            //    // 認証OK
-            //    await this._signInManager.SignInAsync(user);
-            //    this._session.SetString("UserName", string.Join(" ", user.FirstName, user.LastName));
-            //    return RedirectToAction("Index", "Home");
-            //}
-            //else
-            //{
-            //    // 認証NG
-            //    TempData["ErrorMessage"] = "Incorrect UserId or Password";
-            //    return View();
-            //}
-            //return View();
-            return View();
+                    // Redirect based on role
+                    switch (user.RoleId)
+                    {
+                        case 1:
+                            return RedirectToAction("CustomerDashboard", "Home");
+                        case 2:
+                            return RedirectToAction("AgentDashboard", "Home");
+                        case 3:
+                            return RedirectToAction("AdminDashboard", "Admin");
+                        case 4:
+                            return RedirectToAction("AdminDashboard", "Admin");
+                        default:
+                            return RedirectToAction("Error", "Shared");
+                    }
+                }
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            }
+            return View(model);
         }
 
+
+        /// <summary>
+        /// Register Method
+        /// </summary>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()
@@ -124,24 +147,70 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+
+        /// <summary>
+        /// Register Method
+        /// </summary>
         [HttpPost]
-        [AllowAnonymous]
-        public IActionResult Register(Services.ServiceModels.LoginViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                //_userService.AddUser(model);
-                return RedirectToAction("Login", "Account");
+                // Check if the email is already registered
+                var existingUser = _userRepo.GetAll().FirstOrDefault(u => u.Email == model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Email is already registered.");
+                    return View(model);
+                }
+
+                // Create a new user object based on the input data from the form
+                var newUser = new User
+                {
+                    Username = model.Username,
+                    Email = model.Email,
+                    Password = model.Password,
+                    RoleId = 1
+                };
+
+                // Add the new user to the database
+                _userRepo.Create(newUser);
+
+                // get ID of the added user to insert it in UserDetails' UserId
+                var createdUser = _userRepo.Table.Where(m => m.Email == model.Email).FirstOrDefault();
+
+                var userDetails = new UserDetail()
+                {
+                    ContactNo = model.Contact,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    UserId = createdUser.Id
+                };
+
+                _userDetailRepo.Create(userDetails);
+
+
+                // After registration, automatically log in the user
+                await _userService.AuthenticateUser(newUser);
+
+                // Redirect based on role after registration
+                switch (newUser.RoleId)
+                {
+                    case 1:
+                        return RedirectToAction("CustomerDashboard", "Home");
+                    case 2:
+                        return RedirectToAction("AgentDashboard", "Home");
+                    case 3:
+                        return RedirectToAction("AdminDashboard", "Admin");
+                    case 4:
+                        return RedirectToAction("AdminDashboard", "Admin");
+                    default:
+                        return RedirectToAction("Error", "Shared");
+                }
             }
-            catch(InvalidDataException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-            }
-            catch(Exception ex)
-            {
-                TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
-            }
-            return View();
+
+            // If we got this far, something failed; re-display the form
+            return View(model);
         }
 
         /// <summary>
@@ -149,10 +218,107 @@ namespace ASI.Basecode.WebApp.Controllers
         /// </summary>
         /// <returns>Created response view</returns>
         [AllowAnonymous]
-        public async Task<IActionResult> SignOutUser()
+        public async Task<IActionResult> Logout()
         {
-            //await this._signInManager.SignOutAsync();
+            await this._signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
-    }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult SendOTP(string email)
+        {
+
+            if (String.IsNullOrEmpty(email))
+            {
+                return Json(new { success = false, message = "Invalid email format." });
+            }
+
+            string emailPattern = @"^[^\s@]+@[^\s@]+\.[^\s@]+$";
+            var isValid = Regex.IsMatch(email, emailPattern);
+
+            if (!isValid)
+            {
+                return Json(new { success = false, message = "Invalid email format." });
+            }
+
+            var user = _userRepo.Table.Where(m => m.Email == email).FirstOrDefault();
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Email does not exist in TickeTechy!" });
+            }
+
+            var userDetails = _userDetailRepo.Table.Where(m => m.UserId == user.Id).FirstOrDefault();
+            string otpCode = GenerateOTP();
+
+            string errResponse = "";
+
+            bool otpSent = _mailManager.SendOtpForgotPassword(email, userDetails.FirstName, otpCode, ref errResponse);
+
+            if (otpSent)
+            {
+                user.ForgotPassOtp = otpCode;
+                _userRepo.Update(user.Id, user);
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult VerifyOTP(string otp, string email)
+        {
+            // Logic to verify the OTP
+            var user = _userRepo.Table.Where(m => m.Email.Equals(email)).FirstOrDefault();
+
+            if (user == null || String.IsNullOrEmpty(user.ForgotPassOtp))
+            {
+                return Json(new { success = false });
+            }
+
+            if (!user.ForgotPassOtp.Equals(otp))
+            {
+                return Json(new { success = false });
+            }
+            else
+            {
+                user.ForgotPassOtp = null;
+                _userRepo.Update(user.Id, user);
+                return Json(new { success = true });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult ResetPassword(string newPassword, string otpCode, string email)
+        {
+            var user = _userRepo.Table.Where(m => m.Email.Equals(email)).FirstOrDefault();
+            if (user == null || String.IsNullOrEmpty(user.ForgotPassOtp))
+            {
+                return Json(new { success = false });
+            }
+
+            if (!user.ForgotPassOtp.Equals(otpCode))
+            {
+                return Json(new { success = false });
+            }
+
+            user.Password = newPassword;
+            _userRepo.Update(user.Id, user);
+            return Json(new { success = true });
+        }
+
+
+        private string GenerateOTP()
+        {
+            const string chars = "0123456789";
+            Random random = new Random();
+            return new string(Enumerable.Repeat(chars, 6)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+    }   
 }

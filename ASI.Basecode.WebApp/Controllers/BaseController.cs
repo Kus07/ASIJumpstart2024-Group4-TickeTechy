@@ -3,6 +3,7 @@ using ASI.Basecode.Data;
 using ASI.Basecode.Services.Manager;
 using Basecode.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -19,9 +20,15 @@ namespace ASI.Basecode.WebApp.Controllers
         public BaseRepository<Feedback> _feedbackRepo;
         public readonly MailManager _mailManager;
 
-        public BaseController(MailManager mailManager)
+        protected readonly IHttpContextAccessor _httpContextAccessor;
+
+        protected ISession _session => _httpContextAccessor.HttpContext.Session;
+
+
+        public BaseController(MailManager mailManager, IHttpContextAccessor httpContextAccessor)
         {
             _mailManager = mailManager;
+            this._httpContextAccessor = httpContextAccessor;
             _db = new AllianceJumpstartContext();
             _userRepo = new BaseRepository<User>();
             _roleRepo = new BaseRepository<Role>();

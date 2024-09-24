@@ -80,14 +80,14 @@ namespace ASI.Basecode.WebApp.Authentication
         public ClaimsIdentity CreateClaimsIdentity(UserDetail user)
         {
             var token = _configuration.GetTokenAuthentication();
-            var userId = user.Id.ToString();
-            var name = string.Join(" ", user.FirstName, user.LastName);
-            //TODO
+            var userId = user.Users.Id.ToString();
+            var name = user.Users.Username;
+
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, userId, ClaimValueTypes.String, Const.Issuer),
                 new Claim(ClaimTypes.Name, name, ClaimValueTypes.String, Const.Issuer),
-                new Claim(ClaimTypes.Role, user.Users.Role.RoleName.ToString(), ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.Role, user.Users.RoleId.ToString(), ClaimValueTypes.String, Const.Issuer),
 
                 new Claim("UserId", userId, ClaimValueTypes.String, Const.Issuer),
                 new Claim("UserName", name, ClaimValueTypes.String, Const.Issuer),
@@ -124,9 +124,9 @@ namespace ASI.Basecode.WebApp.Authentication
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="isPersistent">if set to <c>true</c> [is persistent].</param>
-        public async Task SignInAsync(UserDetail user, bool isPersistent = false)
+        public async Task SignInAsync(UserDetail userDetails, bool isPersistent = false)
         {
-            var claimsIdentity = this.CreateClaimsIdentity(user);
+            var claimsIdentity = this.CreateClaimsIdentity(userDetails);
             var principal = this.CreateClaimsPrincipal(claimsIdentity);
             await this.SignInAsync(principal, isPersistent);
         }

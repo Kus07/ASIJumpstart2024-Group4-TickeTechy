@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data;
+using ASI.Basecode.Services.Interfaces;
 
-namespace TickeTechy.Services.Implementations
+namespace ASI.Basecode.Services.Services
 {
-    public class AgentService
+	public class AgentService : IAgentService
     {
         public int GetUserWithSmallestLoad(int departmentId)
         {

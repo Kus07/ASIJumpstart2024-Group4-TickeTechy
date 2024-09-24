@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TickeTechy - Your Alliance Help Desk Ticketing System.</title>
+    <link rel="icon" href="~/images/TicketTechy Logo.jpeg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" type="text/css" href="~/MainLayout/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/MainLayout/css/style.css">
+    <link rel="stylesheet" href="~/MainLayout/css/responsive.css">
+    <link rel="icon" href="~/MainLayout/images/fevicon.png" type="image/gif" />
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan+2:400,600,700|Poppins:400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/MainLayout/css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+</head>
+<body>
+    <style>
+        #floating-svg {
+            position: fixed;
+            bottom: 50px;
+            right: 70px;
+            z-index: 9999;
+        }
+
+        .alert {
+            border-radius: 0;
+            position: fixed;
+            top: 15px;
+            z-index: 10000;
+            margin: auto;
+        }
+
+        .alert-danger {
+            margin-top: 30px;
+        }
+
+        .alert-success {
+            max-height: fit-content;
+        }
+
+        .content-area {
+            padding-top: 60px;
+        }
+    </style>
+
+    <!-- Header Section -->
+    <div class="header_section">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" asp-controller="Home" asp-action="CustomerDashboard">
+                    <img src="~/images/TickeTechy logo with text.png" style="max-width: 220px !important;">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        @if (User.IsInRole("1"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="CustomerDashboard">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Tickets">Your Tickets</a>
+                            </li>
+                        }
+                        else if (User.IsInRole("2"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="AgentDashboard">Home</a>
+                            </li>
+                        }
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Profile">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Notifications">Notifications</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Header Section End -->
+
+    <div class="container" style="min-height: 500px;">
+        @RenderBody()
+        @if (User.IsInRole("1"))
+        {
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" id="floating-svg" viewBox="0 0 88 84" fill="none">
+                <ellipse cx="44" cy="42" rx="44" ry="42" fill="#192B5D" />
+                <path d="M44.7719 20.6038V42.7924M44.7719 42.7924V64.9811M44.7719 42.7924H23.1579M44.7719 42.7924H66.3859" stroke="white" stroke-width="4" stroke-linecap="round" />
+            </svg>
+        }
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer_section layout_padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="location_text">
+                        <ul>
+                            <li>
+                                <a href="#"><span class="padding_left_10"><i class="fa fa-map-marker" aria-hidden="true"></i></span>It is a long established fact that a <br>reader will be </a>
+                            </li>
+                            <li>
+                                <a href="#"><span class="padding_left_10"><i class="fa fa-phone" aria-hidden="true"></i></span>(+71) 1234567890</a>
+                            </li>
+                            <li>
+                                <a href="#"><span class="padding_left_10"><i class="fa fa-envelope" aria-hidden="true"></i></span>demo@gmail.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="newslatter_main">
+                        <h1 class="useful_text">Follow Us</h1>
+                        <div class="footer_social_icon">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer Section End -->
+
+    <!-- Copyright Section -->
+    <div class="copyright_section">
+        <div class="container">
+            <p class="copyright_text">2024 All Rights Reserved. &copy; TickeTechy. In integration with Alliance.</p>
+        </div>
+    </div>
+    <!-- Copyright Section End -->
+
+    <!-- Javascript Files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="~/MainLayout/js/popper.min.js"></script>
+    <script src="~/MainLayout/js/bootstrap.bundle.min.js"></script>
+    <script src="~/MainLayout/js/jquery-3.0.0.min.js"></script>
+    <script src="~/MainLayout/js/plugin.js"></script>
+    <script src="~/MainLayout/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="~/MainLayout/js/custom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#floating-svg').click(function () {
+                $('#createTicketModal').modal('show');
+            });
+
+            var errorMessage = '@TempData["error"]';
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+
+            var successMessage = '@TempData["message"]';
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

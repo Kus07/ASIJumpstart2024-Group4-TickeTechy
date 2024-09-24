@@ -1,0 +1,164 @@
+﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.TicketViewModel>
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
+
+<h1>Your Tickets</h1>
+
+<table class="table" id="ticketListTable">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Time Since Created</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
+            var description = ticket.Description;
+            var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description; // Truncate to 50 characters
+
+            <tr>
+                <td>@ticket.CategoryName</td>
+                <td title="@description">@truncatedDescription</td> <!-- Full description as tooltip -->
+                <td>@ticket.Priority</td>
+                <td>@ticket.Status</td>
+                <td>@timeSinceCreation.Days days @timeSinceCreation.Hours hours @timeSinceCreation.Minutes minutes ago</td>
+                <td>
+                    <button class="btn btn-warning btn-sm"
+                            data-toggle="modal"
+                            data-target="#editTicketModal"
+                            data-id="@ticket.Id"
+                            data-description="@ticket.Description"
+                            data-priority="@ticket.Priority"
+                            data-categoryid="@ticket.CategoryId"
+                            data-attachments="@ticket.Attachments"
+                            data-userid="@ticket.UserId">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(@ticket.Id)">Delete</button>
+                    <a class="btn btn-info btn-sm" asp-controller="Ticket" asp-action="View" asp-route-id="@ticket.Id">View Ticket</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<!-- Edit Ticket Modal -->
+<div class="modal fade" id="editTicketModal" tabindex="-1" role="dialog" aria-labelledby="editTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTicketModalLabel">Edit Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editTicketForm" method="post" action="@Url.Action("Edit", "Ticket")">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="editTicketId" />
+                    <input type="hidden" name="UserId" id="editTicketUserId" />
+                    <div class="form-group">
+                        <label for="editTicketDescription">Description</label>
+                        <input type="text" class="form-control" id="editTicketDescription" name="Description" />
+                    </div>
+                    <!-- Other fields can be hidden or read-only if needed -->
+                    <input type="hidden" id="editTicketPriority" name="Priority" />
+                    <input type="hidden" id="editTicketCategoryId" name="CategoryId" />
+                    <input type="hidden" id="editTicketAttachments" name="Attachments" />
+                </div><!-- Anti-Forgery Token for AJAX -->
+                <input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        // Populate modal fields with ticket data
+        $('#editTicketModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var description = button.data('description');
+            var priority = button.data('priority');
+            var categoryId = button.data('categoryid');
+            var attachments = button.data('attachments');
+            var userId = button.data('userid');
+            console.log("Mao ni ticket id:" + id +" Ug userid kay" + userId);
+            var modal = $(this);
+            modal.find('#editTicketId').val(id);
+            modal.find('#editTicketDescription').val(description);
+            modal.find('#editTicketPriority').val(priority);
+            modal.find('#editTicketCategoryId').val(categoryId);
+            modal.find('#editTicketAttachments').val(attachments);
+            modal.find('#editTicketUserId').val(userId);
+        });
+    });
+    $(document).ready(function () {
+        let table = new DataTable('#ticketListTable');
+    });
+
+    function confirmDelete(ticketId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteConfirmed", "Ticket")',
+                    type: 'POST',
+                    data: JSON.stringify(ticketId), // Correctly stringify ticketId
+                    contentType: 'application/json; charset=utf-8',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Deleted!', 'The ticket has been deleted.', 'success');
+                            window.location.reload(); // Reload the page to reflect changes
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error details:', xhr.responseText); // Log error details for debugging
+                        Swal.fire('Error!', 'An error occurred while deleting the ticket.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+</script>

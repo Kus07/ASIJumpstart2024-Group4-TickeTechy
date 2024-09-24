@@ -1,0 +1,148 @@
+﻿@model ASI.Basecode.Services.ServiceModels.TicketViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<h1>Nice Customer Dashboard</h1>
+<p>Welcome to your dashboard!</p>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+}
+<form asp-controller="Account" asp-action="Logout" method="post">
+    <button type="submit" class="btn btn-danger">Logout</button>
+</form>
+
+<!-- Modal for creating a ticket -->
+<div class="modal fade" id="createTicketModal" tabindex="-1" role="dialog" aria-labelledby="createTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTicketModalLabel">Create Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createTicketForm" asp-controller="Ticket" asp-action="Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="@Model.UserId" value="@Model.UserId" />
+
+                    <!-- Select list for categories -->
+                    <div class="form-group mb-3">
+                        <label asp-for="@Model.CategoryId" class="form-label fw-bold">Category</label>
+                        <br />
+                        <select asp-for="@Model.CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "CategoryName"))">
+                            <option value="">Select a category</option>
+                        </select>
+                        <span asp-validation-for="@Model.CategoryId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Description field -->
+                    <div class="form-group mb-3">
+                        <br />
+                        <br />
+                        <label asp-for="@Model.Description" class="form-label fw-bold">Description</label>
+                        <textarea id="description" asp-for="@Model.Description" class="form-control" rows="4" placeholder="Enter a detailed description..."></textarea>
+                        <span asp-validation-for="@Model.Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-group" style="display: none;">
+                        <label asp-for="@Model.Priority"></label>
+                        <input asp-for="@Model.Priority" type="hidden" id="priority" />
+                        <span asp-validation-for="@Model.Priority" class="text-danger"></span>
+                    </div>
+
+                    <!-- Attachments field -->
+                    <div class="form-group mb-3">
+                        <label asp-for="@Model.Attachments" class="form-label fw-bold">Attachments</label>
+                        <input asp-for="@Model.Attachments" type="file" class="form-control" />
+                        <span asp-validation-for="@Model.Attachments" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Submit button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Create Ticket</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('createTicketForm').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent the form from submitting immediately
+
+        // Get the ticket description
+        let description = document.getElementById('description').value;
+
+        // Define your API key and the API endpoint
+        let apiKey = "AIzaSyCKhhy5Y4Vtoo4rFbYbqC_F48tnzCeLbjs";
+        let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+        // Build the data payload for the API request with the guiding question
+        let data = {
+            contents: [
+                {
+                    parts: [
+                        {
+                            text: `Based on this description: "${description}", which priority do you think this is? Please answer with either 'Low', 'Medium', or 'High' only! No explanation needed.`
+                        }
+                    ]
+                }
+            ]
+        };
+
+        try {
+            // Call the Gemini API using fetch
+            let response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                let result = await response.json();
+
+                // Extract the response from AI
+                if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text) {
+                    let aiPriority = result.candidates[0].content.parts[0].text.trim(); // Extract the first candidate's text
+
+                    // Check if the response is exactly "Low", "Medium", or "High"
+                    if (["Low", "Medium", "High"].includes(aiPriority)) {
+                        document.getElementById('priority').value = aiPriority; // Set the priority
+                    } else {
+                        console.error("Unexpected AI response: ", aiPriority);
+                        document.getElementById('priority').value = "Low"; // Default to "Low" in case of unexpected response
+                    }
+                } else {
+                    console.error("API response does not contain expected 'candidates.content.parts.text': ", result);
+                    document.getElementById('priority').value = "Low"; // Fallback to Low
+                }
+
+                // Submit the form now that the priority has been set
+                this.submit();
+            } else {
+                console.error("Error calling the Gemini API: ", response.statusText);
+                document.getElementById('priority').value = "Low"; // Fallback to Low in case of API error
+            }
+        } catch (error) {
+            console.error("Error processing the API request: ", error);
+            document.getElementById('priority').value = "Low"; // Fallback to Low in case of network or parsing error
+        }
+    });
+</script>
+
+

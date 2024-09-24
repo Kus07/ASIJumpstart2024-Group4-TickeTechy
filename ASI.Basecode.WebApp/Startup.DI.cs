@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Data;
 using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.Authentication;
@@ -34,17 +35,21 @@ namespace ASI.Basecode.WebApp
             // Services
             this._services.TryAddSingleton<TokenValidationParametersFactory>();
             this._services.AddScoped<IUserService, UserService>();
-            //this._services.AddScoped<ISampleCrudService, SampleCrudService>();
-          
+			//this._services.AddScoped<ISampleCrudService, SampleCrudService>();
 
-            // Repositories
-            //this._services.AddScoped<IUserRepository, UserRepository>();
-            //this._services.AddSingleton<ISampleCrudRepository, SampleCrudRepository>();
+			this._services.AddScoped<IAgentService, AgentService>();
 
-            // Manager Class
-            this._services.AddScoped<SignInManager>();
+			this._services.AddScoped<IGeminiAPIService, GeminiAPIService>();
 
-            this._services.AddHttpClient();
+			// Repositories
+			//this._services.AddScoped<IUserRepository, UserRepository>();
+			//this._services.AddSingleton<ISampleCrudRepository, SampleCrudRepository>();
+
+			// Manager Class
+			this._services.AddScoped<MailManager>();
+			this._services.AddScoped<SignInManager>();
+
+			this._services.AddHttpClient();
         }
     }
 }

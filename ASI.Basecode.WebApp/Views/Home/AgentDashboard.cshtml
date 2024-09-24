@@ -1,0 +1,79 @@
+﻿@model IEnumerable<ASI.Basecode.Data.Models.TicketAssigned>;
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center mb-4 mt-4">
+            <h1 class="display-4">Hello, Agent @User.Identity.Name !</h1>
+            <p class="lead">Manage your tickets effectively and provide timely resolutions.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title">Tickets Overview</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Ticket Creator</th>
+                                    <th>Status</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ticket in Model)
+                                {
+                                    <tr>
+                                        <td>@ticket.Ticket.User.Username</td>
+                                        <td><span class="badge bg-success">@ticket.Ticket.Status</span></td>
+                                        <td>@ticket.Ticket.Description</td>
+                                        <td>
+                                            <a asp-controller="Ticket" asp-action="View" asp-route-id="@ticket.Ticket.Id" class="btn btn-sm btn-info">View Ticket</a>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .display-4 {
+        font-weight: bold;
+        color: #333;
+    }
+    .card {
+        border-radius: 15px;
+    }
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5em;
+    }
+    .table {
+        margin-bottom: 0;
+    }
+    .card-header {
+        border-radius: 15px 15px 0 0;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+    }
+    .btn-info:hover {
+        background-color: #138496;
+    }
+</style>

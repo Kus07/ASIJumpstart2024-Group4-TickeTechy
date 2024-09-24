@@ -7,12 +7,17 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Data.Interfaces;
+using Basecode.Data.Repositories;
+using System.Linq;
 
 namespace ASI.Basecode.Services.Services
 {
     public class UserService : IUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly BaseRepository<User> _userRepository;
 
         public UserService(IHttpContextAccessor httpContextAccessor)
         {
@@ -53,7 +58,5 @@ namespace ASI.Basecode.Services.Services
                 await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }
         }
-        
-
     }
 }

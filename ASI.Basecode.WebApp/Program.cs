@@ -4,6 +4,7 @@ using System.IO;
 using ASI.Basecode.Data;
 using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp;
@@ -17,7 +18,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TickeTechy.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -71,14 +71,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<MailManager>();
 builder.Services.AddScoped<MailManager>();
 
-builder.Services.AddTransient<UserService>();
-builder.Services.AddScoped<UserService>();
-
-builder.Services.AddTransient<AgentService>();
-builder.Services.AddScoped<AgentService>();
-
-builder.Services.AddTransient<GeminiAPIService>();
-builder.Services.AddScoped<GeminiAPIService>();
 
 var configurer = new StartupConfigurer(builder.Configuration);
 configurer.ConfigureServices(builder.Services);

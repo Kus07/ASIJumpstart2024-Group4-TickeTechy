@@ -24,7 +24,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         private readonly IUserService _userService;
 
-        public UserController(MailManager mailManager, IUserService userService) : base(mailManager)
+        public UserController(MailManager mailManager, IUserService userService, IHttpContextAccessor httpContextAccessor) : base(mailManager, httpContextAccessor)
         {
             _userService = userService;
         }
