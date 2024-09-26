@@ -127,6 +127,21 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("View", "Ticket", new {id = ticket.Id});
         }
 
+        private void CheckAndCloseTicketIfNeeded(Ticket ticket)
+        {
+           
+            if (ticket.CreatedAt.HasValue)
+            {
+                // Check if the ticket has been open for more than 12 hours
+                if (ticket.CreatedAt.Value.AddHours(12) < DateTime.Now && ticket.StatusId == Convert.ToInt32(TicketStatus.OPEN))
+                {
+                    ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
+                    _ticketRepo.Update(ticket.Id, ticket);
+                }
+            }
+        }
+
+
         [HttpPost]
         public IActionResult SendMessage(int ticketId, string message)
         {
@@ -223,6 +238,8 @@ namespace ASI.Basecode.WebApp.Controllers
             viewModel.Categories = _categoryRepo.GetAll().ToList();
             return RedirectToAction("CustomerDashboard", "Home", new { viewModel = viewModel }); // Return the current view with the error
         }
+
+
 
         [HttpGet]
         public IActionResult Edit(int id)

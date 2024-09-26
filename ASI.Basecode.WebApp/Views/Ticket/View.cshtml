@@ -317,22 +317,32 @@
             </div>
         }
         <h3>Conversation</h3>
-        <div class="message-container">
-            @if (Model.Messages.Count == 0)
-            {
-                <div id="noConversation" class="alert alert-info">No conversation yet! Send one now</div>
-            }
+       
 
-            @foreach (var message in Model.Messages)
-            {
-                var isCurrentUser = User.FindFirst("UserId")?.Value == message.UserId.ToString();
-                var displayName = isCurrentUser ? "You" : Model.Agent; // Assuming message.UserName holds the sender's name.
-
-                if (isCurrentUser)
+            <!-- Message Container -->
+            <div class="message-container">
+                @if (Model.Messages.Count == 0)
                 {
-                    <div class="message sent">
+                    <div id="noConversation" class="alert alert-info text-center">No conversation yet! Send one now</div>
+                }
+
+                @foreach (var message in Model.Messages)
+                {
+                    var isCurrentUser = User.FindFirst("UserId")?.Value == message.UserId.ToString();
+                    var displayName = "";
+
+                    if (User.IsInRole("2")) 
+                    {
+                        displayName = isCurrentUser ? "You (Agent)" : Model.Customer;
+                    }
+                    else 
+                    {
+                        displayName = isCurrentUser ? "You (Customer)" : Model.Agent;
+                    }
+
+                    <div class="message @(isCurrentUser ? "sent" : "received")">
                         <div class="message-header">
-                            <span class="sender">@displayName</span> &nbsp;
+                            <span class="sender">@displayName</span>
                             <span class="timestamp">@message.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</span>
                         </div>
                         <div class="message-body">
@@ -340,20 +350,7 @@
                         </div>
                     </div>
                 }
-                else
-                {
-                    <div class="message received">
-                        <div class="message-header">
-                            <span class="sender">@displayName</span>&nbsp;
-                            <span class="timestamp">@message.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</span>
-                        </div>
-                        <div class="message-body">
-                            @message.Message
-                        </div>
-                    </div>
-                }
-            }
-        </div>
+            </div>
 
 
         @if (User.IsInRole("2"))
@@ -375,10 +372,11 @@
 
         <br />
 
+        <!-- Input Area -->
         <div class="input-area">
             <input type="hidden" id="ticketId" value="@Model.Ticket.Id" />
-            <input type="text" id="messageInput" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
+            <input type="text" id="messageInput" placeholder="Type your message..." onkeydown="handleKeyDown(event)">
+            <button onclick="sendMessage()" class="btn btn-primary">Send</button>
         </div>
     </div>
 </div>
@@ -405,14 +403,22 @@
         }
     }
 
+    function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent default behavior (form submission)
+        sendMessage();
+    }
+}
+
     function sendMessage() {
         var input = document.getElementById("messageInput");
-        var message = input.value;
-        var ticketId = @Model.Ticket.Id;
+        var message = input.value.trim();
+        var ticketId = @Model.Ticket.Id; // Ensure this is rendered correctly in Razor
         var sendButton = document.querySelector('.input-area button');
-        var noMessage = document.getElementById('noConversation');
+        var noMessageAlert = document.getElementById('noConversation');
 
-        if (message.trim() !== "") {
+        // Proceed only if the message is not empty
+        if (message !== "") {
             // Show the loader
             sendButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
             sendButton.disabled = true;
@@ -424,49 +430,20 @@
                 data: { ticketId: ticketId, message: message },
                 success: function (response) {
                     if (response.success) {
-                        var messageContainer = document.querySelector(".message-container");
-                        var noMessage = document.getElementById("noConversation");
-                        var input = document.getElementById("messageInput");
-                        var sendButton = document.querySelector("button[onclick='sendMessage()']");
-
-                        if (noMessage != null) {
-                            noMessage.style.display = "none";
+                        // If there's no previous message, hide the no message alert
+                        if (noMessageAlert) {
+                            noMessageAlert.style.display = "none";
                         }
 
                         // Create the new message element
-                        var newMessage = document.createElement("div");
-                        newMessage.classList.add("message", "sent");
-
-                        // Create the message header (sender and timestamp)
-                        var messageHeader = document.createElement("div");
-                        messageHeader.classList.add("message-header");
-
-                        var sender = document.createElement("span");
-                        sender.classList.add("sender");
-                        sender.textContent = "You";
-
-                        var timestamp = document.createElement("span");
-                        timestamp.classList.add("timestamp");
-                        var currentTimestamp = new Date().toLocaleString('en-US', {
-                            day: '2-digit', month: 'short', year: 'numeric',
-                            hour: '2-digit', minute: '2-digit'
-                        });
-                        timestamp.textContent = currentTimestamp;
-
-                        messageHeader.appendChild(sender);
-                        messageHeader.appendChild(timestamp);
-
-                        // Create the message body (actual message content)
-                        var messageBody = document.createElement("div");
-                        messageBody.classList.add("message-body");
-                        messageBody.textContent = message;
-
-                        // Append header and body to the message
-                        newMessage.appendChild(messageHeader);
-                        newMessage.appendChild(messageBody);
+                        var messageContainer = document.querySelector(".message-container");
+                        var newMessage = createMessageElement("You", message);
 
                         // Append the new message to the message container
                         messageContainer.appendChild(newMessage);
+
+                        // Scroll to the bottom of the message container
+                        messageContainer.scrollTop = messageContainer.scrollHeight;
 
                         // Clear the input field
                         input.value = "";
@@ -478,14 +455,53 @@
                     alert("Error sending message.");
                 },
                 complete: function () {
-                    var sendButton = document.querySelector("button[onclick='sendMessage()']");
+                    // Reset the send button
                     sendButton.innerHTML = 'Send';
                     sendButton.disabled = false;
                 }
             });
-
+        } else {
+            alert('Please enter a message before sending.');
         }
     }
 
+    // Helper function to create message element
+    function createMessageElement(senderName, messageContent) {
+        var message = document.createElement("div");
+        message.classList.add("message", "sent");
+
+        // Create the message header
+        var messageHeader = document.createElement("div");
+        messageHeader.classList.add("message-header");
+
+        var sender = document.createElement("span");
+        sender.classList.add("sender");
+        sender.textContent = senderName;
+
+        var timestamp = document.createElement("span");
+        timestamp.classList.add("timestamp");
+        var currentTimestamp = new Date().toLocaleString('en-US', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+        timestamp.textContent = currentTimestamp;
+
+        messageHeader.appendChild(sender);
+        messageHeader.appendChild(timestamp);
+
+        // Create the message body
+        var messageBody = document.createElement("div");
+        messageBody.classList.add("message-body");
+        messageBody.textContent = messageContent;
+
+        // Append header and body to the message
+        message.appendChild(messageHeader);
+        message.appendChild(messageBody);
+
+        return message;
+    }
+
+
 
 </script>
+

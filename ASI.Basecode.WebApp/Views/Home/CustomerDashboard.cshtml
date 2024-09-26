@@ -23,14 +23,17 @@
 
 <!-- Modal for creating a ticket -->
 <div class="modal fade" id="createTicketModal" tabindex="-1" role="dialog" aria-labelledby="createTicketModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
+        <!-- Increased modal size for better UX -->
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createTicketModalLabel">Create Ticket</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+            <!-- Modal Header -->
+            <div class="modal-header" style="background: linear-gradient(45deg, #00b4db, #0083b0); color: #fff;">
+                <h5 class="modal-title" id="createTicketModalLabel" style="font-weight: 600; font-size: 20px">Create New Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 1.5rem;">
+                    <i class="fa fa-times"></i>
                 </button>
             </div>
+            <!-- Modal Body -->
             <div class="modal-body">
                 <form id="createTicketForm" asp-controller="Ticket" asp-action="Create" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
@@ -45,11 +48,10 @@
                         </select>
                         <span asp-validation-for="@Model.CategoryId" class="text-danger small"></span>
                     </div>
-
-                    <!-- Description field -->
+                    <br />
+                    <br />
+                    <!-- Description field with TinyMCE -->
                     <div class="form-group mb-3">
-                        <br />
-                        <br />
                         <label asp-for="@Model.Description" class="form-label fw-bold">Description</label>
                         <textarea id="description" asp-for="@Model.Description" class="form-control" rows="4" placeholder="Enter a detailed description..."></textarea>
                         <span asp-validation-for="@Model.Description" class="text-danger small"></span>
@@ -73,11 +75,23 @@
                         <button type="submit" class="btn btn-primary btn-lg">Create Ticket</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
 </div>
+
+        <!-- TinyMCE Script -->
+<script src="https://cdn.tiny.cloud/1/24wj14wi54w3wpp4d53nyv1xerdwxbhrflus4929i6p5iadv/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+        <script>
+            tinymce.init({
+                selector: '#description', 
+                plugins: 'lists link image table code',
+                toolbar: 'undo redo | bold italic underline | bullist numlist',
+                menubar: false,
+                branding: false
+            });
+        </script>
+
 
 <script>
     document.getElementById('createTicketForm').addEventListener('submit', async function (event) {

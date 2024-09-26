@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -57,9 +58,25 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult Tickets()
         {
             var userId = GetUserId();
+
+            // Check if userId is valid
+            if (userId == null || userId <= 0)
+            {
+                // Handle invalid user, maybe redirect or return an error
+                return RedirectToAction("Error", new { message = "Invalid user." });
+            }
+
             var tickets = _ticketRepo.GetAll()
                                      .Where(t => t.UserId == userId)
                                      .ToList();
+
+            // Check if any tickets exist
+            if (tickets == null || !tickets.Any())
+            {
+                ViewBag.Message = "No tickets found.";
+                return View(new List<TicketViewModel>());
+            }
+
             var categories = _categoryRepo.GetAll().ToList();
 
             // Create a list of TicketViewModel with the category names included
@@ -76,9 +93,9 @@ namespace ASI.Basecode.WebApp.Controllers
                 CategoryName = categories.FirstOrDefault(c => c.Id == ticket.CategoryId)?.CategoryName
             }).ToList();
 
-
             return View(viewModel);
         }
+
 
         [Authorize(Roles = "1,2")]
         public IActionResult Profile()

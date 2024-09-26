@@ -31,7 +31,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
         private readonly IUserService _userService;
-        private readonly MailManager _mailManager;
+        private readonly new MailManager _mailManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -56,7 +56,7 @@ namespace ASI.Basecode.WebApp.Controllers
                             TokenProviderOptionsFactory tokenProviderOptionsFactory
             ) : base(mailManager, httpContextAccessor)
         {
-            this._mailManager = mailManager;
+            _mailManager = mailManager;
             _userService = userService;
             _signInManager = signInManager;
             this._tokenProviderOptionsFactory = tokenProviderOptionsFactory;
