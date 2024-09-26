@@ -19,8 +19,9 @@
         {
             OPEN = 1,
             ONGOING = 2,
-            RESOLVED = 3,
-            CLOSED = 4
+            WAITINGRESPONSE = 3,
+            RESOLVED = 4,
+            CLOSED = 5
         }
 
         /// <summary>
