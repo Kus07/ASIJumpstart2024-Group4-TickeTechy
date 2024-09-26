@@ -198,3 +198,4 @@ node_modules
 */src/*/Scripts/**/*.js
 */src/*/Scripts/**/*.js.map
 ASI.Basecode.WebApp/appsettings.json
+ASI.Basecode.Data/AllianceJumpstartContext.cs
