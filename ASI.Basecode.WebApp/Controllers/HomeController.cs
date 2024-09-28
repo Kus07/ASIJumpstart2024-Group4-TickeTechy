@@ -50,7 +50,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize(Roles = "2")]
         public IActionResult AgentDashboard()
         {
-            var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == GetUserId()).Include(m => m.Ticket).Include(m => m.Ticket.User).ToList();
+            var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == GetUserId() || m.ReassignedToId == GetUserId()).Include(m => m.Ticket).Include(m => m.Ticket.User).ToList();
             return View(tickets);
         }
 
@@ -60,7 +60,7 @@ namespace ASI.Basecode.WebApp.Controllers
             var userId = GetUserId();
 
             // Check if userId is valid
-            if (userId == null || userId <= 0)
+            if (userId <= 0)
             {
                 // Handle invalid user, maybe redirect or return an error
                 return RedirectToAction("Error", new { message = "Invalid user." });

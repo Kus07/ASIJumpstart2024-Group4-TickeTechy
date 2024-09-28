@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using static ASI.Basecode.Resources.Constants.Enums;
 using static ASI.Basecode.Resources.Messages.Common;
+using static ASI.Basecode.Resources.Messages.Errors;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -74,9 +75,9 @@ namespace ASI.Basecode.WebApp.Controllers
                 .FirstOrDefault();
             if (User.IsInRole("2"))
             {
-                if (ticketAssigned.AgentId != userId)
+                if (ticketAssigned.AgentId != userId && ticketAssigned.ReassignedToId != userId)
                 {
-                    TempData["error"] = "Unauthorized access";
+                    TempData["error"] = Resources.Messages.Errors.Unauthorized;
                     return RedirectToAction("AgentDashboard", "Home");
                 }
             }
@@ -118,14 +119,15 @@ namespace ASI.Basecode.WebApp.Controllers
             var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticketId).FirstOrDefault();
             if (ticket != null && ticketAssigned != null)
             {
-                ticketAssigned.AgentId = newAgent;
+                ticketAssigned.ReassignedToId = newAgent;
+                ticket.Reassigned = (int) TicketReassigned.TRUE;
                 _ticketAssignedRepo.Update(ticketAssigned.Id, ticketAssigned);
-                TempData["message"] = $"Successfully reassigned ticket to {newAgentUser.FirstName}!";
+                _ticketRepo.Update(ticket.Id, ticket);
+                TempData["message"] = SuccessReassign + " " + newAgentUser.FirstName +"!";
                 return RedirectToAction("AgentDashboard", "Home");
-
             }
 
-            TempData["error"] = "Invalid ID.";
+            TempData["error"] = InvalidIDError;
             return RedirectToAction("View", "Ticket", new {id = ticket.Id});
         }
 
@@ -155,6 +157,20 @@ namespace ASI.Basecode.WebApp.Controllers
             var ticket = _ticketRepo.Get(ticketId);
             int currUserId = GetUserId();
 
+            // algorithm to limit 3 messages if not yet responded
+            var lastThreeMessages = _ticketMessageRepo.Table
+                .Where(m => m.TicketId == ticketId)  // Filter messages by ticket and if not responded yet
+                .OrderByDescending(m => m.CreatedAt) 
+                .Take(3)  // Take the last 3 messages
+                .ToList();
+
+            bool areAllFromUser = lastThreeMessages.All(m => m.UserId == currUserId);
+
+            if (areAllFromUser && User.IsInRole("1"))
+            {
+                return Json(new { success = false, responseText = LimitMessage });
+            }
+
             var ticketMessage = new TicketMessage()
             {
                 CreatedAt = DateTime.Now,
@@ -167,7 +183,14 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
 
-            ticket.StatusId = Convert.ToInt32(TicketStatus.ONGOING);
+            if (User.IsInRole("2"))
+            {
+                ticket.StatusId = Convert.ToInt32(TicketStatus.WAITINGRESPONSE);
+            }
+            else
+            {
+                ticket.StatusId = Convert.ToInt32(TicketStatus.ONGOING);
+            }
 
             var notif = new Notification()
             {
@@ -180,8 +203,8 @@ namespace ASI.Basecode.WebApp.Controllers
 
             _notificationRepo.Create(notif);
 
-
             _ticketRepo.Update(ticket.Id, ticket);
+
             return Json(new { success = true, responseText = "Message sent successfully!" });
         }
 
@@ -237,7 +260,6 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 var departmentIdResponse = await _geminiService.AssignTicket(viewModel.Description, category.CategoryName);
 
-
                 int agentId = _agentService.GetUserWithSmallestLoad(departmentIdResponse);
                 var assignedTicket = new TicketAssigned()
                 {
@@ -246,10 +268,9 @@ namespace ASI.Basecode.WebApp.Controllers
                 };
                 _ticketAssignedRepo.Create(assignedTicket);
                 return RedirectToAction("Tickets", "Home");
-
             }
 
-            ModelState.AddModelError("", "There was an error creating the ticket.");
+            ModelState.AddModelError("", CreatingTicketError);
 
             viewModel.Categories = _categoryRepo.GetAll().ToList();
             return RedirectToAction("CustomerDashboard", "Home", new { viewModel = viewModel }); // Return the current view with the error
@@ -346,5 +367,41 @@ namespace ASI.Basecode.WebApp.Controllers
             return Json(new { success = false, message = "Error deleting ticket." });
         }
 
+
+        [Authorize(Roles ="2")]
+        [HttpPost]
+        public IActionResult MarkedAsResolved(int ticketId)
+        {
+            var ticket = _ticketRepo.Get(ticketId);
+            if (ticket == null)
+            {
+                return Json(new { success = false, message = InvalidIDError });
+            }
+
+            ticket.StatusId = Convert.ToInt32(TicketStatus.RESOLVED);
+            ticket.UpdatedAt = DateTime.Now;    
+
+            _ticketRepo.Update(ticketId, ticket);
+
+            return Json(new { success = true, message = "Successfully marked as resolved! Waiting for user's approval!" });
+        }
+
+        [Authorize(Roles = "1")]
+        [HttpPost]
+        public IActionResult AcceptResolution(int ticketId)
+        {
+            var ticket = _ticketRepo.Get(ticketId);
+            if (ticket == null)
+            {
+                return Json(new { success = false, message = InvalidIDError });
+            }
+
+            ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
+            ticket.UpdatedAt = DateTime.Now;
+
+            _ticketRepo.Update(ticketId, ticket);
+
+            return Json(new { success = true, message = "Ticket offically resolved! This will close the ticket." });
+        }
     }
 }

@@ -117,6 +117,10 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.FromUserId).HasColumnName("from_user_id");
 
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .HasColumnName("status");
+
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .HasColumnName("title");
@@ -177,6 +181,8 @@ namespace ASI.Basecode.Data
                     .HasMaxLength(50)
                     .HasColumnName("priority");
 
+                entity.Property(e => e.Reassigned).HasColumnName("reassigned");
+
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
                 entity.Property(e => e.UpdatedAt)
@@ -212,12 +218,19 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.AgentId).HasColumnName("agent_id");
 
+                entity.Property(e => e.ReassignedToId).HasColumnName("reassigned_to_id");
+
                 entity.Property(e => e.TicketId).HasColumnName("ticket_id");
 
                 entity.HasOne(d => d.Agent)
-                    .WithMany(p => p.TicketAssigneds)
+                    .WithMany(p => p.TicketAssignedAgents)
                     .HasForeignKey(d => d.AgentId)
                     .HasConstraintName("FK_TicketAssigned_User");
+
+                entity.HasOne(d => d.ReassignedTo)
+                    .WithMany(p => p.TicketAssignedReassignedTos)
+                    .HasForeignKey(d => d.ReassignedToId)
+                    .HasConstraintName("FK_TicketAssigned_User1");
 
                 entity.HasOne(d => d.Ticket)
                     .WithMany(p => p.TicketAssigneds)

@@ -11,6 +11,7 @@ namespace ASI.Basecode.Data.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime? DateCreated { get; set; }
+        public string Status { get; set; }
 
         public virtual User FromUser { get; set; }
         public virtual User ToUser { get; set; }

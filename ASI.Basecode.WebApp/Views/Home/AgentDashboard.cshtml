@@ -34,13 +34,37 @@
                                 {
                                     <tr>
                                         <td>@ticket.Ticket.User.Username</td>
-                                        <td style="color: white;"><span class="badge bg-success">@ticket.Ticket.Status.StatusName</span></td>
+
+                                        <td style="color: white;">
+                                            @if (ticket.Ticket.Status.StatusName == "OPEN")
+                                            {
+                                                <span class="badge bg-primary">@ticket.Ticket.Status.StatusName</span> <!-- Blue for OPEN -->
+                                            }
+                                            else if (ticket.Ticket.Status.StatusName == "WAITINGRESPONSE" || ticket.Ticket.Status.StatusName == "ONGOING")
+                                            {
+                                                <span class="badge bg-warning text-dark">@ticket.Ticket.Status.StatusName</span> <!-- Orange for WAITINGFORAPPROVAL and ONGOING -->
+                                            }
+                                            else if (ticket.Ticket.Status.StatusName == "RESOLVED")
+                                            {
+                                                <span class="badge bg-success">@ticket.Ticket.Status.StatusName</span> <!-- Green for RESOLVED -->
+                                            }
+                                            else if (ticket.Ticket.Status.StatusName == "CLOSED")
+                                            {
+                                                <span class="badge bg-danger">@ticket.Ticket.Status.StatusName</span> <!-- Red for CLOSED -->
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@ticket.Ticket.Status.StatusName</span> <!-- Grey for any other statuses -->
+                                            }
+                                        </td>
+
                                         <td>@ticket.Ticket.Description</td>
                                         <td>
                                             <a asp-controller="Ticket" asp-action="View" asp-route-id="@ticket.Ticket.Id" class="btn btn-sm btn-info">View Ticket</a>
                                         </td>
                                     </tr>
                                 }
+
 
                             </tbody>
                         </table>

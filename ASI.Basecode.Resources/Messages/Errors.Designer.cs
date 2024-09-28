@@ -61,11 +61,47 @@ namespace ASI.Basecode.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an error creating the ticket..
+        /// </summary>
+        public static string CreatingTicketError {
+            get {
+                return ResourceManager.GetString("CreatingTicketError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid ID!.
+        /// </summary>
+        public static string InvalidIDError {
+            get {
+                return ResourceManager.GetString("InvalidIDError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit up to 3 messages per turn only!.
+        /// </summary>
+        public static string LimitMessage {
+            get {
+                return ResourceManager.GetString("LimitMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server error occured!.
         /// </summary>
         public static string ServerError {
             get {
                 return ResourceManager.GetString("ServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unauthorized access!.
+        /// </summary>
+        public static string Unauthorized {
+            get {
+                return ResourceManager.GetString("Unauthorized", resourceCulture);
             }
         }
         

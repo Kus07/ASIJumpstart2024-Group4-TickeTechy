@@ -59,5 +59,14 @@ namespace ASI.Basecode.Resources.Views {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send.
+        /// </summary>
+        public static string SendBtn {
+            get {
+                return ResourceManager.GetString("SendBtn", resourceCulture);
+            }
+        }
     }
 }

@@ -16,6 +16,18 @@
         public const string ApiResultError = "Error";
 
         /// <summary>
+        ///Unread notification status
+        /// </summary>
+        public const string UnreadNotifStatus = "UNREAD";
+
+
+        /// <summary>
+        ///Read notification status
+        /// </summary>
+        public const string ReadNotifStatus = "READ";
+
+
+        /// <summary>
         /// System
         /// </summary>
         public const string System = "sys";

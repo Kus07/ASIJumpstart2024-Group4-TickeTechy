@@ -1,4 +1,7 @@
-﻿@model ASI.Basecode.Services.ServiceModels.ViewTicketModel
+﻿@using static ASI.Basecode.Resources.Constants.Enums
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Common
+@model ASI.Basecode.Services.ServiceModels.ViewTicketModel
 
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
@@ -339,10 +342,14 @@
                 //Agent
                 if (User.IsInRole("2"))
                 {
+                    if (message.Ticket.Reassigned == (int)TicketReassigned.TRUE && Model.TicketAssigned.ReassignedTo.Id == message.UserId && !reassigned)
+                    {
+                        reassigned = true;
+                        <p align="center">--- Reassigned To Agent @Model.TicketAssigned.ReassignedTo.Username ---</p>
+                    }
                     displayName = isCurrentUser ? "You (Agent)" : Model.Customer;
                     if (message.User.RoleId == 2)
                     {
-
                         <div class="message sent">
                             <div class="message-header">
                                 @if (isCurrentUser)
@@ -373,16 +380,16 @@
                             </div>
                         </div>
                     }
-                    if (message.User.RoleId == 2 && !isCurrentUser)
-                    {
-
-                        <p align="center">--- Reassigned To @Model.TicketAssigned.Agent.Username ---</p>
-                    }
                 }
 
                 //Customer
                 else
                 {
+                    if (message.Ticket.Reassigned == (int)TicketReassigned.TRUE && message.UserId == Model.TicketAssigned.ReassignedToId && !reassigned)
+                    {
+                        reassigned = true;
+                        <p align="center">--- Reassigned To Agent @Model.TicketAssigned.ReassignedTo.Username ---</p>
+                    }
                     displayName = isCurrentUser ? "You (Customer)" : Model.Agent;
 
                     if (message.User.RoleId == 2)
@@ -417,24 +424,13 @@
                             </div>
                         </div>
                     }
-                    if (message.User.RoleId == 2 && prevAgentId != message.UserId && !reassigned)
-                    {
-                        <p align="center">--- Reassigned To @Model.TicketAssigned.Agent.Username ---</p>
-                        reassigned = true;
-                    }
-
                     prevAgentId = message.UserId ?? 0;
-
                 }
-
-                
-                
-                
             }
         </div>
 
 
-        @if (User.IsInRole("2"))
+        @if (User.IsInRole("2") && Model.Ticket.Reassigned != (int) TicketReassigned.TRUE)
         {
             <div class="reassign-section">
                 <form asp-action="ReassignTicket" method="post">
@@ -456,13 +452,51 @@
         <!-- Input Area -->
         <div class="input-area">
             <input type="hidden" id="ticketId" value="@Model.Ticket.Id" />
-            <input type="text" id="messageInput" placeholder="Type your message..." onkeydown="handleKeyDown(event)">
-            <button onclick="sendMessage()" class="btn btn-primary">Send</button>
+            @if(Model.Ticket.Reassigned == (int)TicketReassigned.TRUE && User.FindFirst("UserId").Value == Model.TicketAssigned.AgentId.ToString())
+            {
+                <input type="text" id="messageInput" disabled placeholder="You have reassigned this ticket already" onkeydown="handleKeyDown(event)">
+                <button disabled class="btn btn-info" id="sendMessageButton" style="background: blue;">@SendBtn</button>
+            }
+            else
+            {
+                if (Model.Ticket.Status.StatusName.Equals("CLOSED"))
+                {
+                    <input type="text" id="messageInput" disabled placeholder="Ticket closed." onkeydown="handleKeyDown(event)">
+                    <button id="sendMessageButton" disabled class="btn btn-info">
+                        @SendBtn
+                    </button>
+                }
+                else
+                {
+                    <input type="text" id="messageInput" placeholder="Type your message..." onkeydown="handleKeyDown(event)">
+                    <button id="sendMessageButton" onclick="sendMessage()" class="btn btn-indigo" style="background: blue;">@SendBtn</button>
+                }
+            }
         </div>
+
+        @if(Model.Ticket.Reassigned == Convert.ToInt32(TicketReassigned.TRUE))
+        {
+            if (User.FindFirst("UserId").Value == Model.TicketAssigned.ReassignedToId.ToString() && (Model.Ticket.StatusId != 4 && Model.Ticket.StatusId != 5))
+            {
+                <div class="resolved-section mt-3">
+                    <button onclick="markAsResolved()" id="markResolvedBtn" class="btn btn-success w-100">Mark as Resolved</button>
+                </div>
+            }
+        }
+        else if (User.FindFirst("UserId").Value == Model.TicketAssigned.AgentId.ToString() && (Model.Ticket.StatusId != 4 && Model.Ticket.StatusId != 5))
+        {
+            <div class="resolved-section mt-3">
+                <button onclick="markAsResolved()" id="markResolvedBtn" class="btn btn-success w-100">Mark as Resolved</button>
+            </div>
+        }
+        @if (User.FindFirst("UserId").Value == Model.Ticket.UserId.ToString() && Model.Ticket.StatusId == 4)
+        {
+            <div class="resolved-section mt-3">
+                <button onclick="acceptResolution()" id="markResolvedBtn" class="btn btn-success w-100">Accept Resolution</button>
+            </div>
+        }
     </div>
 </div>
-
-
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
@@ -494,7 +528,7 @@
     function sendMessage() {
         var input = document.getElementById("messageInput");
         var message = input.value.trim();
-        var ticketId = @Model.Ticket.Id; // Ensure this is rendered correctly in Razor
+        var ticketId = @Model.Ticket.Id; 
         var sendButton = document.querySelector('.input-area button');
         var noMessageAlert = document.getElementById('noConversation');
 
@@ -528,6 +562,14 @@
 
                         // Clear the input field
                         input.value = "";
+
+                        if ('@User.IsInRole("1")' == "True")
+                        {
+                            $('#markResolvedBtn').remove();
+                        }
+
+                        toastr.success(response.responseText);
+
                     } else {
                         toastr.error(response.responseText);
                     }
@@ -537,7 +579,7 @@
                 },
                 complete: function () {
                     // Reset the send button
-                    sendButton.innerHTML = 'Send';
+                    sendButton.innerHTML = '@SendBtn';
                     sendButton.disabled = false;
                 }
             });
@@ -582,7 +624,52 @@
         return message;
     }
 
+    function markAsResolved() {
+        var ticketId = @Model.Ticket.Id;
+        console.log(ticketId)
+        $.ajax({
+            url: '/Ticket/MarkedAsResolved', 
+            type: 'POST',
+            data: { ticketId: ticketId },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    $('#messageInput').attr('disabled', true);
+                    $('#sendMessageButton').attr('disabled', true);
+                    $('#messageInput').attr('placeholder', 'Ticket marked as closed. Waiting for customer approval');
+                    $('#markResolvedBtn').remove();
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('An error occurred while marking the ticket as resolved.');
+            }
+        });
+    }
 
 
+    function acceptResolution() {
+        var ticketId = @Model.Ticket.Id;
+        console.log(ticketId)
+        $.ajax({
+            url: '/Ticket/AcceptResolution',
+            type: 'POST',
+            data: { ticketId: ticketId },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    $('#messageInput').attr('disabled', true);
+                    $('#sendMessageButton').attr('disabled', true);
+                    $('#markResolvedBtn').remove();
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('An error occurred while marking the ticket as resolved.');
+            }
+        });
+    }
 </script>
 

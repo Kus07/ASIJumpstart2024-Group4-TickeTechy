@@ -8,8 +8,10 @@ namespace ASI.Basecode.Data.Models
         public int Id { get; set; }
         public int? TicketId { get; set; }
         public int? AgentId { get; set; }
+        public int? ReassignedToId { get; set; }
 
         public virtual User Agent { get; set; }
+        public virtual User ReassignedTo { get; set; }
         public virtual Ticket Ticket { get; set; }
     }
 }

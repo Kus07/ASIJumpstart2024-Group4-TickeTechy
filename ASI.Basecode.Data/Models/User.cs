@@ -11,7 +11,8 @@ namespace ASI.Basecode.Data.Models
             FeedbackUsers = new HashSet<Feedback>();
             NotificationFromUsers = new HashSet<Notification>();
             NotificationToUsers = new HashSet<Notification>();
-            TicketAssigneds = new HashSet<TicketAssigned>();
+            TicketAssignedAgents = new HashSet<TicketAssigned>();
+            TicketAssignedReassignedTos = new HashSet<TicketAssigned>();
             TicketMessages = new HashSet<TicketMessage>();
             Tickets = new HashSet<Ticket>();
             UserDetails = new HashSet<UserDetail>();
@@ -32,7 +33,8 @@ namespace ASI.Basecode.Data.Models
         public virtual ICollection<Feedback> FeedbackUsers { get; set; }
         public virtual ICollection<Notification> NotificationFromUsers { get; set; }
         public virtual ICollection<Notification> NotificationToUsers { get; set; }
-        public virtual ICollection<TicketAssigned> TicketAssigneds { get; set; }
+        public virtual ICollection<TicketAssigned> TicketAssignedAgents { get; set; }
+        public virtual ICollection<TicketAssigned> TicketAssignedReassignedTos { get; set; }
         public virtual ICollection<TicketMessage> TicketMessages { get; set; }
         public virtual ICollection<Ticket> Tickets { get; set; }
         public virtual ICollection<UserDetail> UserDetails { get; set; }

@@ -120,4 +120,7 @@
   <data name="NotifToAgent" xml:space="preserve">
     <value>A customer has responded to ticket #</value>
   </data>
+  <data name="SuccessReassign" xml:space="preserve">
+    <value>Successfully reassigned ticket to</value>
+  </data>
 </root>

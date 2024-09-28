@@ -123,4 +123,16 @@
   <data name="UserExists" xml:space="preserve">
     <value>UserId already exists!</value>
   </data>
+  <data name="InvalidIDError" xml:space="preserve">
+    <value>Invalid ID!</value>
+  </data>
+  <data name="Unauthorized" xml:space="preserve">
+    <value>Unauthorized access!</value>
+  </data>
+  <data name="LimitMessage" xml:space="preserve">
+    <value>Limit up to 3 messages per turn only!</value>
+  </data>
+  <data name="CreatingTicketError" xml:space="preserve">
+    <value>There was an error creating the ticket.</value>
+  </data>
 </root>

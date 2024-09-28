@@ -23,6 +23,12 @@
             RESOLVED = 4,
             CLOSED = 5
         }
+        
+        public enum TicketReassigned
+        {
+            FALSE = 0,
+            TRUE = 1
+        }
 
         /// <summary>
         /// Login Result

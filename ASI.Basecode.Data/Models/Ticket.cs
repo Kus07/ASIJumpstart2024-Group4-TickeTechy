@@ -20,6 +20,7 @@ namespace ASI.Basecode.Data.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? StatusId { get; set; }
+        public int? Reassigned { get; set; }
 
         public virtual Category Category { get; set; }
         public virtual Status Status { get; set; }
