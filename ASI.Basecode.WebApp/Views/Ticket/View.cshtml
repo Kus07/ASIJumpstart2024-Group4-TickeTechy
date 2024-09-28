@@ -2,6 +2,9 @@
 
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
+
+    var prevAgentId = 0;
+    var reassigned = false;
 }
 
 <br />
@@ -31,6 +34,7 @@
     .timestamp {
         font-style: italic;
     }
+
     .loader-overlay {
         position: fixed;
         top: 0;
@@ -317,40 +321,115 @@
             </div>
         }
         <h3>Conversation</h3>
-       
 
-            <!-- Message Container -->
-            <div class="message-container">
-                @if (Model.Messages.Count == 0)
+
+        <!-- Message Container -->
+        <div class="message-container">
+            @if (Model.Messages.Count == 0)
+            {
+                <div id="noConversation" class="alert alert-info text-center">No conversation yet! Send one now</div>
+            }
+
+            @foreach (var message in Model.Messages)
+            {
+                var isCurrentUser = User.FindFirst("UserId")?.Value == message.UserId.ToString();
+                var displayName = "";
+
+                //Agent
+                if (User.IsInRole("2"))
                 {
-                    <div id="noConversation" class="alert alert-info text-center">No conversation yet! Send one now</div>
+                    displayName = isCurrentUser ? "You (Agent)" : Model.Customer;
+                    if (message.User.RoleId == 2)
+                    {
+
+                        <div class="message sent">
+                            <div class="message-header">
+                                @if (isCurrentUser)
+                                {
+                                    <span class="sender">@displayName</span>
+
+                                }
+                                else
+                                {
+                                    <span class="sender">@message.User.Username</span>
+                                }
+                                <span class="timestamp">@message.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</span>
+                            </div>
+                            <div class="message-body">
+                                @message.Message
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="message @(isCurrentUser ? "sent" : "received")">
+                            <div class="message-header">
+                                <span class="sender">@displayName</span>
+                                <span class="timestamp">@message.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</span>
+                            </div>
+                            <div class="message-body">
+                                @message.Message
+                            </div>
+                        </div>
+                    }
+                    if (message.User.RoleId == 2 && !isCurrentUser )
+                    {
+                        <p align="center">--- Reassigned ---</p>
+                    }
                 }
 
-                @foreach (var message in Model.Messages)
+                //Customer
+                else
                 {
-                    var isCurrentUser = User.FindFirst("UserId")?.Value == message.UserId.ToString();
-                    var displayName = "";
+                    displayName = isCurrentUser ? "You (Customer)" : Model.Agent;
 
-                    if (User.IsInRole("2")) 
+                    if (message.User.RoleId == 2)
                     {
-                        displayName = isCurrentUser ? "You (Agent)" : Model.Customer;
+                        <div class="message received">
+                            <div class="message-header">
+                                @if (isCurrentUser)
+                                {
+                                    <span class="sender">@displayName</span>
+
+                                }
+                                else
+                                {
+                                    <span class="sender">@message.User.Username</span>
+                                }
+                                <span class="timestamp">@message.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</span>
+                            </div>
+                            <div class="message-body">
+                                @message.Message
+                            </div>
+                        </div>
                     }
                     else 
                     {
-                        displayName = isCurrentUser ? "You (Customer)" : Model.Agent;
+                        <div class="message @(isCurrentUser ? "sent" : "received")">
+                            <div class="message-header">
+                                <span class="sender">@displayName</span>
+                                <span class="timestamp">@message.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</span>
+                            </div>
+                            <div class="message-body">
+                                @message.Message
+                            </div>
+                        </div>
+                    }
+                    if (message.User.RoleId == 2 && prevAgentId != message.UserId && !reassigned)
+                    {
+                        <p align="center">--- Reassigned ---</p>
+                        reassigned = true;
                     }
 
-                    <div class="message @(isCurrentUser ? "sent" : "received")">
-                        <div class="message-header">
-                            <span class="sender">@displayName</span>
-                            <span class="timestamp">@message.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</span>
-                        </div>
-                        <div class="message-body">
-                            @message.Message
-                        </div>
-                    </div>
+                    prevAgentId = message.UserId ?? 0;
+
                 }
-            </div>
+
+                
+                
+                
+            }
+        </div>
 
 
         @if (User.IsInRole("2"))
@@ -404,11 +483,11 @@
     }
 
     function handleKeyDown(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent default behavior (form submission)
-        sendMessage();
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent default behavior (form submission)
+            sendMessage();
+        }
     }
-}
 
     function sendMessage() {
         var input = document.getElementById("messageInput");
