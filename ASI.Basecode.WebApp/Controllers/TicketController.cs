@@ -95,15 +95,16 @@ namespace ASI.Basecode.WebApp.Controllers
             var messages = _ticketMessageRepo.Table
                 .Where(m => m.TicketId == ticket.Id)
                 .OrderBy(m => m.CreatedAt)  
-                .ToList(); 
-            
+                .ToList();
+
             var model = new ViewTicketModel()
             {
                 Ticket = ticket,
                 Customer = customerFirstName,
                 Agent = agentName,
                 Agents = agents,
-                Messages = messages
+                Messages = messages,
+                TicketAssigned = ticketAssigned
             };
 
             return View(model);

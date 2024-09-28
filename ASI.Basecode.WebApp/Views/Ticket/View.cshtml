@@ -333,6 +333,7 @@
             @foreach (var message in Model.Messages)
             {
                 var isCurrentUser = User.FindFirst("UserId")?.Value == message.UserId.ToString();
+                var isCurrentAgent = User.FindFirst("UserId")?.Value == Model.TicketAssigned.AgentId.ToString();
                 var displayName = "";
 
                 //Agent
@@ -372,9 +373,10 @@
                             </div>
                         </div>
                     }
-                    if (message.User.RoleId == 2 && !isCurrentUser )
+                    if (message.User.RoleId == 2 && !isCurrentUser)
                     {
-                        <p align="center">--- Reassigned ---</p>
+
+                        <p align="center">--- Reassigned To @Model.TicketAssigned.Agent.Username ---</p>
                     }
                 }
 
@@ -417,7 +419,7 @@
                     }
                     if (message.User.RoleId == 2 && prevAgentId != message.UserId && !reassigned)
                     {
-                        <p align="center">--- Reassigned ---</p>
+                        <p align="center">--- Reassigned To @Model.TicketAssigned.Agent.Username ---</p>
                         reassigned = true;
                     }
 

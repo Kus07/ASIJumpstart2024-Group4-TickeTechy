@@ -14,5 +14,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public string Customer { get; set; }
         public List<User> Agents { get; set; }
         public List<TicketMessage> Messages { get; set; }
+
+        public TicketAssigned TicketAssigned { get; set;  }
     }
 }
