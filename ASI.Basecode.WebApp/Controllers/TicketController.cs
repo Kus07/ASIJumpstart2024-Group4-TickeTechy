@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using static ASI.Basecode.Resources.Constants.Enums;
+using static ASI.Basecode.Resources.Messages.Common;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -163,7 +164,21 @@ namespace ASI.Basecode.WebApp.Controllers
 
             _ticketMessageRepo.Create(ticketMessage);
 
+            var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+
             ticket.StatusId = Convert.ToInt32(TicketStatus.ONGOING);
+
+            var notif = new Notification()
+            {
+                ToUserId = ticketAssigned.AgentId,
+                FromUserId = ticket.UserId,
+                Content = NotifToAgent + ticket.Id,
+                DateCreated = DateTime.Now,
+                Title = $"Ticket #{ticket.Id}"
+            };
+
+            _notificationRepo.Create(notif);
+
 
             _ticketRepo.Update(ticket.Id, ticket);
             return Json(new { success = true, responseText = "Message sent successfully!" });

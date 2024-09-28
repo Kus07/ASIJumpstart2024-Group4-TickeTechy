@@ -59,5 +59,14 @@ namespace ASI.Basecode.Resources.Messages {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A customer has responded to ticket #.
+        /// </summary>
+        public static string NotifToAgent {
+            get {
+                return ResourceManager.GetString("NotifToAgent", resourceCulture);
+            }
+        }
     }
 }

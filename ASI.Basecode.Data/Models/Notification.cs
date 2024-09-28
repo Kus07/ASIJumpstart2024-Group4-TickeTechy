@@ -10,7 +10,7 @@ namespace ASI.Basecode.Data.Models
         public int? ToUserId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public byte[] DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         public virtual User FromUser { get; set; }
         public virtual User ToUser { get; set; }

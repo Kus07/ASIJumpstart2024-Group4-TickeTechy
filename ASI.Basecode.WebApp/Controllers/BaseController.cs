@@ -19,6 +19,7 @@ namespace ASI.Basecode.WebApp.Controllers
         public BaseRepository<Category> _categoryRepo;
         public BaseRepository<Feedback> _feedbackRepo;
         public BaseRepository<TicketMessage> _ticketMessageRepo;
+        public BaseRepository<Notification> _notificationRepo;
         public readonly MailManager _mailManager;
 
         protected readonly IHttpContextAccessor _httpContextAccessor;
@@ -40,6 +41,7 @@ namespace ASI.Basecode.WebApp.Controllers
             _feedbackRepo = new BaseRepository<Feedback>();
             _userDetailRepo = new BaseRepository<UserDetail>();
             _ticketMessageRepo = new BaseRepository<TicketMessage>();
+            _notificationRepo = new BaseRepository<Notification>();
         }
     }
 }

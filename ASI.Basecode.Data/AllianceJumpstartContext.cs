@@ -35,10 +35,8 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=DESKTOP-NKKNR5M\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=JULES-IRWIN\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
             }
-
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -114,8 +112,7 @@ namespace ASI.Basecode.Data
                 entity.Property(e => e.Content).HasColumnName("content");
 
                 entity.Property(e => e.DateCreated)
-                    .IsRowVersion()
-                    .IsConcurrencyToken()
+                    .HasColumnType("datetime")
                     .HasColumnName("dateCreated");
 
                 entity.Property(e => e.FromUserId).HasColumnName("from_user_id");
