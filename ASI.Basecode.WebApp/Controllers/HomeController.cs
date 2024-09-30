@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using ASI.Basecode.Data.Models;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -247,6 +248,77 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return currentUser.Id;
         }
+
+
+        [HttpGet]
+        public IActionResult Notification()
+        {
+            int currentUserId = GetUserId();
+
+
+            var notifications = _notificationRepo.Table
+                .Where(n => n.ToUserId == currentUserId)
+                .OrderByDescending(n => n.DateCreated)
+                .Select(n => new Notification 
+                {
+                    Id = n.Id,
+                    FromUserId = n.FromUserId,
+                    ToUserId = n.ToUserId,
+                    Title = n.Title,
+                    Content = n.Content,
+                    DateCreated = n.DateCreated,
+                    Status = n.Status,
+                    TicketId = n.TicketId 
+                })
+                .ToList();
+
+
+            if (notifications == null || !notifications.Any())
+            {
+                notifications = new List<Notification>();
+            }
+
+
+            return View(notifications);
+        }
+
+
+
+        [HttpPost]
+        public IActionResult MarkAsRead()
+        {
+            int currentUserId = GetUserId(); 
+
+            var notifications = _notificationRepo.Table
+                .Where(n => n.ToUserId == currentUserId && n.Status == "unread") 
+                .ToList();
+
+            foreach (var notification in notifications)
+            {
+                notification.Status = "read";
+                _notificationRepo.Update(notification.Id, notification); 
+            }
+
+            return RedirectToAction("Notification");
+        }
+
+
+        [HttpGet]
+        public IActionResult ViewNotification(int ticketId, int notificationId)
+        {
+            var notification = _notificationRepo.Get(notificationId);
+
+            if (notification != null)
+            {
+                notification.Status = "read";
+                _notificationRepo.Update(notification.Id, notification);
+                _db.SaveChanges(); 
+            }
+
+            return RedirectToAction("View", "Ticket", new { id = ticketId });
+        }
+
+        
 
     }
 }

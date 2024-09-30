@@ -108,5 +108,85 @@ namespace ASI.Basecode.Services.Manager
 
             return SendEmail(recipientEmail, "TickeTechy - Forgot Password", welcomeTemplate, ref errResponse);
         }
+
+
+        public bool EmailRespond(string recipientEmail, string firstName, int ticketId, string ticketMessage, ref string errResponse)
+        {
+            string respondTemplate = $@"<!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Ticket Message from TickeTechy</title>
+            </head>
+            <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;'>
+                <div style='max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 10px; overflow: hidden;'>
+                    <div style='background-color: #e1f4fe; color: #333; text-align: center; padding: 20px 0;'>
+                        <h1 style='margin: 0; font-size: 24px;'>Message for Ticket #{ticketId}</h1>
+                    </div>
+                    <div style='padding: 20px;'>
+                        <p style='font-size: 16px;'>Hi, {firstName}!</p>
+                        <p style='font-size: 16px;'>You have received a new message for Ticket #{ticketId}:</p>
+                        <blockquote style='font-size: 16px; color: #333;'>{ticketMessage}</blockquote>
+                        <p style='font-size: 16px;'>Thank you for using TickeTechy for your ticketing solutions!</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            return SendEmail(recipientEmail, $"New Message for Ticket #{ticketId}", respondTemplate, ref errResponse);
+        }
+
+        public bool ResolveNotif(string recipientEmail, string firstName, int ticketId, string ticketMessage, ref string errResponse)
+        {
+            string ResolveTemplate = $@"<!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Ticket Message from TickeTechy</title>
+            </head>
+            <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;'>
+                <div style='max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 10px; overflow: hidden;'>
+                    <div style='background-color: #e1f4fe; color: #333; text-align: center; padding: 20px 0;'>
+                        <h1 style='margin: 0; font-size: 24px;'>Message for Ticket #{ticketId}</h1>
+                    </div>
+                    <div style='padding: 20px;'>
+                        <p style='font-size: 16px;'>Hi, {firstName}!</p>
+                        <p style='font-size: 16px;'>Please Confirm Ticket#{ticketId}, if your problem has been resolved.</p>
+                        <p style='font-size: 16px;'>Please login to the system to confirm!</p>
+                        <p style='font-size: 16px;'>Thank you for using TickeTechy for your ticketing solutions!</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            return SendEmail(recipientEmail, $"New Message for Ticket #{ticketId}", ResolveTemplate, ref errResponse);
+        }
+        public bool ResolveNotifToClient(string recipientEmail, string firstName, int ticketId, string ticketMessage, ref string errResponse)
+        {
+            string ResolveTemplate = $@"<!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Ticket Message from TickeTechy</title>
+            </head>
+            <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;'>
+                <div style='max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 10px; overflow: hidden;'>
+                    <div style='background-color: #e1f4fe; color: #333; text-align: center; padding: 20px 0;'>
+                        <h1 style='margin: 0; font-size: 24px;'>Message for Ticket #{ticketId}</h1>
+                    </div>
+                    <div style='padding: 20px;'>
+                        <p style='font-size: 16px;'>Hi, {firstName}!</p>
+                        <p style='font-size: 16px;'>The user confirmed the problem has been resolved </p>
+                        <p style='font-size: 16px;'>Thank you for using TickeTechy for your ticketing solutions!</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            return SendEmail(recipientEmail, $"New Message for Ticket #{ticketId}", ResolveTemplate, ref errResponse);
+        }
     }
 }

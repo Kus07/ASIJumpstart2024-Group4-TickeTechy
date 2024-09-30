@@ -35,7 +35,7 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=JULES-IRWIN\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=DESKTOP-M06GSKC\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
             }
         }
 
@@ -121,6 +121,8 @@ namespace ASI.Basecode.Data
                     .HasMaxLength(50)
                     .HasColumnName("status");
 
+                entity.Property(e => e.TicketId).HasColumnName("ticket_id");
+
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .HasColumnName("title");
@@ -132,6 +134,11 @@ namespace ASI.Basecode.Data
                     .HasForeignKey(d => d.FromUserId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Notification_User");
+
+                entity.HasOne(d => d.Ticket)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.TicketId)
+                    .HasConstraintName("FK_Notification_Ticket");
 
                 entity.HasOne(d => d.ToUser)
                     .WithMany(p => p.NotificationToUsers)

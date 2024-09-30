@@ -68,8 +68,8 @@
                             <a class="nav-link" asp-controller="Home" asp-action="Profile">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Notifications">Notifications</a>
-                        </li>
+                                <a class="nav-link notification-link" asp-controller="Home" asp-action="Notification"> Notifications </a>
+                            </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
                         </li>
@@ -158,13 +158,15 @@
                 toastr.error(errorMessage);
             }
 
-            var successMessage = '@TempData["message"]';
+            var successMessage = '@TempData["message"]';    
             if (successMessage) {
                 toastr.success(successMessage);
             }
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    
 
 </body>
 </html>

@@ -111,6 +111,21 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(model);
         }
 
+        private IActionResult RedirectToDashboard()
+        {
+            if (User.IsInRole("1"))
+            {
+                return RedirectToAction("CustomerDashboard", "Home");
+            }
+            else if (User.IsInRole("2"))
+            {
+                return RedirectToAction("AgentDashboard", "Home");
+            }
+            return RedirectToAction("Index", "Home"); 
+        }
+
+
+
         [HttpPost]
         public IActionResult ReassignTicket(int ticketId, int newAgent)
         {
@@ -136,7 +151,6 @@ namespace ASI.Basecode.WebApp.Controllers
            
             if (ticket.CreatedAt.HasValue)
             {
-                // Check if the ticket has been open for more than 12 hours
                 if (ticket.CreatedAt.Value.AddHours(12) < DateTime.Now && ticket.StatusId == Convert.ToInt32(TicketStatus.OPEN))
                 {
                     ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
@@ -157,11 +171,11 @@ namespace ASI.Basecode.WebApp.Controllers
             var ticket = _ticketRepo.Get(ticketId);
             int currUserId = GetUserId();
 
-            // algorithm to limit 3 messages if not yet responded
+
             var lastThreeMessages = _ticketMessageRepo.Table
-                .Where(m => m.TicketId == ticketId)  // Filter messages by ticket and if not responded yet
+                .Where(m => m.TicketId == ticketId)  
                 .OrderByDescending(m => m.CreatedAt) 
-                .Take(3)  // Take the last 3 messages
+                .Take(3)  
                 .ToList();
 
             bool areAllFromUser = lastThreeMessages.All(m => m.UserId == currUserId);
@@ -198,12 +212,55 @@ namespace ASI.Basecode.WebApp.Controllers
                 FromUserId = ticket.UserId,
                 Content = NotifToAgent + ticket.Id,
                 DateCreated = DateTime.Now,
+                Status = "unread", 
+                TicketId = ticketId, 
                 Title = $"Ticket #{ticket.Id}"
             };
 
             _notificationRepo.Create(notif);
 
             _ticketRepo.Update(ticket.Id, ticket);
+
+            string errResponse = string.Empty;
+            bool emailSent = false;
+
+            if (User.IsInRole("1")) 
+            {
+                var agent = _userRepo.Get(ticketAssigned.AgentId);
+                var agentDetails = _userDetailRepo.Table.Where(m => m.UserId == agent.Id).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(agent.Email))
+                {
+                    emailSent = _mailManager.EmailRespond(
+                        recipientEmail: agent.Email,
+                        firstName: agentDetails?.FirstName ?? "Agent",
+                        ticketId: ticketId, 
+                        ticketMessage: message, 
+                        ref errResponse
+                    );
+                }
+            }
+            else if (User.IsInRole("2")) 
+            {
+                var customer = _userRepo.Get(ticket.UserId);
+                var customerDetails = _userDetailRepo.Table.Where(m => m.UserId == customer.Id).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(customer.Email))
+                {
+                    emailSent = _mailManager.EmailRespond(
+                        recipientEmail: customer.Email,
+                        firstName: customerDetails?.FirstName ?? "Customer",
+                        ticketId: ticketId, 
+                        ticketMessage: message, 
+                        ref errResponse
+                    );
+                }
+            }
+
+            if (!emailSent && !string.IsNullOrEmpty(errResponse))
+            {
+                return Json(new { success = true, responseText = "Message sent, but failed to send email: " + errResponse });
+            }
 
             return Json(new { success = true, responseText = "Message sent successfully!" });
         }
@@ -368,40 +425,106 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
 
-        [Authorize(Roles ="2")]
+        [Authorize(Roles = "2")] 
         [HttpPost]
         public IActionResult MarkedAsResolved(int ticketId)
         {
             var ticket = _ticketRepo.Get(ticketId);
             if (ticket == null)
             {
-                return Json(new { success = false, message = InvalidIDError });
+                return Json(new { success = false, message = "Invalid ticket ID." });
             }
 
             ticket.StatusId = Convert.ToInt32(TicketStatus.RESOLVED);
-            ticket.UpdatedAt = DateTime.Now;    
+            ticket.UpdatedAt = DateTime.Now;
+
+            var customer = _userRepo.Get(ticket.UserId);
+            var userDetails = _userDetailRepo.Table.FirstOrDefault(m => m.UserId == customer.Id);
+
+            string errResponse = string.Empty;
+            bool emailSent = false;
+
+            if (!string.IsNullOrEmpty(customer.Email))
+            {
+                emailSent = _mailManager.ResolveNotif(
+                    recipientEmail: customer.Email,
+                    firstName: userDetails?.FirstName ?? "Customer",
+                    ticketId: ticketId,
+                    ticketMessage: "Your ticket has been marked as resolved. Please confirm if the issue is resolved.",
+                    ref errResponse
+                );
+            }
+
 
             _ticketRepo.Update(ticketId, ticket);
 
-            return Json(new { success = true, message = "Successfully marked as resolved! Waiting for user's approval!" });
+            if (!emailSent)
+            {
+                return Json(new { success = true, message = "Successfully marked as resolved, but failed to send email: " + errResponse });
+            }
+
+            return Json(new { success = true, message = "Successfully marked as resolved! Waiting for customer's confirmation." });
         }
 
-        [Authorize(Roles = "1")]
+
+        [Authorize(Roles = "1")] 
         [HttpPost]
         public IActionResult AcceptResolution(int ticketId)
         {
             var ticket = _ticketRepo.Get(ticketId);
             if (ticket == null)
             {
-                return Json(new { success = false, message = InvalidIDError });
+                return Json(new { success = false, message = "Invalid ticket ID." });
             }
+
 
             ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
             ticket.UpdatedAt = DateTime.Now;
 
+
+            var ticketAssigned = _ticketAssignedRepo.Table.FirstOrDefault(m => m.TicketId == ticketId);
+            if (ticketAssigned == null)
+            {
+                return Json(new { success = false, message = "Agent assignment not found." });
+            }
+
+            var agent = _userRepo.Get(ticketAssigned.AgentId); 
+            if (agent == null)
+            {
+                return Json(new { success = false, message = "Agent not found." });
+            }
+
+            var agentDetails = _userDetailRepo.Table.FirstOrDefault(m => m.UserId == agent.Id);
+
+            string errResponse = string.Empty;
+            bool emailSent = false;
+
+            if (!string.IsNullOrEmpty(agent.Email))
+            {
+
+                emailSent = _mailManager.ResolveNotifToClient(
+                    recipientEmail: agent.Email,
+                    firstName: agentDetails?.FirstName ?? "Agent", 
+                    ticketId: ticketId,
+                    ticketMessage: "The customer has confirmed that the problem has been resolved.",
+                    ref errResponse
+                );
+            }
+
             _ticketRepo.Update(ticketId, ticket);
 
-            return Json(new { success = true, message = "Ticket offically resolved! This will close the ticket." });
+
+            if (!emailSent)
+            {
+                return Json(new { success = true, message = "Ticket officially resolved, but failed to send email to the agent: " + errResponse });
+            }
+
+            return Json(new { success = true, message = "Ticket officially resolved and the agent has been notified." });
         }
+
+
+
+
+
     }
 }

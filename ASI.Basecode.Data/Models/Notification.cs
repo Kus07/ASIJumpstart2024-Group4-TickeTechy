@@ -12,8 +12,10 @@ namespace ASI.Basecode.Data.Models
         public string Content { get; set; }
         public DateTime? DateCreated { get; set; }
         public string Status { get; set; }
+        public int? TicketId { get; set; }
 
         public virtual User FromUser { get; set; }
+        public virtual Ticket Ticket { get; set; }
         public virtual User ToUser { get; set; }
     }
 }
