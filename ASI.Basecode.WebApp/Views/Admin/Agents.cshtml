@@ -52,6 +52,11 @@
                                             <td>@agent.ContactNo</td>
                                             <td>@agent.Users.Department.DepartmentName</td>
                                             <td>
+                                                <a class="btn btn-warning roleAdminBtn" style="color: white;"
+                                                   data-id="@agent.Users.Id"
+                                                   data-target="#editRoleModal"
+                                                   data-toggle="modal">Role</a>
+                                                ||
                                                 <a class="btn btn-info editCustomerBtn"
                                                    style="color: white;" id="showEditCustomerModalBtn" data-toggle="modal"
                                                    data-target="#editCustomerModal"
@@ -240,9 +245,41 @@
     </div>
 </div>
 
+<!-- Edit Role Modal -->
+<div class="modal fade" id="editRoleModal" tabindex="-1" role="dialog" aria-labelledby="editRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editRoleModalLabel">Edit Role</h5>
+            </div>
+            <div class="modal-body">
+                <form id="editRoleForm" method="post" action="@Url.Action("EditRole", "Admin")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="userIdUpdate" name="userId" />
+                    <div class="form-group">
+                        <label for="role">Select Role for</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="Agent">Admin</option>
+                            <option value="Agent">Agent</option>
+                            <option value="Customer">Customer</option>
+                        </select>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+
 
 <script>
     $(document).ready(function () {
@@ -298,28 +335,30 @@
             var email = $(this).data('email');
             var phone = $(this).data('phone');
             var password = $(this).data('password');
-            var agentId = $(this).data('id');
-            var departmentId = $(this).data('department');
+            var customerId = $(this).data('id');
 
-            $('#customerIdUpdate').val(agentId);
+            $('#customerIdUpdate').val(customerId);
             $('#editCustomerFirstName').val(firstName);
             $('#editCustomerLastName').val(lastName);
             $('#editUsername').val(username);
             $('#editEmail').val(email);
             $('#editPhone').val(phone);
             $('#editPassword').val(password);
-            $('#editDepartment').val(departmentId);
             $('#editCustomerModal').modal('show');
         });
-    });
 
-    $(document).ready(function () {
-        $('#departmentType').change(function () {
-            if ($(this).val() === 'Specific') {
-                $('#specificDepartmentGroup').show();
+        // Event delegation for Edit Role Modal
+        $('#customersTable tbody').on('click', '.roleAdminBtn', function () {
+            var userId = $(this).data('id');
+
+            // Ensure userId is valid before proceeding
+            if (userId) {
+                $('#userIdUpdate').val(userId); // Set the user ID in the hidden field
+                $('#editRoleModal').modal('show'); // Show the role modal
             } else {
-                $('#specificDepartmentGroup').hide();
+                console.error("Invalid user ID: ", userId);
             }
         });
     });
 </script>
+

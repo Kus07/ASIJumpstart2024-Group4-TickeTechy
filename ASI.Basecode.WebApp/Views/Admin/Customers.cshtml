@@ -50,6 +50,10 @@
                                             <td>@customer.Users.Email</td>
                                             <td>@customer.ContactNo</td>
                                             <td>
+                                                <a class="btn btn-warning roleAdminBtn" style="color: white;"
+                                                   data-id="@customer.Users.Id" data-adminname="@customer.FirstName"
+                                                   data-target="#editRoleModal" data-toggle="modal">Role</a>
+                                                ||
                                                 <a class="btn btn-info editCustomerBtn"
                                                    style="color: white;" id="showEditCustomerModalBtn" data-toggle="modal"
                                                    data-target="#editCustomerModal"
@@ -203,6 +207,40 @@
     </div>
 </div>
 
+<!-- Edit Role Modal -->
+<div class="modal fade" id="editRoleModal" tabindex="-1" role="dialog" aria-labelledby="editRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editRoleModalLabel">Edit Role</h5>
+            </div>
+            <div class="modal-body">
+                <!-- Form for editing role details -->
+                @using (Html.BeginForm("EditRole", "Customer", FormMethod.Post, new { @id = "editRoleForm", @enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("UserId", null, new { @id = "userIdUpdate" })
+
+                    <div class="form-group">
+                        <label for="role">Select Role for</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="Agent">Admin</option>
+                            <option value="Agent">Agent</option>
+                            <option value="Customer">Customer</option>
+                        </select>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary" id="saveRoleBtn">Save Changes</button>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonEditRole">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
@@ -270,6 +308,13 @@
             $('#editPhone').val(phone);
             $('#editPassword').val(password);
             $('#editCustomerModal').modal('show');
+        });
+
+        // Event delegation for Edit Role Modal
+        $('#customersTable tbody').on('click', '.roleAdminBtn', function () {
+            var userId = $(this).data('id');
+            $('#userIdUpdate').val(userId); // Set the user ID in the hidden field
+            $('#editRoleModal').modal('show'); // Show the role modal
         });
     });
 </script>
