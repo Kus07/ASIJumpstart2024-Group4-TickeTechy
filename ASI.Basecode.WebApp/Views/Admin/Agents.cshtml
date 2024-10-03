@@ -253,28 +253,33 @@
                 <h5 class="modal-title" id="editRoleModalLabel">Edit Role</h5>
             </div>
             <div class="modal-body">
-                <form id="editRoleForm" method="post" action="@Url.Action("EditRole", "Admin")">
+                <!-- Form for editing role details -->
+                @using (Html.BeginForm("EditUserRoleAgent", "Admin", FormMethod.Post, new { @id = "editRoleForm", @enctype = "multipart/form-data" }))
+                {
                     @Html.AntiForgeryToken()
-                    <input type="hidden" id="userIdUpdate" name="userId" />
+                    @Html.Hidden("userId", null, new { @id = "userIdUpdate" })
+
                     <div class="form-group">
-                        <label for="role">Select Role for</label>
-                        <select id="role" name="role" class="form-control">
-                            <option value="Agent">Admin</option>
-                            <option value="Agent">Agent</option>
-                            <option value="Customer">Customer</option>
+                        <label for="role">Select Role</label>
+                        <select id="role" name="newRoleId" class="form-control">
+                            <option value="2">Agent</option>
+                            <option value="1">Customer</option>
+                            @if (User.IsInRole("4"))
+                            {
+                                <option value="3">Admin</option>
+                            }
                         </select>
                     </div>
                     <br />
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
+                    <button type="submit" class="btn btn-primary" id="saveRoleBtn">Save Changes</button>
+                }
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonEditRole">Close</button>
             </div>
         </div>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
@@ -296,6 +301,10 @@
 
         $('#closeModalButtonDelete, #closeModalFooterButtonDelete').click(function () {
             $('#deleteCustomerModal').modal('hide');
+        });
+
+        $('#closeModalFooterButtonEditRole').click(function () {
+            $('#editRoleModal').modal('hide');
         });
 
         // Show Add Customer Modal

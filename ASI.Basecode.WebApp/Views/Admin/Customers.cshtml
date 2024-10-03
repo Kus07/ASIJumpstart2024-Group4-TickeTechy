@@ -216,17 +216,20 @@
             </div>
             <div class="modal-body">
                 <!-- Form for editing role details -->
-                @using (Html.BeginForm("EditRole", "Customer", FormMethod.Post, new { @id = "editRoleForm", @enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("EditUserRoleCustomer", "Admin", FormMethod.Post, new { @id = "editRoleForm", @enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
-                    @Html.Hidden("UserId", null, new { @id = "userIdUpdate" })
+                    @Html.Hidden("userId", null, new { @id = "userIdUpdate" })
 
                     <div class="form-group">
-                        <label for="role">Select Role for</label>
-                        <select id="role" name="role" class="form-control">
-                            <option value="Agent">Admin</option>
-                            <option value="Agent">Agent</option>
-                            <option value="Customer">Customer</option>
+                        <label for="role">Select Role</label>
+                        <select id="role" name="newRoleId" class="form-control">
+                            <option value="1">Customer</option>
+                            <option value="2">Agent</option>
+                            @if (User.IsInRole("4"))
+                            {
+                                <option value="3">Admin</option>
+                            }
                         </select>
                     </div>
                     <br />
@@ -260,6 +263,10 @@
 
         $('#closeModalButtonDelete, #closeModalFooterButtonDelete').click(function () {
             $('#deleteCustomerModal').modal('hide');
+        });
+
+        $('#closeModalFooterButtonEditRole').click(function () {
+            $('#editRoleModal').modal('hide');
         });
 
         // Show Add Customer Modal

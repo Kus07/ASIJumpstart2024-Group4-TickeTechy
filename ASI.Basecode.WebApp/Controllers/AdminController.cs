@@ -253,7 +253,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditAgent(string firstName, string lastName, string contactNo, string email, string username, string password, int AgentId)
+        public IActionResult EditAgent(string firstName, string lastName, string contactNo, string email, string username, string password, int AgentId, int department)
         {
             // trappings
             if (String.IsNullOrEmpty(firstName.Trim()) || String.IsNullOrEmpty(lastName.Trim()) || String.IsNullOrEmpty(contactNo.Trim())
@@ -274,6 +274,7 @@ namespace ASI.Basecode.WebApp.Controllers
             agent.Email = email;
             agent.Username = username;
             agent.Password = password;
+            agent.DepartmentId = department;
             _userRepo.Update(AgentId, agent);
 
             var agentDetails = _userDetailRepo.Table.Where(m => m.UserId == AgentId).FirstOrDefault();
@@ -425,7 +426,86 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("Admins", "Admin");
         }
 
+        [HttpPost]
+        public IActionResult EditUserRoleCustomer(int userId, int newRoleId)
+        {
+            // Find the user by ID and ensure the user exists
+            var user = _userRepo.Table.Where(m => m.Id == userId).FirstOrDefault();
 
+            if (user == null)
+            {
+                TempData["error"] = "Invalid user ID.";
+                return RedirectToAction("Customers", "Admin");
+            }
+
+            // Update the user's role
+            user.RoleId = newRoleId;
+
+            if (user.RoleId != 2)
+            {
+                user.DepartmentId = 7;
+            }
+
+            _userRepo.Update(user.Id, user);
+
+            TempData["message"] = $"Successfully updated role for user {user.Username}.";
+
+            return RedirectToAction("Customers", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult EditUserRoleAgent(int userId, int newRoleId)
+        {
+            // Find the user by ID and ensure the user exists
+            var user = _userRepo.Table.Where(m => m.Id == userId).FirstOrDefault();
+
+            if (user == null)
+            {
+                TempData["error"] = "Invalid user ID.";
+                return RedirectToAction("Agents", "Admin");
+            }
+
+            // Update the user's role
+            user.RoleId = newRoleId;
+
+            if (user.RoleId != 2)
+            {
+                user.DepartmentId = 7;
+            }
+
+            _userRepo.Update(user.Id, user);
+
+            TempData["message"] = $"Successfully updated role for user {user.Username}.";
+
+            return RedirectToAction("Agents", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult EditUserRoleAdmin(int userId, int newRoleId)
+        {
+            // Find the user by ID and ensure the user exists
+            var user = _userRepo.Table.Where(m => m.Id == userId).FirstOrDefault();
+
+            if (user == null)
+            {
+                TempData["error"] = "Invalid user ID.";
+                return RedirectToAction("Admins", "Admin");
+            }
+
+            // Update the user's role
+            user.RoleId = newRoleId;
+
+            if (user.RoleId != 2)
+            {
+                user.DepartmentId = 7;
+            }
+
+            _userRepo.Update(user.Id, user);
+
+            TempData["message"] = $"Successfully updated role for user {user.Username}.";
+
+            return RedirectToAction("Admins", "Admin");
+        }
 
         // END OF ADMIN SIDE
     }
