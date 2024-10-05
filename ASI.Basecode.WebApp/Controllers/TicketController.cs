@@ -180,7 +180,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             bool areAllFromUser = lastThreeMessages.All(m => m.UserId == currUserId);
 
-            if (areAllFromUser && User.IsInRole("1"))
+            if (lastThreeMessages.Count == 3 && (areAllFromUser && User.IsInRole("1")) && ticket.StatusId != (int) TicketStatus.RESOLVED)
             {
                 return Json(new { success = false, responseText = LimitMessage });
             }

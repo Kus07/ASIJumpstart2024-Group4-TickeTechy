@@ -127,8 +127,8 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult EditCustomer(string firstName, string lastName, string contactNo, string email, string username, string password, int CustomerId)
         {
             // trappings
-            if (String.IsNullOrEmpty(firstName.Trim()) || String.IsNullOrEmpty(lastName.Trim()) || String.IsNullOrEmpty(contactNo.Trim())
-                || String.IsNullOrEmpty(email.Trim()) || String.IsNullOrEmpty(username.Trim()) || String.IsNullOrEmpty(CustomerId.ToString().Trim())
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName) || String.IsNullOrEmpty(contactNo)
+                || String.IsNullOrEmpty(email) || String.IsNullOrEmpty(username) || String.IsNullOrEmpty(CustomerId.ToString())
                 )
             {
                 TempData["error"] = "Fill all the given fields!";
@@ -256,8 +256,8 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult EditAgent(string firstName, string lastName, string contactNo, string email, string username, string password, int AgentId, int department)
         {
             // trappings
-            if (String.IsNullOrEmpty(firstName.Trim()) || String.IsNullOrEmpty(lastName.Trim()) || String.IsNullOrEmpty(contactNo.Trim())
-                || String.IsNullOrEmpty(email.Trim()) || String.IsNullOrEmpty(username.Trim()) || String.IsNullOrEmpty(AgentId.ToString().Trim())
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName) || String.IsNullOrEmpty(contactNo) 
+                || String.IsNullOrEmpty(email) || String.IsNullOrEmpty(username) || String.IsNullOrEmpty(AgentId.ToString())
                 )
             {
                 TempData["error"] = "Fill all the given fields!";
@@ -388,8 +388,8 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult EditAdmin(string firstName, string lastName, string contactNo, string email, string username, string password, int AdminId)
         {
             // Check if fields are filled
-            if (String.IsNullOrEmpty(firstName.Trim()) || String.IsNullOrEmpty(lastName.Trim()) || String.IsNullOrEmpty(contactNo.Trim())
-                || String.IsNullOrEmpty(email.Trim()) || String.IsNullOrEmpty(username.Trim()) || String.IsNullOrEmpty(AdminId.ToString().Trim()))
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName) || String.IsNullOrEmpty(contactNo)
+                || String.IsNullOrEmpty(email) || String.IsNullOrEmpty(username) || String.IsNullOrEmpty(AdminId.ToString()))
             {
                 TempData["error"] = "Fill all the given fields!";
                 return RedirectToAction("Admins", "Admin");
