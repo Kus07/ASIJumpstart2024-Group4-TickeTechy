@@ -45,6 +45,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 Categories = _categoryRepo.GetAll().ToList()
             };
 
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
             return View(viewModel);
         }
 
@@ -52,6 +57,12 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult AgentDashboard()
         {
             var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == GetUserId() || m.ReassignedToId == GetUserId()).Include(m => m.Ticket).Include(m => m.Ticket.User).ToList();
+
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
             return View(tickets);
         }
 
@@ -94,6 +105,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 CategoryName = categories.FirstOrDefault(c => c.Id == ticket.CategoryId)?.CategoryName
             }).ToList();
 
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
             return View(viewModel);
         }
 
@@ -121,6 +137,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 ViewBag.TicketCount = tickets.Count;
             }
 
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
             return View(currentUser);
         }
 
@@ -132,6 +153,12 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
             return View(currentUser);
         }
 
@@ -229,15 +256,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("Profile", "Home");
         }
 
-
-        [Authorize(Roles = "2")]
-        public IActionResult SupportDashboard()
-        {
-            return View();
-        }
-
         public IActionResult ContactUs()
         {
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
             return View();
         }
 
@@ -278,6 +302,10 @@ namespace ASI.Basecode.WebApp.Controllers
                 notifications = new List<Notification>();
             }
 
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
 
             return View(notifications);
         }
@@ -290,12 +318,12 @@ namespace ASI.Basecode.WebApp.Controllers
             int currentUserId = GetUserId(); 
 
             var notifications = _notificationRepo.Table
-                .Where(n => n.ToUserId == currentUserId && n.Status == "unread") 
+                .Where(n => n.ToUserId == currentUserId && n.Status == "UNREAD") 
                 .ToList();
 
             foreach (var notification in notifications)
             {
-                notification.Status = "read";
+                notification.Status = "READ";
                 _notificationRepo.Update(notification.Id, notification); 
             }
 
@@ -310,7 +338,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             if (notification != null)
             {
-                notification.Status = "read";
+                notification.Status = "READ";
                 _notificationRepo.Update(notification.Id, notification);
                 _db.SaveChanges(); 
             }
@@ -318,7 +346,22 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("View", "Ticket", new { id = ticketId });
         }
 
-        
 
+        public bool UnreadNotifications()
+        {
+            int currentUserId = GetUserId();
+            bool unreadNotificationsAvailable = false;
+
+            var user = _userRepo.Get(currentUserId);
+            var notifications = _notificationRepo.Table.Where(m => m.ToUserId == user.Id && m.Status.Equals("UNREAD")).ToList();
+
+            if(notifications.Count > 0)
+            {
+                unreadNotificationsAvailable = true;                
+            }
+
+            return unreadNotificationsAvailable;
+
+        }
     }
 }

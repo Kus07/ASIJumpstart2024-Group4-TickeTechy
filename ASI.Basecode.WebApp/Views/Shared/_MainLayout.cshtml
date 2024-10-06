@@ -21,13 +21,6 @@
 </head>
 <body>
     <style>
-        #floating-svg {
-            position: fixed;
-            bottom: 50px;
-            right: 70px;
-            z-index: 9999;
-        }
-
         .content-area {
             padding-top: 60px;
         }
@@ -68,8 +61,12 @@
                             <a class="nav-link" asp-controller="Home" asp-action="Profile">Profile</a>
                         </li>
                         <li class="nav-item">
-                                <a class="nav-link notification-link" asp-controller="Home" asp-action="Notification"> Notifications </a>
-                            </li>
+                            <a class="nav-link notification-link" asp-controller="Home" asp-action="Notification"> Notifications @if (!String.IsNullOrEmpty(TempData["notifications"] as string))
+                                {
+                                    <text>🔴</text>
+                                } 
+                             </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
                         </li>
@@ -82,13 +79,6 @@
 
     <div class="container" style="min-height: 500px;">
         @RenderBody()
-        @if (User.IsInRole("1"))
-        {
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" id="floating-svg" viewBox="0 0 88 84" fill="none">
-                <ellipse cx="44" cy="42" rx="44" ry="42" fill="#192B5D" />
-                <path d="M44.7719 20.6038V42.7924M44.7719 42.7924V64.9811M44.7719 42.7924H23.1579M44.7719 42.7924H66.3859" stroke="white" stroke-width="4" stroke-linecap="round" />
-            </svg>
-        }
     </div>
 
     <!-- Footer Section -->
@@ -128,6 +118,9 @@
     </div>
     <!-- Footer Section End -->
 
+
+
+
     <!-- Copyright Section -->
     <div class="copyright_section">
         <div class="container">
@@ -149,10 +142,6 @@
 
     <script>
         $(document).ready(function () {
-            $('#floating-svg').click(function () {
-                $('#createTicketModal').modal('show');
-            });
-
             var errorMessage = '@TempData["error"]';
             if (errorMessage) {
                 toastr.error(errorMessage);
@@ -165,8 +154,6 @@
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    
 
 </body>
 </html>

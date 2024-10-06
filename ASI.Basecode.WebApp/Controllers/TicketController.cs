@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using static ASI.Basecode.Resources.Constants.Enums;
 using static ASI.Basecode.Resources.Messages.Common;
 using static ASI.Basecode.Resources.Messages.Errors;
+using System.Text.RegularExpressions;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -212,7 +213,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 FromUserId = ticket.UserId,
                 Content = NotifToAgent + ticket.Id,
                 DateCreated = DateTime.Now,
-                Status = "unread", 
+                Status = "UNREAD", 
                 TicketId = ticketId, 
                 Title = $"Ticket #{ticket.Id}"
             };
@@ -297,11 +298,13 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Save the relative path to the file (relative to wwwroot)
                 attachmentPath = Path.Combine("Attachments", uniqueFileName).Replace("\\", "/");
             }
+            var descriptionWithoutTags = Regex.Replace(viewModel.Description, "<.*?>", string.Empty); // Strips all HTML tags
+
             var ticket = new Ticket
             {
                 UserId = viewModel.UserId,
                 CategoryId = viewModel.CategoryId,
-                Description = viewModel.Description,
+                Description = descriptionWithoutTags,
                 Priority = viewModel.Priority,
                 Attachments = attachmentPath,
                 CreatedAt = DateTime.Now,

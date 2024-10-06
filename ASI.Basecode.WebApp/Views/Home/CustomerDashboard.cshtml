@@ -4,6 +4,16 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
+<style>
+
+    #floating-svg {
+        position: fixed;
+        bottom: 50px;
+        right: 70px;
+        z-index: 9999;
+    }
+
+</style>
 <br />
 <br />
 <br />
@@ -80,20 +90,34 @@
     </div>
 </div>
 
-        <!-- TinyMCE Script -->
+@if (User.IsInRole("1"))
+{
+    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" id="floating-svg" viewBox="0 0 88 84" fill="none">
+        <ellipse cx="44" cy="42" rx="44" ry="42" fill="#192B5D" />
+        <path d="M44.7719 20.6038V42.7924M44.7719 42.7924V64.9811M44.7719 42.7924H23.1579M44.7719 42.7924H66.3859" stroke="white" stroke-width="4" stroke-linecap="round" />
+    </svg>
+}
+
+
+<!-- TinyMCE Script -->
 <script src="https://cdn.tiny.cloud/1/24wj14wi54w3wpp4d53nyv1xerdwxbhrflus4929i6p5iadv/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-        <script>
-            tinymce.init({
-                selector: '#description', 
-                plugins: 'lists link image table code',
-                toolbar: 'undo redo | bold italic underline | bullist numlist',
-                menubar: false,
-                branding: false
-            });
-        </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    tinymce.init({
+        selector: '#description',
+        plugins: 'lists link image table code',
+        toolbar: 'undo redo | bold italic underline | bullist numlist',
+        menubar: false,
+        branding: false
+    });
+</script>
 
 
 <script>
+    $('#floating-svg').click(function () {
+        $('#createTicketModal').modal('show');
+    });
     document.getElementById('createTicketForm').addEventListener('submit', async function (event) {
         event.preventDefault(); // Prevent the form from submitting immediately
 
