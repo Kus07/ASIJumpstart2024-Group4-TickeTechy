@@ -123,4 +123,7 @@
   <data name="SuccessReassign" xml:space="preserve">
     <value>Successfully reassigned ticket to</value>
   </data>
+  <data name="SuccessCreateTicket" xml:space="preserve">
+    <value>Ticket created successfully!</value>
+  </data>
 </root>

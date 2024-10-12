@@ -28,7 +28,7 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
     system_instruction="""
     You are going to be assigning a ticket to a specific agent with the ticket description and category.
-    
+    Lean more on the description for accuracy.
     These are the list of agent types:
     1 - HR
     2 - IT/Systems

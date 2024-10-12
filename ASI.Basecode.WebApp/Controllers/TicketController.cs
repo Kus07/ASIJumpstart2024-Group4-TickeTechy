@@ -327,11 +327,11 @@ namespace ASI.Basecode.WebApp.Controllers
                     AgentId = agentId
                 };
                 _ticketAssignedRepo.Create(assignedTicket);
+                TempData["message"] = SuccessCreateTicket;
                 return RedirectToAction("Tickets", "Home");
             }
 
             ModelState.AddModelError("", CreatingTicketError);
-
             viewModel.Categories = _categoryRepo.GetAll().ToList();
             return RedirectToAction("CustomerDashboard", "Home", new { viewModel = viewModel }); // Return the current view with the error
         }

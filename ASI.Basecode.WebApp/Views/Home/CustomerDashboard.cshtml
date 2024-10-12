@@ -124,6 +124,7 @@
         // Get the ticket description
         let description = document.getElementById('description').value;
 
+        console.log(description);
         // Define your API key and the API endpoint
         let apiKey = "AIzaSyCKhhy5Y4Vtoo4rFbYbqC_F48tnzCeLbjs";
         let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
@@ -134,7 +135,7 @@
                 {
                     parts: [
                         {
-                            text: `Based on this description: "${description}", which priority do you think this is? Please answer with either 'Low', 'Medium', or 'High' only! No explanation needed.`
+                            text: `Based on this ticket description: "${description}", identify its priority level. This is a ticketing help desk system. Analyze properly. Keep in mind, this is a software company. Be reasonable. Be precise and accurare. Please answer with either 'Low', 'Medium', or 'High' only! No explanation needed.`
                         }
                     ]
                 }

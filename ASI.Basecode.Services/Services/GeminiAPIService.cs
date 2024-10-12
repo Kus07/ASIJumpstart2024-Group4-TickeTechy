@@ -43,9 +43,50 @@ namespace ASI.Basecode.Services.Services
                     var responseString = await response.Content.ReadAsStringAsync();
                     var jResponse = JObject.Parse(responseString);
 
+                    // Handle Safety Ratings
+                    //var safetyRatings = jResponse["safety_ratings"]?.ToObject<JArray>();
+                    //bool contentFlagged = false;
+
+                    //foreach (var rating in safetyRatings)
+                    //{
+                    //    string categoryGeminiResponse = rating["category"].ToString();
+                    //    string probability = rating["probability"].ToString();
+
+                    //    // Check if dangerous content has MEDIUM or higher probability
+                    //    if (category == "HARM_CATEGORY_DANGEROUS_CONTENT" && (probability == "MEDIUM" || probability == "HIGH"))
+                    //    {
+                    //        return 6;
+                    //    }
+                    //    else if (category == "HARM_CATEGORY_HATE_SPEECH" && (probability == "MEDIUM" || probability == "HIGH"))
+                    //    {
+                    //        return 7;
+                    //    }
+                    //    else if (category == "HARM_CATEGORY_SEXUALLY_EXPLICIT" && (probability == "MEDIUM" || probability == "HIGH"))
+                    //    {
+                    //        return 7;
+                    //    }
+                    //    else if (category == "HARM_CATEGORY_HARASSMENT" && (probability == "MEDIUM" || probability == "HIGH"))
+                    //    {
+                    //        return 6;
+                    //    }
+                    //    else
+                    //    {
+                    //        Console.WriteLine($"Category: {category}, Probability: {probability}");
+                    //    }
+                    //}
+
+                    // Extract the recommendation and safety ratings from the response
                     var recommendation = jResponse["recommendation"].ToString();
                     departmentId = int.Parse(recommendation);
+
+                    // Take appropriate action based on safety ratings
+                    //if (contentFlagged)
+                    //{
+                    //    // You could log, reject the request, or notify the admin
+                    //    throw new Exception("Content flagged due to safety concerns.");
+                    //}
                 }
+
 
                 // Return the recommendation as JSON
                 return departmentId;

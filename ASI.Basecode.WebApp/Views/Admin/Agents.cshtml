@@ -288,6 +288,16 @@
 
 <script>
     $(document).ready(function () {
+
+        $('#departmentType').change(function () {
+            if ($(this).val() === 'Specific') {
+                $('#specificDepartmentGroup').show();
+            } else {
+                $('#specificDepartmentGroup').hide();
+            }
+        });
+
+
         let table = new DataTable('#customersTable');
 
         // Modal close functionality

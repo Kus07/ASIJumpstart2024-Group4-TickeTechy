@@ -70,6 +70,15 @@ namespace ASI.Basecode.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ticket created successfully!.
+        /// </summary>
+        public static string SuccessCreateTicket {
+            get {
+                return ResourceManager.GetString("SuccessCreateTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully reassigned ticket to.
         /// </summary>
         public static string SuccessReassign {
