@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<ASI.Basecode.Data.Models.Notification>
+@using static ASI.Basecode.Resources.Views.Screen
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
@@ -12,14 +13,14 @@
 
 @if (Model == null || !Model.Any())
 {
-    <p>You have no notifications.</p>
+    <p>@NoNotifications</p>
 }
 else
 {
     <ul class="list-group">
         @foreach (var notification in Model)
         {
-            <li class="list-group-item @(notification.Status == "unread" ? "font-weight-bold" : "")">
+            <li class="list-group-item @(notification.Status == "UNREAD" ? "font-weight-bold" : "")">
                 <a href="@Url.Action("ViewNotification", "Home", new { ticketId = notification.TicketId, notificationId = notification.Id })">
                     <strong>@notification.Title</strong><br />
                     @notification.Content<br />

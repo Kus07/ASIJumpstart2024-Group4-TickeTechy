@@ -141,4 +141,7 @@
   <data name="UserId" xml:space="preserve">
     <value>UserId</value>
   </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>You have no notifications.</value>
+  </data>
 </root>
