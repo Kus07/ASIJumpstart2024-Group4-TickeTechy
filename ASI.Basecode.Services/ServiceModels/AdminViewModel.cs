@@ -8,5 +8,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<UserDetail> Customers { get; set; }
         public List<UserDetail> Agents { get; set; }
         public List<UserDetail> Admins { get; set; }
+        public List<Article> Articles { get; set; }
     }
 }

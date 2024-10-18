@@ -508,5 +508,157 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         // END OF ADMIN SIDE
+
+        // BEGINNING OF KNOWLEDGEBASE SIDE
+        public IActionResult Articles()
+        {
+            var modelView = new AdminViewModel();
+
+            var articles = _articleRepo.Table.ToList();
+
+            modelView.Articles = articles;
+
+            ViewData["Title"] = "Articles page";
+            return View(modelView);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteArticle(int ArticleId)
+        {
+            // trappings
+            var article = _articleRepo.Table.Where(m => m.Id == ArticleId).FirstOrDefault();
+            if (article == null)
+            {
+                TempData["error"] = "Invalid article ID";
+                return RedirectToAction("Articles", "Admin");
+            }
+
+            _articleRepo.Delete(ArticleId);
+
+            TempData["message"] = $"Successfully delete Article {article.Title}.";
+            return RedirectToAction("Articles", "Admin");
+        }
+
+        [HttpGet]
+        public IActionResult AddArticle()
+        {
+            // Initialize the model for the form
+            var model = new ArticleViewModel();
+            model.Categories = _categoryRepo.GetAll().ToList();
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult CreateArticle(ArticleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Validate that all required fields are filled
+                if (string.IsNullOrWhiteSpace(model.Title) || string.IsNullOrWhiteSpace(model.Content))
+                {
+                    ModelState.AddModelError("", "Please fill in all required fields.");
+                    return View(model);
+                }
+
+                // Save the article to the database
+                var currentUser = HttpContext.User.Identity.Name;
+                var article = new Article
+                {
+                    Title = model.Title,
+                    Content = model.Content,
+                    CategoryId = model.CategoryId,
+                    Status = "Draft", // Set the initial status to "Draft"
+                    Author = currentUser, // Set the user or author who created the article
+                    PublishDate = DateTime.Now, // Set the publish date to null initially
+                    LastModifiedDate = DateTime.Now // Set the modified date to the current date and time
+                };
+
+                _articleRepo.Create(article);
+                TempData["message"] = "Article created successfully.";
+                return RedirectToAction("Articles", "Admin");
+            }
+
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult EditArticle(int ArticleId)
+        {
+            var article = _articleRepo.Table.Where(m => m.Id == ArticleId).FirstOrDefault();
+            
+
+            var model = new ArticleViewModel()
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Content = article.Content,
+                CategoryId = article.CategoryId,
+                Status = article.Status,
+                Author = article.Author,
+                LastModifiedDate = DateTime.Now
+            };
+
+            model.Categories = _categoryRepo.GetAll().ToList();
+
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult EditArticle(ArticleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Validate that all required fields are filled
+                if (string.IsNullOrWhiteSpace(model.Title) || string.IsNullOrWhiteSpace(model.Content))
+                {
+                    ModelState.AddModelError("", "Please fill in all required fields.");
+                    return View(model);
+                }
+
+                var article = _articleRepo.FindByCondition(a => a.Id == model.Id).FirstOrDefault();
+                if (article == null)
+                {
+                    return NotFound();
+                }
+
+                article.Title = model.Title;
+                article.Content = model.Content;
+                article.CategoryId = model.CategoryId;
+                article.Status = model.Status;
+                article.LastModifiedDate = DateTime.Now;
+
+                _articleRepo.Update(model.Id, article);
+
+                TempData["message"] = "Article updated successfully.";
+                return RedirectToAction("Articles", "Admin");
+            }
+
+            model.Categories = _categoryRepo.GetAll().ToList();
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ViewArticle(int ArticleId)
+        {
+            var article = _articleRepo.Table.Where(m => m.Id == ArticleId).FirstOrDefault();
+
+
+            var model = new ArticleViewModel()
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Content = article.Content,
+                CategoryId = article.CategoryId,
+                Category = article.Category,
+                Status = article.Status,
+                Author = article.Author,
+                PublishDate = article.PublishDate,
+                LastModifiedDate = DateTime.Now
+            };
+
+            model.Categories = _categoryRepo.GetAll().ToList();
+
+            return View(model);
+        }
     }
 }
+
+        

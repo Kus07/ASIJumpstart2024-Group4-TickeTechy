@@ -1,0 +1,54 @@
+﻿@model ASI.Basecode.Services.ServiceModels.ArticleViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h2>Add Article</h2>
+
+<form asp-action="CreateArticle" method="post" class="needs-validation" novalidate>
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" required />
+        <div class="invalid-feedback">
+            Please enter a title for the article.
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Content"></label>
+        <textarea asp-for="Content" class="form-control" rows="10" required></textarea>
+        <div class="invalid-feedback">
+            Please enter the content of the article.
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="CategoryId"></label>
+        <select asp-for="CategoryId" class="form-control" required>
+            <option value="">Select a category</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id">@category.CategoryName</option>
+            }
+        </select>
+        <div class="invalid-feedback">
+            Please select a category for the article.
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script>
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>

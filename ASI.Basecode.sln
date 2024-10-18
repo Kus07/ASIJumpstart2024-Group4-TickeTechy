@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASI.Basecode.Services", "AS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{65A10F5F-9790-475E-A544-DF3FF6A41A66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASI.Basecode.Resources", "ASI.Basecode.Resources\ASI.Basecode.Resources.csproj", "{ED0C96A6-749E-413B-BF4D-8E405BEB172E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASI.Basecode.Resources", "ASI.Basecode.Resources\ASI.Basecode.Resources.csproj", "{ED0C96A6-749E-413B-BF4D-8E405BEB172E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
