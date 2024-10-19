@@ -509,6 +509,19 @@ namespace ASI.Basecode.WebApp.Controllers
 
         // END OF ADMIN SIDE
 
+        // BEGINNING OF TICKETS SIDE
+        public IActionResult Tickets()
+        {
+            return View();
+        }
+
+        public IActionResult TicketsAssignment()
+        {
+            return View();
+        }
+
+
+
         // BEGINNING OF KNOWLEDGEBASE SIDE
         public IActionResult Articles()
         {
