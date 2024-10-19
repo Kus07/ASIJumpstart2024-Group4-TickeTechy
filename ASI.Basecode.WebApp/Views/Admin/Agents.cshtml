@@ -50,7 +50,14 @@
                                             <td>@agent.LastName</td>
                                             <td>@agent.Users.Email</td>
                                             <td>@agent.ContactNo</td>
-                                            <td>@agent.Users.Department.DepartmentName</td>
+                                            @if(agent.Users.DepartmentId == null)
+                                            {
+                                                <td>No department</td>
+                                            }
+                                            else
+                                            {
+                                            <td>@agent.Users.Department.DepartmentName</td>   
+                                            }
                                             <td>
                                                 <a class="btn btn-warning roleAdminBtn" style="color: white;"
                                                    data-id="@agent.Users.Id"
@@ -355,11 +362,13 @@
             var phone = $(this).data('phone');
             var password = $(this).data('password');
             var customerId = $(this).data('id');
-
+            var departmentId = $(this).data('department');
+            console.log('dep od' + departmentId);
             $('#customerIdUpdate').val(customerId);
             $('#editCustomerFirstName').val(firstName);
             $('#editCustomerLastName').val(lastName);
             $('#editUsername').val(username);
+            $('#editDepartment').val(departmentId);
             $('#editEmail').val(email);
             $('#editPhone').val(phone);
             $('#editPassword').val(password);
