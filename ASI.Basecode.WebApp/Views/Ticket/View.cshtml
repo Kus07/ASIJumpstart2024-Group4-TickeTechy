@@ -17,6 +17,216 @@
 <style>
     @@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Oswald&display=swap");
 
+    .radio {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        gap: 10px;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+        flex-direction: row-reverse;
+    }
+
+        .radio > input {
+            position: absolute;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .radio > label {
+            cursor: pointer;
+            font-size: 30px;
+            position: relative;
+            display: inline-block;
+            -webkit-transition: -webkit-transform 0.3s ease;
+            transition: -webkit-transform 0.3s ease;
+            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+        }
+
+            .radio > label > svg {
+                fill: #666;
+                -webkit-transition: fill 0.3s ease;
+                transition: fill 0.3s ease;
+            }
+
+            .radio > label::before,
+            .radio > label::after {
+                content: "";
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background-color: #ff9e0b;
+                border-radius: 50%;
+                opacity: 0;
+                -webkit-transform: scale(0);
+                -ms-transform: scale(0);
+                transform: scale(0);
+                -webkit-transition: opacity 0.4s ease, -webkit-transform 0.4s ease;
+                transition: opacity 0.4s ease, -webkit-transform 0.4s ease;
+                transition: transform 0.4s ease, opacity 0.4s ease;
+                transition: transform 0.4s ease, opacity 0.4s ease, -webkit-transform 0.4s ease;
+                -webkit-animation: particle-explosion 1s ease-out;
+                animation: particle-explosion 1s ease-out;
+            }
+
+            .radio > label::before {
+                top: -15px;
+                left: 50%;
+                -webkit-transform: translateX(-50%) scale(0);
+                -ms-transform: translateX(-50%) scale(0);
+                transform: translateX(-50%) scale(0);
+            }
+
+            .radio > label::after {
+                bottom: -15px;
+                left: 50%;
+                -webkit-transform: translateX(-50%) scale(0);
+                -ms-transform: translateX(-50%) scale(0);
+                transform: translateX(-50%) scale(0);
+            }
+
+            .radio > label:hover::before,
+            .radio > label:hover::after {
+                opacity: 1;
+                -webkit-transform: translateX(-50%) scale(1.5);
+                -ms-transform: translateX(-50%) scale(1.5);
+                transform: translateX(-50%) scale(1.5);
+            }
+
+            .radio > label:hover {
+                -webkit-transform: scale(1.2);
+                -ms-transform: scale(1.2);
+                transform: scale(1.2);
+                -webkit-animation: pulse 0.6s infinite alternate;
+                animation: pulse 0.6s infinite alternate;
+            }
+
+                .radio > label:hover > svg,
+                .radio > label:hover ~ label > svg {
+                    fill: #ff9e0b;
+                    -webkit-filter: drop-shadow(0 0 15px rgba(255, 158, 11, 0.9));
+                    filter: drop-shadow(0 0 15px rgba(255, 158, 11, 0.9));
+                    -webkit-animation: shimmer 1s ease infinite alternate;
+                    animation: shimmer 1s ease infinite alternate;
+                }
+
+        .radio > input:checked + label > svg,
+        .radio > input:checked + label ~ label > svg {
+            fill: #ff9e0b;
+            -webkit-filter: drop-shadow(0 0 15px rgba(255, 158, 11, 0.9));
+            filter: drop-shadow(0 0 15px rgba(255, 158, 11, 0.9));
+            -webkit-animation: pulse 0.8s infinite alternate;
+            animation: pulse 0.8s infinite alternate;
+        }
+
+    @@-webkit-keyframes pulse {
+        0% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+
+        100% {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+    }
+
+    @@keyframes pulse {
+        0% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+
+        100% {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+    }
+
+    @@-webkit-keyframes particle-explosion {
+        0% {
+            opacity: 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+
+        50% {
+            opacity: 1;
+            -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+        }
+
+        100% {
+            opacity: 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+    }
+
+    @@keyframes particle-explosion {
+        0% {
+            opacity: 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+
+        50% {
+            opacity: 1;
+            -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+        }
+
+        100% {
+            opacity: 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+    }
+
+    @@-webkit-keyframes shimmer {
+        0% {
+            -webkit-filter: drop-shadow(0 0 10px rgba(255, 158, 11, 0.5));
+            filter: drop-shadow(0 0 10px rgba(255, 158, 11, 0.5));
+        }
+
+        100% {
+            -webkit-filter: drop-shadow(0 0 20px rgba(255, 158, 11, 1));
+            filter: drop-shadow(0 0 20px rgba(255, 158, 11, 1));
+        }
+    }
+
+    @@keyframes shimmer {
+        0% {
+            -webkit-filter: drop-shadow(0 0 10px rgba(255, 158, 11, 0.5));
+            filter: drop-shadow(0 0 10px rgba(255, 158, 11, 0.5));
+        }
+
+        100% {
+            -webkit-filter: drop-shadow(0 0 20px rgba(255, 158, 11, 1));
+            filter: drop-shadow(0 0 20px rgba(255, 158, 11, 1));
+        }
+    }
+
+    .radio > input:checked + label:hover > svg,
+    .radio > input:checked + label:hover ~ label > svg {
+        fill: #e58e09;
+    }
+
+    .radio > label:hover > svg,
+    .radio > label:hover ~ label > svg {
+        fill: #ff9e0b;
+    }
+
+    .radio input:checked ~ label svg {
+        fill: #ffa723;
+    }
+
     .message-header {
         display: flex;
         justify-content: space-between;
@@ -412,7 +622,7 @@
                             </div>
                         </div>
                     }
-                    else 
+                    else
                     {
                         <div class="message @(isCurrentUser ? "sent" : "received")">
                             <div class="message-header">
@@ -430,7 +640,7 @@
         </div>
 
 
-        @if (User.IsInRole("2") && Model.Ticket.Reassigned != (int) TicketReassigned.TRUE)
+        @if (User.IsInRole("2") && Model.Ticket.Reassigned != (int)TicketReassigned.TRUE)
         {
             <div class="reassign-section">
                 <form asp-action="ReassignTicket" method="post">
@@ -452,7 +662,7 @@
         <!-- Input Area -->
         <div class="input-area">
             <input type="hidden" id="ticketId" value="@Model.Ticket.Id" />
-            @if(Model.Ticket.Reassigned == (int)TicketReassigned.TRUE && User.FindFirst("UserId").Value == Model.TicketAssigned.AgentId.ToString())
+            @if (Model.Ticket.Reassigned == (int)TicketReassigned.TRUE && User.FindFirst("UserId").Value == Model.TicketAssigned.AgentId.ToString())
             {
                 <input type="text" id="messageInput" disabled placeholder="You have reassigned this ticket already" onkeydown="handleKeyDown(event)">
                 <button disabled class="btn btn-info" id="sendMessageButton" style="background: blue;">@SendBtn</button>
@@ -465,6 +675,15 @@
                     <button id="sendMessageButton" disabled class="btn btn-info">
                         @SendBtn
                     </button>
+
+                    if (!ViewBag.alreadyFeedback)
+                    {
+                        <button id="writeFeedbackButton" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                            @WriteFeedbackBtn
+                        </button>
+                    }
+                   
+
                 }
                 else
                 {
@@ -474,7 +693,7 @@
             }
         </div>
 
-        @if(Model.Ticket.Reassigned == Convert.ToInt32(TicketReassigned.TRUE))
+        @if (Model.Ticket.Reassigned == Convert.ToInt32(TicketReassigned.TRUE))
         {
             if (User.FindFirst("UserId").Value == Model.TicketAssigned.ReassignedToId.ToString() && (Model.Ticket.StatusId != 4 && Model.Ticket.StatusId != 5))
             {
@@ -498,8 +717,111 @@
     </div>
 </div>
 
+
+<div class="modal" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">Write Feedback</h5> 
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form inside the modal -->
+                <form id="ratingForm" asp-controller="Ticket" asp-action="SubmitFeedback" method="POST">
+                    <!-- Hidden input for ticket ID -->
+                    <input type="hidden" name="ticketId" id="ticketId" value="@Model.Ticket.Id">
+
+                    <!-- Stars area -->
+                    <div class="radio">
+                        <input id="rating-5" type="radio" name="rating" value="5" />
+                        <label for="rating-5" title="5 stars">
+                            <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                            </svg>
+                        </label>
+
+                        <input id="rating-4" type="radio" name="rating" value="4" />
+                        <label for="rating-4" title="4 stars">
+                            <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                            </svg>
+                        </label>
+
+                        <input id="rating-3" type="radio" name="rating" value="3" />
+                        <label for="rating-3" title="3 stars">
+                            <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                            </svg>
+                        </label>
+
+                        <input id="rating-2" type="radio" name="rating" value="2" />
+                        <label for="rating-2" title="2 stars">
+                            <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                            </svg>
+                        </label>
+
+                        <input id="rating-1" type="radio" name="rating" value="1" required/>
+                        <label for="rating-1" title="1 stars">
+                            <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                            </svg>
+                        </label>
+
+                            
+
+                    </div>
+
+                    <!-- Comment textarea -->
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Comment</label>
+                        <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                    </div>
+
+                    <!-- Send button -->
+                    <button type="submit" class="btn btn-primary" id="submitRating">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script>
+    $(document).ready(function () {
+        $('#submitRating').on('click', function (event) {
+            const isChecked = $('input[name="rating"]:checked');
+            const comment = $('#comment').val().trim(); // Get the value of the comment textarea and trim whitespace
+            console.log(isChecked);
+
+            // Check if rating is selected
+            if (isChecked.length === 0) {
+                toastr.error("Please choose a rating.");
+                event.preventDefault(); // Prevent form submission
+            }
+            // Check if comment is empty
+            else if (comment.length === 0) {
+                toastr.error("Please enter a comment.");
+                event.preventDefault(); // Prevent form submission
+            }
+            else {
+                // Optionally, you can submit the form programmatically if a rating and comment are provided
+                $('#ratingForm').submit();
+        }
+    });
+
+
+        // Attach a click event handler to the feedback button
+        $('#writeFeedbackButton').click(function() {
+            // Manually open the modal without the backdrop
+            $('#feedbackModal').modal({
+                backdrop: false
+            });
+        });
+    });
+
     var modal = document.getElementById("myModal");
     var btn = document.querySelector(".send-message-btn");
     var span = document.getElementsByClassName("close")[0];
@@ -528,7 +850,7 @@
     function sendMessage() {
         var input = document.getElementById("messageInput");
         var message = input.value.trim();
-        var ticketId = @Model.Ticket.Id; 
+        var ticketId = @Model.Ticket.Id;
         var sendButton = document.querySelector('.input-area button');
         var noMessageAlert = document.getElementById('noConversation');
 
@@ -563,8 +885,7 @@
                         // Clear the input field
                         input.value = "";
 
-                        if ('@User.IsInRole("1")' == "True")
-                        {
+                        if ('@User.IsInRole("1")' == "True") {
                             $('#markResolvedBtn').remove();
                         }
 
@@ -628,7 +949,7 @@
         var ticketId = @Model.Ticket.Id;
         console.log(ticketId)
         $.ajax({
-            url: '/Ticket/MarkedAsResolved', 
+            url: '/Ticket/MarkedAsResolved',
             type: 'POST',
             data: { ticketId: ticketId },
             success: function (response) {

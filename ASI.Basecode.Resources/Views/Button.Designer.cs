@@ -68,5 +68,14 @@ namespace ASI.Basecode.Resources.Views {
                 return ResourceManager.GetString("SendBtn", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write Feedback.
+        /// </summary>
+        public static string WriteFeedbackBtn {
+            get {
+                return ResourceManager.GetString("WriteFeedbackBtn", resourceCulture);
+            }
+        }
     }
 }

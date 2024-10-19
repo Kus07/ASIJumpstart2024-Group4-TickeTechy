@@ -11,8 +11,9 @@ namespace ASI.Basecode.Data.Models
         public string Author { get; set; }
         public string Status { get; set; }
         public DateTime? PublishDate { get; set; }
-        public DateTime? LastModifiedDate { get; set; }
+        public DateTime? LastmodifiedDate { get; set; }
         public int? CategoryId { get; set; }
+
         public virtual Category Category { get; set; }
     }
 }

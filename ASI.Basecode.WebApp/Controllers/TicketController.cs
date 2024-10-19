@@ -109,6 +109,19 @@ namespace ASI.Basecode.WebApp.Controllers
                 TicketAssigned = ticketAssigned
             };
 
+            var feedBack = _feedbackRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+
+            if(feedBack != null)
+            {
+                ViewBag.alreadyFeedback = true;
+            }
+            else
+            {
+                ViewBag.alreadyFeedback = false;
+            }
+
+
+
             return View(model);
         }
 
@@ -526,7 +539,41 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult SubmitFeedback(int ticketId, string comment, int rating)
+        {
+            var ticket = _ticketRepo.Table.Where(m => m.Id == ticketId).Include(m => m.User).FirstOrDefault();
+            var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+            if (ticket == null || ticketAssigned == null)
+            {
+                TempData["error"] = "Invalid Ticket";
+                return RedirectToAction("CustomerDashboard", "Home");
+            }
 
+            if (ModelState.IsValid)
+            {
+                // Assuming you have a Feedback model to save the data
+                Feedback feedback = new Feedback
+                {
+                    Comments = comment,
+                    Star = rating,
+                    AgentId = ticketAssigned.AgentId,
+                    UserId = GetUserId(),
+                    TicketId = ticket.Id
+                };
+
+                _feedbackRepo.Create(feedback);
+
+
+                TempData["message"] = "Feedback submitted!";
+                // Redirect or return a response
+                return RedirectToAction("View", "Ticket", new { id = ticketId }); // Redirect to the ticket details page after submission
+            }
+
+            TempData["message"] = "Error submitting feedback!";
+            return RedirectToAction("View", "Ticket", new { id = ticketId }); // Redirect to the ticket details page after submission
+
+        }
 
 
     }

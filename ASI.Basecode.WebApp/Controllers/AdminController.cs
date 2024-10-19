@@ -583,7 +583,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     Status = "Draft", // Set the initial status to "Draft"
                     Author = currentUser, // Set the user or author who created the article
                     PublishDate = DateTime.Now, // Set the publish date to null initially
-                    LastModifiedDate = DateTime.Now // Set the modified date to the current date and time
+                    LastmodifiedDate = DateTime.Now // Set the modified date to the current date and time
                 };
 
                 _articleRepo.Create(article);
@@ -636,7 +636,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 article.Content = model.Content;
                 article.CategoryId = model.CategoryId;
                 article.Status = model.Status;
-                article.LastModifiedDate = DateTime.Now;
+                article.LastmodifiedDate = DateTime.Now;
 
                 _articleRepo.Update(model.Id, article);
 

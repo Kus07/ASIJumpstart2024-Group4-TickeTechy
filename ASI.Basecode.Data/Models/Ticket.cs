@@ -7,6 +7,7 @@ namespace ASI.Basecode.Data.Models
     {
         public Ticket()
         {
+            Feedbacks = new HashSet<Feedback>();
             Notifications = new HashSet<Notification>();
             TicketAssigneds = new HashSet<TicketAssigned>();
             TicketMessages = new HashSet<TicketMessage>();
@@ -26,6 +27,7 @@ namespace ASI.Basecode.Data.Models
         public virtual Category Category { get; set; }
         public virtual Status Status { get; set; }
         public virtual User User { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<TicketAssigned> TicketAssigneds { get; set; }
         public virtual ICollection<TicketMessage> TicketMessages { get; set; }

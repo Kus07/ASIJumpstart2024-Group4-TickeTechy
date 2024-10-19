@@ -35,7 +35,7 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=DESKTOP-VQN2MLL\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=DESKTOP-MB3S9BF\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
             }
         }
 
@@ -47,11 +47,34 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Author)
+                    .HasMaxLength(50)
+                    .HasColumnName("author");
+
+                entity.Property(e => e.CategoryId).HasColumnName("categoryId");
+
                 entity.Property(e => e.Content).HasColumnName("content");
+
+                entity.Property(e => e.LastmodifiedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("lastmodifiedDate");
+
+                entity.Property(e => e.PublishDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("publishDate");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .HasColumnName("status");
 
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .HasColumnName("title");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Articles)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("FK_Article_Category");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -80,9 +103,7 @@ namespace ASI.Basecode.Data
             {
                 entity.ToTable("Feedback");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.AgentId).HasColumnName("agent_id");
 
@@ -90,12 +111,19 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.Star).HasColumnName("star");
 
+                entity.Property(e => e.TicketId).HasColumnName("ticket_id");
+
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.Agent)
                     .WithMany(p => p.FeedbackAgents)
                     .HasForeignKey(d => d.AgentId)
                     .HasConstraintName("FK_Feedback_User1");
+
+                entity.HasOne(d => d.Ticket)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.TicketId)
+                    .HasConstraintName("FK_Feedback_TIcket");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.FeedbackUsers)

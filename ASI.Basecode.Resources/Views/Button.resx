@@ -120,4 +120,7 @@
   <data name="SendBtn" xml:space="preserve">
     <value>Send</value>
   </data>
+  <data name="WriteFeedbackBtn" xml:space="preserve">
+    <value>Write Feedback</value>
+  </data>
 </root>
