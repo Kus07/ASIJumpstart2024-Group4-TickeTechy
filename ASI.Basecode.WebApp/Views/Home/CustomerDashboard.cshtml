@@ -19,7 +19,7 @@
 <br />
 <br />
 <br />
-<h1>Nice Customer Dashboard</h1>
+<h1>Customer Dashboard</h1>
 <p>Welcome to your dashboard!</p>
 @if (!ViewData.ModelState.IsValid)
 {
@@ -109,7 +109,9 @@
         plugins: 'lists link image table code',
         toolbar: 'undo redo | bold italic underline | bullist numlist',
         menubar: false,
-        branding: false
+        branding: false,
+        forced_root_block: false,
+        entity_encoding: 'raw'
     });
 </script>
 

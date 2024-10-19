@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.TicketViewModel>
 
 @{
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+   Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
 <br />
@@ -29,11 +29,11 @@
         {
             var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
             var description = ticket.Description;
-            var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description; // Truncate to 50 characters
+            var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description; 
 
             <tr>
                 <td>@ticket.CategoryName</td>
-                <td title="@description">@truncatedDescription</td> <!-- Full description as tooltip -->
+                <td title="@description">@truncatedDescription</td> 
                 <td>@ticket.Priority</td>
                 <td>@ticket.Status</td>
                 <td>@timeSinceCreation.Days days @timeSinceCreation.Hours hours @timeSinceCreation.Minutes minutes ago</td>
@@ -123,6 +123,8 @@
     });
     $(document).ready(function () {
         let table = new DataTable('#ticketListTable');
+        $('.dt-length').hide(); 
+
     });
 
     function confirmDelete(ticketId) {
@@ -159,6 +161,11 @@
                 });
             }
         });
+       
+
+
     }
+
+    
 
 </script>
