@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
+using ASI.Basecode.Data.Models;
 
 namespace Basecode.Data.Repositories
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Data

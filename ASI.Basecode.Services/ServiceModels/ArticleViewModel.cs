@@ -17,8 +17,10 @@ namespace ASI.Basecode.Services.ServiceModels
         public DateTime? PublishDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public int? CategoryId { get; set; }
+        public string ProfilePicturePath { get; set; }
         public List<Category> Categories { get; set; }
         public virtual Category Category { get; set; }
+        public virtual UserDetail UserDetail { get; set; }
         public ArticleViewModel()
         {
             Categories = new List<Category>();

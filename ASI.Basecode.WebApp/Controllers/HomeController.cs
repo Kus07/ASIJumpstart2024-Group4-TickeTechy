@@ -39,19 +39,34 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize(Roles = "1")]
         public IActionResult CustomerDashboard()
         {
-            var viewModel = new TicketViewModel()
-            {
-                UserId = GetUserId(),
-                Categories = _categoryRepo.GetAll().ToList()
-            };
+            var articles = _db.Articles
+                .Include(a => a.UserDetail)
+                .Include(a => a.Category)
+                .ToList();
 
-            if (UnreadNotifications())
+            if (articles == null || !articles.Any())
             {
-                TempData["notifications"] = "true";
+                return RedirectToAction("Error");
             }
 
-            return View(viewModel);
+            var model = articles.Select(article => new ArticleViewModel
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Content = article.Content,
+                CategoryId = article.CategoryId,
+                Category = article.Category,
+                Status = article.Status,
+                Author = article.Author,
+                PublishDate = article.PublishDate,
+                LastModifiedDate = article.LastmodifiedDate ?? DateTime.Now,
+                ProfilePicturePath = article.UserDetail?.ProfilePicturePath,
+                UserDetail = article.UserDetail
+            }).ToList();
+
+            return View(model);
         }
+
 
         [Authorize(Roles = "2")]
         public IActionResult AgentDashboard()

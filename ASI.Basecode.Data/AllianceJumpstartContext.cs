@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ASI.Basecode.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace ASI.Basecode.Data
+namespace ASI.Basecode.Data.Models
 {
     public partial class AllianceJumpstartContext : DbContext
     {
@@ -35,7 +34,7 @@ namespace ASI.Basecode.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=DESKTOP-MB3S9BF\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server=DESKTOP-M06GSKC\\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True");
             }
         }
 
@@ -71,10 +70,17 @@ namespace ASI.Basecode.Data
                     .HasMaxLength(50)
                     .HasColumnName("title");
 
+                entity.Property(e => e.UserDetailId).HasColumnName("userDetailId");
+
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Articles)
                     .HasForeignKey(d => d.CategoryId)
                     .HasConstraintName("FK_Article_Category");
+
+                entity.HasOne(d => d.UserDetail)
+                    .WithMany(p => p.Articles)
+                    .HasForeignKey(d => d.UserDetailId)
+                    .HasConstraintName("FK_Article_Article");
             });
 
             modelBuilder.Entity<Category>(entity =>

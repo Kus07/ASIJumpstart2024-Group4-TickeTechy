@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASI.Basecode.Data.Models;
+using System;
 using System.Collections.Generic;
 
 namespace ASI.Basecode.WebApp.Models
@@ -13,5 +14,9 @@ namespace ASI.Basecode.WebApp.Models
         public DateTime? DateCreated { get; set; }
         public string Status { get; set; }
         public int? TicketId { get; set; }
+
+        public virtual User FromUser { get; set; }
+        public virtual Ticket Ticket { get; set; }
+        public virtual User ToUser { get; set; }
     }
 }
