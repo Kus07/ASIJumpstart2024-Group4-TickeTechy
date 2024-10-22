@@ -19,6 +19,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public IEnumerable<Ticket> Tickets { get; set; }
         public string CategoryName { get; set; }
         public DateTime CreatedAt { get; set; }
+        public List<ArticleViewModel> Articles { get; set; }
     }
 
 }

@@ -84,35 +84,6 @@
     }
 </style>
 
-<div>
-    @if (TempData["error"] != null)
-    {
-        <br />
-        <br />
-        <br />
-        <br />
-        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
-            @TempData["error"]
-        </div>
-    }
-    @if (ViewBag.Errors != null)
-    {
-        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
-            @ViewBag.Errors
-        </div>
-    }
-    @if (TempData["message"] != null)
-    {
-        <br />
-        <br />
-        <br />
-        <br />
-        <div class="alert alert-success" style="border-radius: 0;" role="alert">
-            @TempData["message"]
-        </div>
-    }
-</div>
-
 <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
 
     <div class="card p-4">
@@ -138,7 +109,7 @@
                 }
                 else if (User.IsInRole("2"))
                 {
-                    <span class="number">@ViewBag.TicketCount <span class="follow">Tickets</span></span>
+                    <span class="number">@ViewBag.TicketCount <span class="follow">Tickets resolved</span></span>
                 }
             </div>
             <div class="d-flex mt-2">
@@ -147,6 +118,12 @@
             <div class="d-flex mt-2">
                 <button class="btn1 btn-dark" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
             </div>
+            <div class="d-flex mt-2">
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div>
+            
         </div>
         <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
             <span><i class="fa fa-twitter"></i></span>

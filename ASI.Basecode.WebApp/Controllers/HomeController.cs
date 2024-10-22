@@ -14,6 +14,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using ASI.Basecode.Data.Models;
+using static ASI.Basecode.Resources.Constants.Enums;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -39,6 +40,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize(Roles = "1")]
         public IActionResult CustomerDashboard()
         {
+
             var articles = _db.Articles
                 .Include(a => a.UserDetail)
                 .Include(a => a.Category)
@@ -64,7 +66,19 @@ namespace ASI.Basecode.WebApp.Controllers
                 UserDetail = article.UserDetail
             }).ToList();
 
-            return View(model);
+            var viewModel = new TicketViewModel()
+            {
+                UserId = GetUserId(),
+                Categories = _categoryRepo.GetAll().ToList(),
+                Articles = model
+            };
+
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
+            return View(viewModel);
         }
 
 
@@ -120,6 +134,20 @@ namespace ASI.Basecode.WebApp.Controllers
                 CategoryName = categories.FirstOrDefault(c => c.Id == ticket.CategoryId)?.CategoryName
             }).ToList();
 
+
+            var statusCounts = tickets.GroupBy(t => t.Status.StatusName)
+                              .Select(group => new {
+                                  Status = group.Key,
+                                  Count = group.Count()
+                              }).ToDictionary(g => g.Status, g => g.Count);
+            ViewBag.StatusCounts = statusCounts;
+            var categoryCounts = tickets.GroupBy(t => t.Category.CategoryName)
+                              .Select(group => new {
+                                  Status = group.Key,
+                                  Count = group.Count()
+                              }).ToDictionary(g => g.Status, g => g.Count);
+            ViewBag.CategoryCounts = categoryCounts;
+
             if (UnreadNotifications())
             {
                 TempData["notifications"] = "true";
@@ -147,7 +175,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             else
             {
-                var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == currentUser.Id).ToList();
+                var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == currentUser.Id && m.Ticket.StatusId == Convert.ToInt32(TicketStatus.CLOSED)).ToList();
 
                 ViewBag.TicketCount = tickets.Count;
             }

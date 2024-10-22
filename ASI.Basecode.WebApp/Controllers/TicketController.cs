@@ -395,6 +395,7 @@ namespace ASI.Basecode.WebApp.Controllers
             var result = _ticketRepo.Update(ticket.Id, ticket);
             if (result == ErrorCode.Success)
             {
+                TempData["message"] = SuccessEditTicket;
                 return RedirectToAction("Tickets", "Home");
             }
 
@@ -435,6 +436,7 @@ namespace ASI.Basecode.WebApp.Controllers
             var result = _ticketRepo.Delete(ticket.Id);
             if (result == ErrorCode.Success)
             {
+                TempData["message"] = SuccessDeleteTicket;
                 return Json(new { success = true });
             }
             return Json(new { success = false, message = "Error deleting ticket." });

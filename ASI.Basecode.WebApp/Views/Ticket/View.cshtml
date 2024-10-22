@@ -672,18 +672,18 @@
                 if (Model.Ticket.Status.StatusName.Equals("CLOSED"))
                 {
                     <input type="text" id="messageInput" disabled placeholder="Ticket closed." onkeydown="handleKeyDown(event)">
-                    <button id="sendMessageButton" disabled class="btn btn-info">
+                    <button id="sendMessageButton" disabled class="btn btn-info" style="cursor: not-allowed;">
                         @SendBtn
                     </button>
-
-                    if (!ViewBag.alreadyFeedback)
+                    if (User.IsInRole("1"))
                     {
-                        <button id="writeFeedbackButton" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#feedbackModal">
-                            @WriteFeedbackBtn
-                        </button>
+                        if (!ViewBag.alreadyFeedback)
+                        {
+                            <button id="writeFeedbackButton" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                                @WriteFeedbackBtn
+                            </button>
+                        }
                     }
-                   
-
                 }
                 else
                 {

@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
 
 <div class="container">
     <div class="row">
@@ -20,7 +21,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table id="tableTickets" class="table table-striped table-hover">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Ticket Creator</th>
@@ -101,3 +102,20 @@
         background-color: #138496;
     }
 </style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+
+<script>
+    $(document).ready(function () {
+        let table = new DataTable('#tableTickets', {
+            language: {
+                emptyTable: "No tickets assigned"
+            }
+        });
+
+        // Hide the length dropdown
+        $('.dt-length').hide();
+
+    });
+</script>

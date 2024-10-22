@@ -11,8 +11,22 @@
 <br />
 <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
 
-<h1>Your Tickets</h1>
+<style>
+    .modal-dialog {
+        max-width: 90%; 
+    }
+    #ticketStatusChart {
+        max-width: 100%;
+        height: auto; 
+    }
+</style>
 
+<h1>
+    Your Tickets
+    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ticketReportsModal">
+        Ticket Reports
+    </button>
+</h1>
 <table class="table" id="ticketListTable">
     <thead>
         <tr>
@@ -35,7 +49,28 @@
                 <td>@ticket.CategoryName</td>
                 <td title="@description">@truncatedDescription</td> 
                 <td>@ticket.Priority</td>
-                <td>@ticket.Status</td>
+                <td style="color: white; font-size: 16px;">
+                    @if (ticket.Status== "OPEN")
+                    {
+                        <span class="badge bg-primary">@ticket.Status</span> <!-- Blue for OPEN -->
+                    }
+                    else if (ticket.Status == "WAITINGRESPONSE" || ticket.Status== "ONGOING")
+                    {
+                        <span class="badge bg-warning text-dark">@ticket.Status</span> <!-- Orange for WAITINGFORAPPROVAL and ONGOING -->
+                    }
+                    else if (ticket.Status== "RESOLVED")
+                    {
+                        <span class="badge bg-success">@ticket.Status</span> <!-- Green for RESOLVED -->
+                    }
+                    else if (ticket.Status == "CLOSED")
+                    {
+                        <span class="badge bg-danger">@ticket.Status</span> <!-- Red for CLOSED -->
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@ticket.Status</span> <!-- Grey for any other statuses -->
+                    }
+                </td>
                 <td>@timeSinceCreation.Days days @timeSinceCreation.Hours hours @timeSinceCreation.Minutes minutes ago</td>
                 <td>
                     <button class="btn btn-warning btn-sm"
@@ -61,7 +96,7 @@
 
 <!-- Edit Ticket Modal -->
 <div class="modal fade" id="editTicketModal" tabindex="-1" role="dialog" aria-labelledby="editTicketModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editTicketModalLabel">Edit Ticket</h5>
@@ -93,15 +128,139 @@
     </div>
 </div>
 
+<!-- Ticket Reports Modal -->
+<div class="modal fade" id="ticketReportsModal" tabindex="-1" role="dialog" aria-labelledby="ticketReportsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ticketReportsModalLabel">Ticket Reports</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- First row for charts -->
+                <div class="row justify-content-center">
+                    <!-- Ticket Status Summary Chart -->
+                    <div class="col-md-6 d-flex flex-column">
+                        <h4 class="text-center mb-4">Ticket Status Summary</h4>
+                        <div class="chart-container" style="position: relative; height:300px; width:100%; margin-left: 120px;">
+                            <canvas id="ticketStatusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Categories Summary Chart -->
+                    <div class="col-md-6 d-flex flex-column align-items-center">
+                        <h4 class="text-center mb-4">Ticket Categories Summary</h4>
+                        <div class="chart-container" style="position: relative; height:300px; width:100%;">
+                            <canvas id="ticketCategoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> 
+
 
 
 <script>
     $(document).ready(function () {
+        var statusData = @Html.Raw(Json.Serialize(ViewBag.StatusCounts));
+
+        var ctxStatus = document.getElementById('ticketStatusChart').getContext('2d');
+        var ticketStatusChart = new Chart(ctxStatus, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(statusData),
+                datasets: [{
+                    data: Object.values(statusData),
+                    backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(255, 206, 86, 0.6)', 'green'],
+                    borderColor: ['rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'green'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        formatter: (value, ctx) => {
+                            // Calculate the percentage
+                            let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                            let percentage = (value / sum * 100).toFixed(2) + "%";
+                            return percentage;
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Ticket Category Data (For Bar Chart)
+        var categoryData = @Html.Raw(Json.Serialize(ViewBag.CategoryCounts));
+
+        var ctxCategory = document.getElementById('ticketCategoryChart').getContext('2d');
+        var ticketCategoryChart = new Chart(ctxCategory, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(categoryData),
+                datasets: [{
+                    label: 'Ticket Categories',
+                    data: Object.values(categoryData),
+                    backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        formatter: (value, ctx) => {
+                            let total = categoryData.reduce((acc, curr) => acc + curr, 0); // Get the total for all categories
+                            let percentage = (value / total * 100).toFixed(2) + "%";
+                            return percentage;
+                        },
+                        color: '#000',
+                        anchor: 'end',
+                        align: 'top',
+                        font: {
+                            weight: 'bold',
+                            size: 12
+                        }
+                    },
+                    legend: {
+                        display: false // Hide legend for bar chart
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
         // Populate modal fields with ticket data
         $('#editTicketModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
@@ -121,6 +280,7 @@
             modal.find('#editTicketUserId').val(userId);
         });
     });
+
     $(document).ready(function () {
         let table = new DataTable('#ticketListTable');
         $('.dt-length').hide(); 

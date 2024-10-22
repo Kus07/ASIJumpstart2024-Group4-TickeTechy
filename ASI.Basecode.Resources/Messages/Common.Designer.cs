@@ -79,6 +79,24 @@ namespace ASI.Basecode.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Successfully deleted ticket!.
+        /// </summary>
+        public static string SuccessDeleteTicket {
+            get {
+                return ResourceManager.GetString("SuccessDeleteTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully edited ticket!.
+        /// </summary>
+        public static string SuccessEditTicket {
+            get {
+                return ResourceManager.GetString("SuccessEditTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully reassigned ticket to.
         /// </summary>
         public static string SuccessReassign {
