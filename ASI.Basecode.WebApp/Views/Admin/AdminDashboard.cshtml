@@ -1,5 +1,96 @@
 ﻿@{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/3.3.7/css/sb-admin-2.css" />
+<h2>Admin Dashboard</h2>
 
-<h1>Wata nice admin</h1>
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary"    >
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-users fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@ViewBag.CustomerCount</div>
+                        <div>Customers</div>
+                    </div>
+                </div>
+            </div>
+            <a asp-controller="Admin" asp-action="Customers">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa-solid fa-user-tie fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@ViewBag.AgentCount</div>
+                        <div>Support Agents</div>
+                    </div>
+                </div>
+            </div>
+            <a asp-controller="Admin" asp-action="Agents">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-user-secret fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@ViewBag.AdminCount</div>
+                        <div>Admins</div>
+                    </div>
+                </div>
+            </div>
+            <a asp-controller="Admin" asp-action="Admins">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    </div>
+
+
+<div>
+    <h4>Ticket Analytics</h4>
+    <hr />
+    <dl class="row">
+        <div class="col-xs-2">
+            <dt>RECEIVED</dt>
+            <dd>@ViewBag.TotalTickets</dd>
+        </div>
+        @foreach (var statusCount in ViewBag.StatusCounts)
+        {
+            <div class="col-xs-2">
+            <dt>@statusCount.Key</dt>
+            <dd>@statusCount.Value</dd>
+            </div>
+        }
+    </dl>
+</div>
+

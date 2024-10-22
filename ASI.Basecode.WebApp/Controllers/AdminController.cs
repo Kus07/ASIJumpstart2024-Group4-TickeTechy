@@ -11,6 +11,7 @@ using System.Linq;
 using System;
 using System.Data.Entity;
 using Microsoft.AspNetCore.Http;
+using static ASI.Basecode.Resources.Constants.Enums;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -27,6 +28,21 @@ namespace ASI.Basecode.WebApp.Controllers
 
         public IActionResult AdminDashboard()
         {
+            var tickets = _ticketRepo.GetAll().ToList();
+            var statusCounts = tickets.GroupBy(t => t.Status.StatusName)
+                              .Select(group => new {
+                                  Status = group.Key,
+                                  Count = group.Count()
+                              }).ToDictionary(g => g.Status, g => g.Count);
+            var customers = _userRepo.Table.Where(u => u.RoleId == 1).Count();
+            var agents = _userRepo.Table.Where(u => u.RoleId == 2).Count();
+            var admins = _userRepo.Table.Where(u => u.RoleId == 4 || u.RoleId == 5).Count();
+            var totalTickets = tickets.Count();
+            ViewBag.StatusCounts = statusCounts;
+            ViewBag.TotalTickets = totalTickets;
+            ViewBag.CustomerCount = customers;
+            ViewBag.AgentCount = agents;
+            ViewBag.AdminCount = admins;
             return View();
         }
 
@@ -292,6 +308,48 @@ namespace ASI.Basecode.WebApp.Controllers
 
             TempData["message"] = $"Successfully updated user {username}!";
             return RedirectToAction("Agents", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult GenerateAgentReport(int agentId)
+        {
+            // Get the agent by ID
+            var agent = _userRepo.Table.Where(m => m.Id == agentId && m.RoleId == 2).FirstOrDefault();
+            var agentDetails = _userDetailRepo.Table.Where(m => m.Id == agentId).FirstOrDefault();
+            if (agent == null)
+            {
+                return NotFound();
+            }
+
+            // Get the agent's tickets
+            var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == agentId).ToList();
+
+            // Calculate the number of tickets resolved
+            var ticketsResolved = tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5);
+
+            //Calculate the average resolution timeTotalMinutes)
+            var totalResolutionTime = tickets.Where(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5)
+    .Sum(t =>
+    {
+        var ticket = _ticketRepo.Get(t.TicketId.Value);
+        var resolutionTime = ticket.UpdatedAt.Value - ticket.CreatedAt.Value;
+        return resolutionTime.TotalHours;
+    });
+            var averageResolutionTime = tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) > 0 ? totalResolutionTime / tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) : 0;
+            var formattedAverageResolutionTime = averageResolutionTime.ToString("F1");
+            
+            // Calculate the customer satisfaction score
+            var feedbacks = _feedbackRepo.Table.Where(m => m.AgentId == agentId).ToList();
+            var totalSatisfactionScore = feedbacks.Sum(f => f.Star);
+            var customerSatisfactionScore = feedbacks.Count > 0 ? totalSatisfactionScore / feedbacks.Count : 0; 
+
+            // Generate the report
+            var report = $"Agent Name: {agentDetails.FirstName} {agentDetails.LastName}\n" +
+                         $"Tickets Resolved: {ticketsResolved}\n" +
+                         $"Average Resolution Time: {formattedAverageResolutionTime} hours\n" +
+                         $"Customer Satisfaction Score: {customerSatisfactionScore}/5";
+
+            return Content(report);
         }
 
 
@@ -671,6 +729,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return View(model);
         }
+        // END OF KNOWLEDGEBASE SIDE
     }
 }
 
