@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+@model ASI.Basecode.Services.ServiceModels.AdminDashboardViewModel
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/3.3.7/css/sb-admin-2.css" />
@@ -15,7 +17,7 @@
                         <i class="fa fa-users fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">@ViewBag.CustomerCount</div>
+                        <div class="huge">@Model.CustomerCount</div>
                         <div>Customers</div>
                     </div>
                 </div>
@@ -37,7 +39,7 @@
                         <i class="fa-solid fa-user-tie fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">@ViewBag.AgentCount</div>
+                        <div class="huge">@Model.AgentCount</div>
                         <div>Support Agents</div>
                     </div>
                 </div>
@@ -59,7 +61,7 @@
                         <i class="fa fa-user-secret fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">@ViewBag.AdminCount</div>
+                        <div class="huge">@Model.AdminCount</div>
                         <div>Admins</div>
                     </div>
                 </div>
@@ -79,18 +81,247 @@
 <div>
     <h4>Ticket Analytics</h4>
     <hr />
-    <dl class="row">
-        <div class="col-xs-2">
-            <dt>RECEIVED</dt>
-            <dd>@ViewBag.TotalTickets</dd>
-        </div>
-        @foreach (var statusCount in ViewBag.StatusCounts)
-        {
-            <div class="col-xs-2">
-            <dt>@statusCount.Key</dt>
-            <dd>@statusCount.Value</dd>
-            </div>
-        }
-    </dl>
 </div>
+
+<div class="form-group">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" class="form-control">
+</div>
+
+<div class="form-group">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" name="endDate" class="form-control">
+</div>
+
+<div class="row">
+<div class="form-group">
+<a id="submitButton" class="btn btn-primary">Submit</a>
+        <a id="submitButton" class="btn btn-info">Reset</a>
+</div>  
+</div>
+
+<dl class="row">
+    <div class="col-xs-2">
+        <dt>Total Received</dt>
+        <dd>@Model.TotalTickets</dd>
+    </div>
+</dl>
+
+<div class="col-lg-4">
+    <canvas id="myChart"></canvas>
+</div>
+
+
+
+<div class="col-lg-4">
+    <canvas id="categoryChart"></canvas>
+</div>
+
+<div class="col-lg-4">
+    <canvas id="priorityChart"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    //TICKETS BY STATUS CHART
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var dataSet = Object.values(@Html.Raw(Json.Serialize(Model.StatusCounts)));
+        var labels = Object.keys(@Html.Raw(Json.Serialize(Model.StatusCounts)));
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Tickets by Status',
+                    data: dataSet,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Tickets by Status'
+                    }
+                }
+            }
+        });
+
+
+    //TICKETS BY CATEGORY CHART
+        var catCtx = document.getElementById('categoryChart').getContext('2d');
+        var catDataSet = Object.values(@Html.Raw(Json.Serialize(Model.CategoryCounts)));
+        var catLabels = Object.keys(@Html.Raw(Json.Serialize(Model.CategoryCounts)));
+    var catChart = new Chart(catCtx, {
+        type: 'pie',
+        data: {
+            labels: catLabels,
+            datasets: [{
+                label: 'Tickets by Category',
+                data: catDataSet,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Tickets by Category'
+                }
+            }
+        }
+    });
+    //TICKETS BY PRIORITY CHART
+        var prioCtx = document.getElementById('priorityChart').getContext('2d');
+        var prioDataSet = Object.values(@Html.Raw(Json.Serialize(Model.PriorityCounts)));
+        var prioLabels = Object.keys(@Html.Raw(Json.Serialize(Model.PriorityCounts)));
+        var prioChart = new Chart(prioCtx, {
+            type: 'pie',
+            data: {
+                labels: prioLabels,
+                datasets: [{
+                    label: 'Tickets by Priority',
+                    data: prioDataSet,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Tickets by Priority'
+                    }
+                }
+            }
+        });
+
+        //UPDATE CHART BY START DATE AND END DATE
+        function updateChart() {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            $.ajax({
+                url: '@Url.Action("UpdateChart", "Admin")',
+                type: 'GET',
+                data: { startDate: startDate, endDate: endDate },
+                success: function (data) {
+                    if (data) {
+                        console.log('yes' + Object.values(data))
+                        var dataSet = Object.values(data);
+                        var labels = Object.keys(data);
+
+                        myChart.data.labels = labels;
+                        myChart.data.datasets[0].data = dataSet;
+                        myChart.update();
+                    } else {
+                        console.error('Data is undefined')
+                    }
+                }
+            }).then(function () {
+                return $.ajax({
+                    url: '@Url.Action("UpdateCategoryChart", "Admin")',
+                    type: 'GET',
+                    data: { startDate: startDate, endDate: endDate },
+                    success: function (data) {
+                        if (data) {
+                            console.log('yes' + Object.values(data));
+                            var catdataSet = Object.values(data);
+                            var catlabels = Object.keys(data);
+
+                            catChart.data.labels = catlabels;
+                            catChart.data.datasets[0].data = catdataSet;
+                            catChart.update();
+                        } else {
+                            console.error('Data is undefined');
+                        }
+                    }
+                });
+            }).then(function () {
+                return $.ajax({
+                    url: '@Url.Action("UpdatePriorityChart", "Admin")',
+                    type: 'GET',
+                    data: { startDate: startDate, endDate: endDate },
+                    success: function (data) {
+                        if (data) {
+                            console.log('yes' + Object.values(data));
+                            var prioDataSet = Object.values(data);
+                            var prioLabels = Object.keys(data);
+
+                            prioChart.data.labels = prioLabels;
+                            prioChart.data.datasets[0].data = prioDataSet;
+                            prioChart.update();
+                            // Process the data for the third chart
+                        } else {
+                            console.error('Data is undefined');
+                        }
+                    }
+                });
+            });
+        }
+        $('#submitButton').click(function () {
+            updateChart();
+        });  
+
+    });
+</script>
+   
 

@@ -31,29 +31,73 @@ namespace ASI.Basecode.WebApp.Controllers
             _userService = userService;
             _mapper = mapper;
         }
-
-
-        public IActionResult AdminDashboard()
+        public IActionResult AdminDashboard(DateTime? startDate, DateTime? endDate)
         {
-            var tickets = _ticketRepo.GetAll().ToList();
+            // var tickets = _ticketRepo.GetAll().ToList();
+            var tickets = _ticketRepo.GetAll()
+                             .Where(t => (startDate == null || t.CreatedAt >= startDate) && (endDate == null || t.CreatedAt <= endDate))
+                             .ToList();
+
             var statusCounts = tickets.GroupBy(t => t.Status.StatusName)
-                              .Select(group => new {
-                                  Status = group.Key,
-                                  Count = group.Count()
-                              }).ToDictionary(g => g.Status, g => g.Count);
+                                      .ToDictionary(g => g.Key, g => g.Count());
+
+            var categoryCounts = tickets.GroupBy(t => t.Category.CategoryName)
+                                      .ToDictionary(g => g.Key, g => g.Count());
+            var priorityCounts = tickets.GroupBy(t => t.Priority).ToDictionary( g=> g.Key, g=> g.Count());
             var customers = _userRepo.Table.Where(u => u.RoleId == 1).Count();
             var agents = _userRepo.Table.Where(u => u.RoleId == 2).Count();
             var admins = _userRepo.Table.Where(u => u.RoleId == 4 || u.RoleId == 5).Count();
             var totalTickets = tickets.Count();
-            ViewBag.StatusCounts = statusCounts;
-            ViewBag.TotalTickets = totalTickets;
-            ViewBag.CustomerCount = customers;
-            ViewBag.AgentCount = agents;
-            ViewBag.AdminCount = admins;
-            return View();
+            var dashboardViewModel = new AdminDashboardViewModel
+            {
+                StatusCounts = statusCounts,
+                TotalTickets = totalTickets,
+                CustomerCount = customers,
+                AgentCount = agents,
+                AdminCount = admins,
+                CategoryCounts = categoryCounts,
+                PriorityCounts = priorityCounts
+            };
+
+            return View(dashboardViewModel);
         }
 
+        [HttpGet]
+        public IActionResult UpdateChart(DateTime startDate, DateTime endDate)
+        {
+            var tickets = _ticketRepo.GetAll()
+                             .Where(t => (startDate == null || t.CreatedAt >= startDate) && (endDate == null || t.CreatedAt <= endDate))
+                             .ToList();
 
+            var statusCounts = tickets.GroupBy(t => t.Status.StatusName)
+                                      .ToDictionary(g => g.Key, g => g.Count());
+            
+            return Json(statusCounts);
+        }
+        [HttpGet]
+        public IActionResult UpdateCategoryChart(DateTime startDate, DateTime endDate)
+        {
+            var tickets = _ticketRepo.GetAll()
+                             .Where(t => (startDate == null || t.CreatedAt >= startDate) && (endDate == null || t.CreatedAt <= endDate))
+                             .ToList();
+
+            var categoryCounts = tickets.GroupBy(t => t.Category.CategoryName)
+                                      .ToDictionary(g => g.Key, g => g.Count());
+
+            return Json(categoryCounts);
+        }
+        [HttpGet]
+        public IActionResult UpdatePriorityChart(DateTime startDate, DateTime endDate)
+        {
+            var tickets = _ticketRepo.GetAll()
+                             .Where(t => (startDate == null || t.CreatedAt >= startDate) && (endDate == null || t.CreatedAt <= endDate))
+                             .ToList();
+
+            var priorityCounts = tickets.GroupBy(t => t.Priority)
+                                      .ToDictionary(g => g.Key, g => g.Count());
+
+            return Json(priorityCounts);
+        }
         // CUSTOMER SIDE
 
         public IActionResult Customers()
@@ -351,12 +395,22 @@ namespace ASI.Basecode.WebApp.Controllers
             var customerSatisfactionScore = feedbacks.Count > 0 ? totalSatisfactionScore / feedbacks.Count : 0; 
 
             // Generate the report
-            var report = $"Agent Name: {agentDetails.FirstName} {agentDetails.LastName}\n" +
-                         $"Tickets Resolved: {ticketsResolved}\n" +
-                         $"Average Resolution Time: {formattedAverageResolutionTime} hours\n" +
-                         $"Customer Satisfaction Score: {customerSatisfactionScore}/5";
+            var report = $"<ul>" +
+                 $"<li>Agent Name: {agentDetails.FirstName} {agentDetails.LastName}</li>" +
+                 $"<li>Tickets Resolved: {ticketsResolved}</li>" +
+                 $"<li>Average Resolution Time: {formattedAverageResolutionTime} hours</li>" +
+                 $"<li>Customer Satisfaction Score: {customerSatisfactionScore}/5</li>" +
+                 "</ul>";
 
-            return Content(report);
+            var report2 = new
+            {
+                AgentName = $"{agentDetails.FirstName} {agentDetails.LastName}",
+                TicketsResolved = ticketsResolved,
+                AverageResolutionTime = formattedAverageResolutionTime,
+                CustomerSatisfactionScore = customerSatisfactionScore
+            };
+
+            return Json(report2);
         }
 
 

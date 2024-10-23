@@ -113,7 +113,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p id="output"></p>
+                <p id="reportList"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonGenerate">Close</button>
@@ -428,9 +428,22 @@
             url: '@Url.Action("GenerateAgentReport", "Admin")',
             type: 'POST',
             data: { agentId: agentId },
-            success: function (response) {
-                // Show the report in the modal
-                $('#output').text(response);
+            success: function (report) {
+                console.log(report);
+                var reportList = $('#reportList');
+                reportList.empty(); // Clear existing list items
+
+                var agentName = $('<li>').text(`Agent Name: ${report.agentName}`);
+                reportList.append(agentName);
+
+                var ticketsResolved = $('<li>').text(`Tickets Resolved: ${report.ticketsResolved}`);
+                reportList.append(ticketsResolved);
+
+                var averageResolutionTime = $('<li>').text(`Average Resolution Time: ${report.averageResolutionTime} hours`);
+                reportList.append(averageResolutionTime);
+
+                var customerSatisfactionScore = $('<li>').text(`Customer Satisfaction Score: ${report.customerSatisfactionScore}/5`);
+                reportList.append(customerSatisfactionScore);
                 $('#generateReportModal').modal('show');
             },
             error: function (jqXHR, textStatus, errorThrown) {
