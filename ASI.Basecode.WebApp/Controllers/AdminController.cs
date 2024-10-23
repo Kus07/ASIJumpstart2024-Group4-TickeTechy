@@ -12,6 +12,11 @@ using System;
 using System.Data.Entity;
 using Microsoft.AspNetCore.Http;
 using static ASI.Basecode.Resources.Constants.Enums;
+using AutoMapper;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using System.Net.Sockets;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -19,10 +24,12 @@ namespace ASI.Basecode.WebApp.Controllers
     public class AdminController : BaseController
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public AdminController(MailManager mailManager, IUserService userService, IHttpContextAccessor httpContextAccessor) : base(mailManager, httpContextAccessor)
+        public AdminController(IMapper mapper, MailManager mailManager, IUserService userService, IHttpContextAccessor httpContextAccessor) : base(mailManager, httpContextAccessor)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
 
@@ -567,11 +574,198 @@ namespace ASI.Basecode.WebApp.Controllers
 
         // END OF ADMIN SIDE
 
+
+
         // BEGINNING OF TICKETS SIDE
         public IActionResult Tickets()
         {
-            return View();
+            var model = new AdminViewModel();
+
+            var tickets = _ticketRepo.GetAll();
+
+            model.Tickets = _mapper.Map<List<TicketModel>>(tickets);
+            ViewBag.Status = _statusRepo.GetAll();
+            ViewBag.Agents = _userRepo.Table.Where(m => m.RoleId == 2).ToList();
+            ViewBag.Customers = _userRepo.Table.Where(m => m.RoleId == 1).ToList();
+            ViewBag.Categories = _categoryRepo.GetAll();
+            return View(model);
         }
+
+        [HttpPost]
+        public IActionResult DeleteTicket(int ticketId)
+        {
+            // Check if the admin exists
+            var ticket = _ticketRepo.Table.Where(m => m.Id == ticketId).FirstOrDefault();
+            if (ticket == null)
+            {
+                TempData["error"] = "Invalid ticket ID";
+                return RedirectToAction("Tickets", "Admin");
+            }
+
+            _ticketRepo.Delete(ticketId);
+
+            TempData["message"] = $"Successfully deleted ticket #{ticket.Id}.";
+            return RedirectToAction("Tickets", "Admin");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddTicket(int category, string description, int customerId, int agentId, int status, string priority, IFormFile attachment)
+        {
+            // Check if fields are filled
+            if (category == 0 || String.IsNullOrEmpty(description.Trim()) || customerId == 0 || agentId == 0 || status == 0 || String.IsNullOrEmpty(priority.Trim()))
+            {
+                TempData["error"] = "Fill all the given fields!";
+                return RedirectToAction("Tickets", "Admin");
+            }
+
+            // Initialize the ticket
+            var newTicket = new Ticket()
+            {
+                CategoryId = category,
+                Description = description,
+                UserId = customerId, // Assuming this is the customer
+                StatusId = status,
+                Priority = priority,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            // Handle file attachment if provided
+            string attachmentPath = "";
+            if (attachment != null && attachment.Length > 0)
+            {
+                // Create the path for the Attachments folder inside wwwroot
+                var attachmentsPicturesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Attachments");
+
+                // Ensure the folder exists
+                if (!Directory.Exists(attachmentsPicturesFolder))
+                {
+                    Directory.CreateDirectory(attachmentsPicturesFolder);
+                }
+
+                // Create a unique file name to avoid overwriting files with the same name
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + attachment.FileName;
+
+                // Full file path
+                string filePath = Path.Combine(attachmentsPicturesFolder, uniqueFileName);
+
+                // Copy the file to the target location
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await attachment.CopyToAsync(fileStream);
+                }
+
+                // Save the relative path to the file (relative to wwwroot)
+                attachmentPath = Path.Combine("Attachments", uniqueFileName).Replace("\\", "/");
+            }
+
+            newTicket.Attachments = attachmentPath;
+            _ticketRepo.Create(newTicket);
+
+            // Assign the ticket to an agent if specified
+            if (agentId != 0)
+            {
+                var createdTicket = _ticketRepo.Table.Where(m => m.Description.Equals(newTicket.Description) && m.CategoryId == newTicket.CategoryId && m.UserId == newTicket.UserId).FirstOrDefault();
+
+                var newAssignment = new TicketAssigned
+                {
+                    TicketId = createdTicket.Id,
+                    AgentId = agentId,
+                    Status = "APPROVED"
+                };
+                _ticketAssignedRepo.Create(newAssignment);
+            }
+
+            // Notify success
+            TempData["message"] = $"Successfully created a new ticket with ID {newTicket.Id}.";
+
+            return RedirectToAction("Tickets", "Admin");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditTicket(int ticketId, string description, string priority, string status, string category, IFormFile attachment)
+        {
+            // Check if fields are filled
+            if (ticketId == 0 || String.IsNullOrEmpty(description) || String.IsNullOrEmpty(priority)
+                || String.IsNullOrEmpty(status) || String.IsNullOrEmpty(category))
+            {
+                TempData["error"] = "Fill all the given fields!";
+                return RedirectToAction("Tickets", "Admin");
+            }
+
+            // Find the ticket
+            var ticket = _ticketRepo.Table.Where(t => t.Id == ticketId).FirstOrDefault();
+            if (ticket == null)
+            {
+                TempData["error"] = "Invalid ticket ID";
+                return RedirectToAction("Tickets", "Admin");
+            }
+
+            string attachmentPath = "";
+            if (attachment != null && attachment.Length > 0)
+            {
+                // Create the path for the Attachments folder inside wwwroot
+                var attachmentsPicturesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Attachments");
+
+                // Ensure the folder exists
+                if (!Directory.Exists(attachmentsPicturesFolder))
+                {
+                    Directory.CreateDirectory(attachmentsPicturesFolder);
+                }
+
+                // Create a unique file name to avoid overwriting files with the same name
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + attachment.FileName;
+
+                // Full file path
+                string filePath = Path.Combine(attachmentsPicturesFolder, uniqueFileName);
+
+                // Copy the file to the target location
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await attachment.CopyToAsync(fileStream);
+                }
+
+                // Save the relative path to the file (relative to wwwroot)
+                attachmentPath = Path.Combine("Attachments", uniqueFileName).Replace("\\", "/");
+            }
+
+            // Update ticket details
+            ticket.Description = description;
+            ticket.Priority = priority;
+            ticket.Attachments = attachmentPath;
+
+            // Update ticket category if it's changed
+            var ticketCategory = _categoryRepo.Table.Where(c => c.CategoryName == category).FirstOrDefault();
+            if (ticketCategory != null)
+            {
+                ticket.CategoryId = ticketCategory.Id;
+            }
+            else
+            {
+                TempData["error"] = "Invalid category";
+                return RedirectToAction("Tickets", "Admin");
+            }
+
+            // Update ticket status if it's changed
+            var ticketStatus = _statusRepo.Table.Where(s => s.StatusName == status).FirstOrDefault();
+            if (ticketStatus != null)
+            {
+                ticket.StatusId = ticketStatus.Id;
+            }
+            else
+            {
+                TempData["error"] = "Invalid status";
+                return RedirectToAction("Tickets", "Admin");
+            }
+
+            // Update the ticket in the repository
+            _ticketRepo.Update(ticket.Id, ticket);
+
+            TempData["message"] = $"Successfully updated ticket {ticket.Id}!";
+            return RedirectToAction("Tickets", "Admin");
+        }
+
 
         public IActionResult TicketsAssignment()
         {

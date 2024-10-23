@@ -226,7 +226,7 @@
                     <!-- Attachments field -->
                     <div class="form-group mb-3">
                         <label asp-for="@Model.Attachments" class="form-label fw-bold">Attachments</label>
-                        <input asp-for="@Model.Attachments" type="file" class="form-control" />
+                        <input asp-for="@Model.Attachments" type="file" accept="image/x-png,image/gif,image/jpeg" class="form-control" />
                         <span asp-validation-for="@Model.Attachments" class="text-danger small"></span>
                     </div>
                     <!-- Submit button -->

@@ -337,7 +337,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 var assignedTicket = new TicketAssigned()
                 {
                     TicketId = newTicket.Id,
-                    AgentId = agentId
+                    AgentId = agentId,
+                    Status = "PENDING"
                 };
                 _ticketAssignedRepo.Create(assignedTicket);
                 TempData["message"] = SuccessCreateTicket;

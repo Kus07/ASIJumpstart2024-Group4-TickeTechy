@@ -123,4 +123,7 @@
   <data name="WriteFeedbackBtn" xml:space="preserve">
     <value>Write Feedback</value>
   </data>
+  <data name="CancelBtn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

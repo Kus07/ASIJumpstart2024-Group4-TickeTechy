@@ -140,5 +140,16 @@ namespace ASI.Basecode.Resources.Views {
                 return ResourceManager.GetString("UserId", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to please select category.
+        /// </summary>
+        public static string PleaseSelectCategoryForArticle
+        {
+            get
+            {
+                return ResourceManager.GetString("PleaseSelectCategoryForArticle", resourceCulture);
+            }
+        }
     }
 }

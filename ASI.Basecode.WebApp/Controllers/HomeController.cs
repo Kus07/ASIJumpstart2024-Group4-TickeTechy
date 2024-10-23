@@ -85,7 +85,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize(Roles = "2")]
         public IActionResult AgentDashboard()
         {
-            var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == GetUserId() || m.ReassignedToId == GetUserId()).Include(m => m.Ticket).Include(m => m.Ticket.User).ToList();
+            var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == GetUserId() || m.ReassignedToId == GetUserId() && m.Status.Equals("APPROVED")).Include(m => m.Ticket).Include(m => m.Ticket.User).ToList();
 
             if (UnreadNotifications())
             {
