@@ -57,48 +57,39 @@ namespace ASI.Basecode.WebApp.Controllers
             var ticket = _ticketRepo.Get(id);
             int userId = GetUserId();
 
-            // trappings
+            // Handle invalid ticket case
             if (ticket == null)
             {
                 TempData["error"] = "Invalid ticket ID";
-                if (User.IsInRole("1"))
-                {
-                    return RedirectToAction("CustomerDashboard", "Home");
-                }
-                else if (User.IsInRole("2"))
-                {
-                    return RedirectToAction("AgentDashboard", "Home");
-                }
+                return RedirectToAction(User.IsInRole("1") ? "CustomerDashboard" : "AgentDashboard", "Home");
             }
 
             var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id)
                 .Include(m => m.Ticket)
                 .FirstOrDefault();
-            if (User.IsInRole("2"))
+
+            if (User.IsInRole("2") && ticketAssigned.AgentId != userId && ticketAssigned.ReassignedToId != userId)
             {
-                if (ticketAssigned.AgentId != userId && ticketAssigned.ReassignedToId != userId)
-                {
-                    TempData["error"] = Resources.Messages.Errors.Unauthorized;
-                    return RedirectToAction("AgentDashboard", "Home");
-                }
+                TempData["error"] = Resources.Messages.Errors.Unauthorized;
+                return RedirectToAction("AgentDashboard", "Home");
             }
-            else if (User.IsInRole("1"))
+            else if (User.IsInRole("1") && ticket.UserId != userId)
             {
-                if (ticket.UserId != userId)
-                {
-                    TempData["error"] = "Unauthorized access";
-                    return RedirectToAction("CustomerDashboard", "Home");
-                }
+                TempData["error"] = "Unauthorized access";
+                return RedirectToAction("CustomerDashboard", "Home");
             }
 
             var customerFirstName = _userDetailRepo.Table.Where(m => m.UserId == ticket.UserId).Select(m => m.FirstName).FirstOrDefault();
             var agentName = _userDetailRepo.Table.Where(m => m.UserId == ticketAssigned.AgentId).Select(m => m.FirstName).FirstOrDefault();
             var agents = _userRepo.Table.Where(m => m.RoleId == 2).Include(m => m.Department).ToList();
-            var messages = _ticketMessageRepo.Table
-                .Where(m => m.TicketId == ticket.Id)
-                .OrderBy(m => m.CreatedAt)  
-                .ToList();
+            var messages = _ticketMessageRepo.Table.Where(m => m.TicketId == ticket.Id).OrderBy(m => m.CreatedAt).ToList();
 
+            var feedBack = _feedbackRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+
+            // Set ViewBag to control buttons in the view
+            ViewBag.alreadyFeedback = feedBack != null;
+
+            // Pass feedback to ViewModel
             var model = new ViewTicketModel()
             {
                 Ticket = ticket,
@@ -106,24 +97,14 @@ namespace ASI.Basecode.WebApp.Controllers
                 Agent = agentName,
                 Agents = agents,
                 Messages = messages,
-                TicketAssigned = ticketAssigned
+                TicketAssigned = ticketAssigned,
+                Feedback = feedBack // Set the feedback in the model
             };
-
-            var feedBack = _feedbackRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
-
-            if(feedBack != null)
-            {
-                ViewBag.alreadyFeedback = true;
-            }
-            else
-            {
-                ViewBag.alreadyFeedback = false;
-            }
-
-
 
             return View(model);
         }
+
+
 
         private IActionResult RedirectToDashboard()
         {

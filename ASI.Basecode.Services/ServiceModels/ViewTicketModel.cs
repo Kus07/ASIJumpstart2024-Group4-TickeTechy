@@ -16,5 +16,9 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<TicketMessage> Messages { get; set; }
 
         public TicketAssigned TicketAssigned { get; set;  }
+
+        public Feedback Feedback { get; set; } 
+                                               
+        public List<Feedback> Feedbacks { get; set; }
     }
 }

@@ -675,7 +675,7 @@
                     <button id="sendMessageButton" disabled class="btn btn-info" style="cursor: not-allowed;">
                         @SendBtn
                     </button>
-                    if (User.IsInRole("1"))
+                    @if (User.IsInRole("1"))
                     {
                         if (!ViewBag.alreadyFeedback)
                         {
@@ -684,6 +684,17 @@
                             </button>
                         }
                     }
+
+                    @if (User.IsInRole("2"))
+                    {
+                        if (ViewBag.alreadyFeedback)
+                        {
+                            <button id="viewFeedbackButton" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewfeedbackModal">
+                                View Feedback
+                            </button>
+                        }
+                    }
+
                 }
                 else
                 {
@@ -767,9 +778,6 @@
                                 <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
                             </svg>
                         </label>
-
-                            
-
                     </div>
 
                     <!-- Comment textarea -->
@@ -781,6 +789,54 @@
                     <!-- Send button -->
                     <button type="submit" class="btn btn-primary" id="submitRating">Send</button>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="viewfeedbackModal" tabindex="-1" aria-labelledby="viewfeedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewfeedbackModalLabel">View Feedback</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Display feedback details -->
+                <div class="feedback-details">
+                    @if (Model.Feedback != null)
+                    {
+                        <h6>Rating: </h6>
+                        <div class="star-rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= @Model.Feedback.Star)
+                                {
+                                    <label title="@i stars">
+                                        <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg" fill="#FFD700">
+                                            <!-- Filled Star -->
+                                            <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                                        </svg>
+                                    </label>
+                                }
+                                else
+                                {
+                                    <label title="@i stars">
+                                        <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg" fill="#d3d3d3">
+                                            <!-- Empty Star -->
+                                            <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                                        </svg>
+                                    </label>
+                                }
+                            }
+                        </div>
+
+                        <p><strong>Comment:</strong> @Model.Feedback.Comments</p>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeModalButton" data-bs-dismiss=" modal">Close</button>
             </div>
         </div>
     </div>
@@ -820,6 +876,20 @@
                 backdrop: false
             });
         });
+
+        $('#viewFeedbackButton').click(function () {
+            // Manually open the modal without the backdrop
+            $('#viewfeedbackModal').modal({
+                backdrop: false
+            });
+        });
+
+        $('#closeModalButton').click(function () {
+            $('#viewfeedbackModal').modal('hide');
+        });
+
+
+
     });
 
     var modal = document.getElementById("myModal");
