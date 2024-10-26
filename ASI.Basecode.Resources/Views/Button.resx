@@ -126,4 +126,7 @@
   <data name="CancelBtn" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="ViewFeedbackBtn" xml:space="preserve">
+    <value>View Feedback</value>
+  </data>
 </root>

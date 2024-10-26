@@ -132,7 +132,4 @@
   <data name="SuccessDeleteTicket" xml:space="preserve">
     <value>Successfully deleted ticket!</value>
   </data>
-  <data name="ViewFeedbackBtn" xml:space="preserve">
-    <value>View Feedback</value>
-  </data>
 </root>

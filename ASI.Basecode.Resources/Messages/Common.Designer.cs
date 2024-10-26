@@ -104,5 +104,16 @@ namespace ASI.Basecode.Resources.Messages {
                 return ResourceManager.GetString("SuccessReassign", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully reassigned ticket to.
+        /// </summary>
+        public static string ViewFeedbackBtn
+        {
+            get
+            {
+                return ResourceManager.GetString("SuccessReassign", resourceCulture);
+            }
+        }
     }
 }
