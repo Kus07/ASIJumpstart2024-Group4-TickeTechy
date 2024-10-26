@@ -3,4 +3,122 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Tickets Assignment</h1>
+
+<div class="content-body">
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
+            @TempData["error"]
+        </div>
+    }
+    @if (ViewBag.Errors != null)
+    {
+        <div class="alert alert-danger" style="border-radius: 0;" role="alert">
+            @ViewBag.Errors
+        </div>
+    }
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-success" style="border-radius: 0;" role="alert">
+            @TempData["message"]
+        </div>
+    }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h4>Tickets Assignment</h4>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="ticketsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>Created By</th>
+                                        <th>Created Date</th>
+                                        <th>Status</th>
+                                        <th>Agent Assigned</th>
+                                        <th>Priority</th>
+                                        <th>Attachments</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ticket in Model.TicketsAssigneds)
+                                    {
+                                        <tr>
+                                            <td>@ticket.Ticket.Description</td>
+                                            <td>@ticket.Ticket.Category.CategoryName</td>
+                                            <td>@ticket.Ticket.User.UserDetails.FirstOrDefault().FirstName</td>
+                                            <td>@ticket.Ticket.CreatedAt</td>
+                                            <td style="color: white;">
+                                                @if (ticket.Status == "OPEN")
+                                                {
+                                                    <span class="badge bg-primary">@ticket.Status</span> <!-- Blue for OPEN -->
+                                                }
+                                                else if (ticket.Status == "WAITINGRESPONSE" || ticket.Status == "ONGOING")
+                                                {
+                                                    <span class="badge bg-warning text-dark">@ticket.Status</span> <!-- Orange for WAITINGFORAPPROVAL and ONGOING -->
+                                                }
+                                                else if (ticket.Status == "RESOLVED")
+                                                {
+                                                    <span class="badge bg-success">@ticket.Status</span> <!-- Green for RESOLVED -->
+                                                }
+                                                else if (ticket.Status == "CLOSED")
+                                                {
+                                                    <span class="badge bg-danger">@ticket.Status</span> <!-- Red for CLOSED -->
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">@ticket.Status</span> <!-- Grey for any other statuses -->
+                                                }
+                                            </td>
+                                            <td>Agent: @ticket.Agent.UserDetails.FirstOrDefault().FirstName</td>
+                                            <td>@ticket.Ticket.Priority</td>
+                                            <td>
+                                                @if (ticket.Ticket.Attachments != null && ticket.Ticket.Attachments.Any())
+                                                {
+                                                    <a href="@Url.Action("DownloadAttachment", "File", new { id = ticket.Id })">Download</a>
+                                                }
+                                                else
+                                                {
+                                                    <span>No attachments</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-info editTicketBtn"
+                                                   style="color: white;" id="showEditTicketModalBtn" data-toggle="modal"
+                                                   data-target="#editTicketModal"
+                                                   data-id="@ticket.Id"
+                                                   data-description="@ticket.Ticket.Description"
+                                                   data-category="@ticket.Ticket.Category"
+                                                   data-createdby="@ticket.Ticket.User.UserDetails.FirstOrDefault().FirstName"
+                                                   data-status="@ticket.Status"
+                                                   data-agentassigned="@ticket.Agent.Username"
+                                                   data-priority="@ticket.Ticket.Priority"
+                                                   data-attachments="@ticket.Ticket.Attachments">Approve</a>
+                                                ||
+                                                <a class="btn btn-danger deleteTicketBtn" style="color: white;"
+                                                   id="showDeleteTicketModalBtn" data-toggle="modal" data-id="@ticket.Id" data-description="@ticket.Ticket.Description"
+                                                   data-target="#deleteTicketModal">Disapprove</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Add Ticket Button -->
+                        <div class="mt-3 text-right">
+                            <button type="button" class="btn btn-info" id="showAddTicketModalBtn">
+                                <i class="icon icon-plus"></i> Add Ticket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

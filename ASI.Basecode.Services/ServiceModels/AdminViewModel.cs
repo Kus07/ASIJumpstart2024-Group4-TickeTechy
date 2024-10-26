@@ -10,5 +10,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<UserDetail> Admins { get; set; }
         public List<Article> Articles { get; set; }
         public List<TicketModel> Tickets { get; set; }
+        public List<TicketAssigned> TicketsAssigneds { get; set; }
     }
 }

@@ -823,7 +823,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         public IActionResult TicketsAssignment()
         {
-            return View();
+            var model = new AdminViewModel();
+
+            var ticketsAssigneds = _ticketAssignedRepo.Table.Where(m => m.Status.Equals("PENDING")).ToList();
+            model.TicketsAssigneds = ticketsAssigneds;
+
+            return View(model);
         }
 
 

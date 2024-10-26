@@ -88,5 +88,16 @@ namespace ASI.Basecode.Resources.Views {
                 return ResourceManager.GetString("CancelBtn", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to view feedback button.
+        /// </summary>
+        public static string ViewFeedbackBtn
+        {
+            get
+            {
+                return ResourceManager.GetString("ViewFeedbackBtn", resourceCulture);
+            }
+        }
     }
 }
