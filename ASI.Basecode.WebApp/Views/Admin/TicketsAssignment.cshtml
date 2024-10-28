@@ -3,7 +3,134 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    .approve-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgb(20, 20, 20);
+        border: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+        cursor: pointer;
+        transition-duration: 0.3s;
+        overflow: hidden;
+        position: relative;
+        text-decoration: none !important;
+    }
 
+    .approve-svgIcon {
+        width: 42px;
+        transition-duration: 0.3s;
+    }
+
+        .approve-svgIcon path {
+            fill: white;
+        }
+
+    .approve-button:hover {
+        width: 120px;
+        border-radius: 50px;
+        transition-duration: 0.3s;
+        background-color: darkslategrey;
+        align-items: center;
+    }
+
+        .approve-button:hover .edit-svgIcon {
+            width: 20px;
+            transition-duration: 0.3s;
+            transform: translateY(60%);
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+
+    .approve-button::before {
+        display: none;
+        content: "Approve";
+        color: white;
+        transition-duration: 0.3s;
+        font-size: 2px;
+    }
+
+    .approve-button:hover::before {
+        display: block;
+        padding-right: 10px;
+        font-size: 13px;
+        opacity: 1;
+        transform: translateY(0px);
+        transition-duration: 0.3s;
+    }
+
+    .disapprove-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgb(20, 20, 20);
+        border: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+        cursor: pointer;
+        transition-duration: 0.3s;
+        overflow: hidden;
+        position: relative;
+        text-decoration: none !important;
+    }
+
+    .disapprove-svgIcon {
+        width: 42px;
+        transition-duration: 0.3s;
+    }
+
+        .disapprove-svgIcon path {
+            fill: white;
+        }
+
+    .disapprove-button:hover {
+        width: 120px;
+        border-radius: 50px;
+        transition-duration: 0.3s;
+        background-color: darkred;
+        align-items: center;
+        text-align: center;
+    }
+
+        .disapprove-button:hover .edit-svgIcon {
+            width: 20px;
+            transition-duration: 0.3s;
+            transform: translateY(60%);
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+
+    .disapprove-button::before {
+        display: none;
+        content: "  Disapprove";
+        color: white;
+        transition-duration: 0.3s;
+        font-size: 2px;
+    }
+
+    .disapprove-button:hover::before {
+        display: block;
+        padding-right: 10px;
+        font-size: 13px;
+        opacity: 1;
+        transform: translateY(0px);
+        transition-duration: 0.3s;
+    }
+</style>
 <div class="content-body">
     @if (TempData["error"] != null)
     {
@@ -23,6 +150,7 @@
             @TempData["message"]
         </div>
     }
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
@@ -40,7 +168,7 @@
                                         <th>Created By</th>
                                         <th>Created Date</th>
                                         <th>Status</th>
-                                        <th>Agent Assigned</th>
+                                        <th>Agent Assigned (through AI)</th>
                                         <th>Priority</th>
                                         <th>Attachments</th>
                                         <th>Action</th>
@@ -52,36 +180,36 @@
                                         <tr>
                                             <td>@ticket.Ticket.Description</td>
                                             <td>@ticket.Ticket.Category.CategoryName</td>
-                                            <td>@ticket.Ticket.User.UserDetails.FirstOrDefault().FirstName</td>
-                                            <td>@ticket.Ticket.CreatedAt</td>
+                                            <td>@ticket.Ticket.User.UserDetails.FirstOrDefault()?.FirstName</td>
+                                            <td>@ticket.Ticket.CreatedAt?.ToString("MM/dd/yyyy hh:mm tt")</td>
                                             <td style="color: white;">
                                                 @if (ticket.Status == "OPEN")
                                                 {
-                                                    <span class="badge bg-primary">@ticket.Status</span> <!-- Blue for OPEN -->
+                                                    <span class="badge bg-primary">@ticket.Status</span>
                                                 }
                                                 else if (ticket.Status == "WAITINGRESPONSE" || ticket.Status == "ONGOING")
                                                 {
-                                                    <span class="badge bg-warning text-dark">@ticket.Status</span> <!-- Orange for WAITINGFORAPPROVAL and ONGOING -->
+                                                    <span class="badge bg-warning text-dark">@ticket.Status</span>
                                                 }
                                                 else if (ticket.Status == "RESOLVED")
                                                 {
-                                                    <span class="badge bg-success">@ticket.Status</span> <!-- Green for RESOLVED -->
+                                                    <span class="badge bg-success">@ticket.Status</span>
                                                 }
                                                 else if (ticket.Status == "CLOSED")
                                                 {
-                                                    <span class="badge bg-danger">@ticket.Status</span> <!-- Red for CLOSED -->
+                                                    <span class="badge bg-danger">@ticket.Status</span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge bg-secondary">@ticket.Status</span> <!-- Grey for any other statuses -->
+                                                    <span class="badge bg-secondary">@ticket.Status</span>
                                                 }
                                             </td>
-                                            <td>Agent: @ticket.Agent.UserDetails.FirstOrDefault().FirstName</td>
+                                            <td>@ticket.Agent.UserDetails.FirstOrDefault()?.FirstName  (Department: @ticket.Agent.Department.DepartmentName)</td>
                                             <td>@ticket.Ticket.Priority</td>
                                             <td>
-                                                @if (ticket.Ticket.Attachments != null && ticket.Ticket.Attachments.Any())
+                                                @if (!string.IsNullOrEmpty(ticket.Ticket.Attachments))
                                                 {
-                                                    <a href="@Url.Action("DownloadAttachment", "File", new { id = ticket.Id })">Download</a>
+                                                    <a href="@Url.Action("DownloadAttachment", "File", new { id = ticket.Ticket.Id })">Download</a>
                                                 }
                                                 else
                                                 {
@@ -89,36 +217,128 @@
                                                 }
                                             </td>
                                             <td>
-                                                <a class="btn btn-info editTicketBtn"
-                                                   style="color: white;" id="showEditTicketModalBtn" data-toggle="modal"
-                                                   data-target="#editTicketModal"
-                                                   data-id="@ticket.Id"
-                                                   data-description="@ticket.Ticket.Description"
-                                                   data-category="@ticket.Ticket.Category"
-                                                   data-createdby="@ticket.Ticket.User.UserDetails.FirstOrDefault().FirstName"
-                                                   data-status="@ticket.Status"
-                                                   data-agentassigned="@ticket.Agent.Username"
-                                                   data-priority="@ticket.Ticket.Priority"
-                                                   data-attachments="@ticket.Ticket.Attachments">Approve</a>
-                                                ||
-                                                <a class="btn btn-danger deleteTicketBtn" style="color: white;"
-                                                   id="showDeleteTicketModalBtn" data-toggle="modal" data-id="@ticket.Id" data-description="@ticket.Ticket.Description"
-                                                   data-target="#deleteTicketModal">Disapprove</a>
+                                                <a class="approveTicketBtn approve-button" style="color: white;"
+                                                   data-toggle="modal" data-target="#approveTicketModal"
+                                                   data-id="@ticket.Ticket.Id">
+                                                    <svg class="approve-svgIcon" height="200px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 344.963 344.963" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#2ca10c;" d="M321.847,86.242l-40.026-23.11l-23.104-40.02h-46.213l-40.026-23.11l-40.026,23.11H86.239 l-23.11,40.026L23.11,86.242v46.213L0,172.481l23.11,40.026v46.213l40.026,23.11l23.11,40.026h46.213l40.02,23.104l40.026-23.11 h46.213l23.11-40.026l40.026-23.11v-46.213l23.11-40.026l-23.11-40.026V86.242H321.847z M156.911,243.075 c-3.216,3.216-7.453,4.779-11.671,4.72c-4.219,0.06-8.455-1.504-11.671-4.72l-50.444-50.444c-6.319-6.319-6.319-16.57,0-22.889 l13.354-13.354c6.319-6.319,16.57-6.319,22.889,0l25.872,25.872l80.344-80.35c6.319-6.319,16.57-6.319,22.889,0l13.354,13.354 c6.319,6.319,6.319,16.57,0,22.889L156.911,243.075z"></path> </g> </g></svg>
+                                                </a>
+                                                
+                                                <a class="disapproveTicketBtn disapprove-button mt-3 mb-3" style="color: white;"
+                                                   data-toggle="modal" data-target="#disapproveTicketModal"
+                                                   data-id="@ticket.Ticket.Id">
+                                                    <svg class="disapprove-svgIcon" viewBox="0 0 48 48" version="1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 48 48" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g fill="#80d4ff"> <circle cx="38" cy="26" r="4"></circle> <circle cx="10" cy="26" r="4"></circle> <path d="M39,19c0-12.7-30-8.3-30,0c0,1.8,0,8.2,0,10c0,8.3,6.7,15,15,15s15-6.7,15-15C39,27.2,39,20.8,39,19z"></path> <path d="M24,4C15.2,4,8,11.2,8,20c0,1.2,0,3.5,0,3.5l2.1,0.6V19l19.5-6.3l8.2,6.3v5.1l2.1-0.6c0,0,0-2.3,0-3.5 C40,12.5,34.6,4,24,4z"></path> </g> <g fill="#F44336"> <rect x="22" y="16.8" transform="matrix(.707 -.707 .707 .707 -11.355 24.586)" width="4" height="18.5"></rect> <rect x="22" y="16.8" transform="matrix(.707 .707 -.707 .707 25.414 -9.355)" width="4" height="18.5"></rect> </g> </g></svg>
+                                               </a>
                                             </td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
-                        <!-- Add Ticket Button -->
-                        <div class="mt-3 text-right">
-                            <button type="button" class="btn btn-info" id="showAddTicketModalBtn">
-                                <i class="icon icon-plus"></i> Add Ticket
-                            </button>
-                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Approve Ticket Modal -->
+    <div class="modal fade" id="approveTicketModal" tabindex="-1" role="dialog" aria-labelledby="approveTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post" action="/Admin/ApproveTicket">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="approveTicketModalLabel">Confirm Approval</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to approve this ticket assignment?</p>
+                        <input type="hidden" name="ticketId" id="approveTicketId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-info">Approve</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disapprove Ticket Modal -->
+    <div class="modal fade" id="disapproveTicketModal" tabindex="-1" role="dialog" aria-labelledby="disapproveTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post" action="/Admin/DisapproveTicket">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="disapproveTicketModalLabel">Confirm Disapproval & Reassign Agent</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>If you raelly want to disapprove this ticket assignment, choose an appropriate agent below.</p>
+
+                        <!-- Hidden Ticket ID -->
+                        <input type="hidden" name="ticketId" id="disapproveTicketId">
+
+                        <!-- Agent Reassignment Dropdown -->
+                        <div class="form-group">
+                            <label for="agentDropdown">Assign to Agent</label>
+                            <select name="agentId" id="agentDropdown" class="form-control" required>
+                                <option value="">Select an agent</option>
+                                @foreach (var agent in Model.Agents) // Assuming Model.Agents contains a list of agents
+                                {
+                                    <option value="@agent.Id">@agent.FirstName @agent.LastName (Department: @agent.Users.Department.DepartmentName)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Disapprove & Reassign</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable with ordering on the created date column
+        let table = new DataTable('#ticketsTable', {
+            order: [[3, 'desc']],
+            language: {
+                emptyTable: 'No pending tickets yet!'
+            },
+            columnDefs: [
+                { type: 'date', targets: 3 } // Specify that the 4th column (index 3) is of type 'date'
+            ]
+        });
+
+        $('.cancelBtn').click(function () {
+            $('#disapproveTicketModal').modal('hide');
+            $('#approveTicketModal').modal('hide');
+        });
+
+        // Show data in the Approve Ticket modal
+        $('.approveTicketBtn').on('click', function () {
+            const ticketId = $(this).data('id');
+            $('#approveTicketModal').modal('show');
+            $('#approveTicketModal #approveTicketId').val(ticketId);
+        });
+
+        // Show data in the Disapprove Ticket modal
+        $('.disapproveTicketBtn').on('click', function () {
+            const ticketId = $(this).data('id');
+            $('#disapproveTicketModal').modal('show');
+            $('#disapproveTicketModal #disapproveTicketId').val(ticketId);
+        });
+
+        // Show Add Ticket modal on button click
+        $('#showAddTicketModalBtn').on('click', function () {
+            $('#addTicketModal').modal('show');
+        });
+    });
+
+</script>

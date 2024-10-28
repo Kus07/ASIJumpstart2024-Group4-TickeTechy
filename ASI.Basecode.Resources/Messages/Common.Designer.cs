@@ -70,6 +70,15 @@ namespace ASI.Basecode.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Successfully approved ticket assignmet!.
+        /// </summary>
+        public static string SuccessApproveTicket {
+            get {
+                return ResourceManager.GetString("SuccessApproveTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ticket created successfully!.
         /// </summary>
         public static string SuccessCreateTicket {
@@ -104,10 +113,5 @@ namespace ASI.Basecode.Resources.Messages {
                 return ResourceManager.GetString("SuccessReassign", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Successfully reassigned ticket to.
-        /// </summary>
-       
     }
 }

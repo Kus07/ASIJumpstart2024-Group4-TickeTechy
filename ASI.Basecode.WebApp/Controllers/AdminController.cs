@@ -12,6 +12,8 @@ using System;
 using System.Data.Entity;
 using Microsoft.AspNetCore.Http;
 using static ASI.Basecode.Resources.Constants.Enums;
+using static ASI.Basecode.Resources.Messages.Errors;
+using static ASI.Basecode.Resources.Messages.Common;
 using AutoMapper;
 using System.Collections.Generic;
 using System.IO;
@@ -825,12 +827,55 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             var model = new AdminViewModel();
 
-            var ticketsAssigneds = _ticketAssignedRepo.Table.Where(m => m.Status.Equals("PENDING")).ToList();
+            var ticketsAssigneds = _ticketAssignedRepo.Table.Where(m => m.Status.Equals("PENDING")).Include(m => m.Ticket.User.Department).ToList();
+            var agents = _userDetailRepo.Table.Where(m => m.Users.RoleId == 2).Include(m => m.Users).Include(m => m.Users.Department).ToList();
+
+            model.Agents = agents;
             model.TicketsAssigneds = ticketsAssigneds;
 
             return View(model);
         }
 
+        [HttpPost]
+        public IActionResult ApproveTicket(int ticketId)
+        {
+            var ticket = _ticketRepo.Get(ticketId);
+
+            if (ticket == null)
+            {
+                TempData["error"] = InvalidIDError;
+                return RedirectToAction("TicketsAssignment", "Admin");
+            }
+
+            var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+            ticketAssigned.Status = "APPROVED";
+            _ticketAssignedRepo.Update(ticketAssigned.Id, ticketAssigned);
+
+            TempData["message"] = SuccessApproveTicket;
+            return RedirectToAction("TicketsAssignment", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult DisapproveTicket(int ticketId, int agentId)
+        {
+            var ticket = _ticketRepo.Get(ticketId);
+            var agent = _userRepo.Get(agentId);
+
+            if(ticket == null || agent.RoleId != 2)
+            {
+                TempData["error"] = InvalidIDError;
+                return RedirectToAction("TicketsAssignment", "Admin");
+            }
+
+            var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+
+            ticketAssigned.AgentId = agentId;
+            ticketAssigned.Status = "APPROVED";
+            _ticketAssignedRepo.Update(ticketAssigned.Id, ticketAssigned);
+
+            TempData["message"] = SuccessReassign + " agent " + agent.UserDetails.FirstOrDefault().LastName;
+            return RedirectToAction("TicketsAssignment", "Admin");
+        }
 
 
         // BEGINNING OF KNOWLEDGEBASE SIDE

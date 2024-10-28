@@ -132,4 +132,7 @@
   <data name="SuccessDeleteTicket" xml:space="preserve">
     <value>Successfully deleted ticket!</value>
   </data>
+  <data name="SuccessApproveTicket" xml:space="preserve">
+    <value>Successfully approved ticket assignmet!</value>
+  </data>
 </root>
