@@ -160,24 +160,42 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize(Roles = "1,2")]
         public IActionResult Profile()
         {
-            var currentUser = _userDetailRepo.Table.Where(m => m.UserId == GetUserId()).Include(m => m.Users).Include(m => m.Users.Role).FirstOrDefault();
+            var currentUser = _userDetailRepo.Table
+                .Where(m => m.UserId == GetUserId())
+                .Include(m => m.Users)
+                .Include(m => m.Users.Role)
+                .FirstOrDefault();
 
             if (currentUser == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            if (currentUser.Users.RoleId == 1)
+            if (currentUser.Users.RoleId == 1) 
             {
                 var tickets = _ticketRepo.Table.Where(m => m.UserId == currentUser.Id).ToList();
-
                 ViewBag.TicketCount = tickets.Count;
             }
-            else
+            else 
             {
-                var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == currentUser.Id && m.Ticket.StatusId == Convert.ToInt32(TicketStatus.CLOSED)).ToList();
+                var tickets = _ticketAssignedRepo.Table
+                    .Where(m => m.AgentId == currentUser.UserId && m.Ticket.StatusId == Convert.ToInt32(TicketStatus.CLOSED))
+                    .ToList();
 
                 ViewBag.TicketCount = tickets.Count;
+
+                // Retrieve feedbacks for the current agent
+                var feedbacks = _feedbackRepo.Table
+                    .Where(f => f.AgentId == currentUser.UserId)
+                    .Include(f => f.User)
+                    .Include(f => f.Ticket)
+                    .ToList();
+
+                var averageStarRating = feedbacks.Any() ? feedbacks.Average(f => f.Star) : 0;
+
+                ViewBag.FeedbackCount = feedbacks.Count;
+                ViewBag.Feedbacks = feedbacks; 
+                ViewBag.AverageStarRating = averageStarRating;
             }
 
             if (UnreadNotifications())
@@ -187,6 +205,8 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return View(currentUser);
         }
+
+
 
         public IActionResult EditProfile()
         {

@@ -1,9 +1,41 @@
 ﻿@model ASI.Basecode.Data.Models.UserDetail
+@using ASI.Basecode.Data.Models
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
+    var feedbacks = ViewBag.Feedbacks as List<Feedback>;
 }
 
 <style>
+    /* From Uiverse.io by AbanoubMagdy1 */
+    .loader {
+        --dim: 6rem;
+        background-color: #ED8A19;
+        width: var(--dim);
+        height: var(--dim);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        animation: spin_412 5s infinite;
+    }
+
+        .loader .loader-svg {
+            transform: translateY(-2px) scale(.7);
+        }
+
+    @@keyframes spin_412 {
+        0% {
+            transform: rotate(0) scale(1);
+        }
+
+        50% {
+            transform: rotate(720deg) scale(1.3);
+        }
+
+        100% {
+            transform: rotate(0) scale(1);
+        }
+    }
+
     * {
         margin: 0;
         padding: 0;
@@ -112,9 +144,12 @@
                     <span class="number">@ViewBag.TicketCount <span class="follow">Tickets resolved</span></span>
                 }
             </div>
-            @* <div class="d-flex mt-2">
-                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewfeedbackModal">View Feedbacks</button>
-            </div> *@
+            @if (User.IsInRole("2"))
+            {
+                <div class="d-flex mt-2">
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewfeedbackModal">View Feedbacks</button>
+                </div>
+            }
             <div class="d-flex mt-2">
                 <button class="btn1 btn-dark" onclick="window.location.href='@Url.Action("EditProfile", "Home")'">Edit Profile</button>
             </div>
@@ -126,7 +161,7 @@
                     <button type="submit" class="btn btn-danger">Logout</button>
                 </form>
             </div>
-            
+
         </div>
         <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
             <span><i class="fa fa-twitter"></i></span>
@@ -174,6 +209,75 @@
     </div>
 </div>
 
+<!-- Feedback Modal -->
+<div class="modal fade" id="viewfeedbackModal" tabindex="-1" aria-labelledby="viewfeedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewfeedbackModalLabel">Your Feedbacks</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (ViewBag.Feedbacks != null && ViewBag.FeedbackCount > 0)
+                {
+                    <ul class="list-group">
+                        @foreach (var feedback in feedbacks)
+                        {
+                            <li class="list-group-item">
+                                <strong>Customer Name:</strong> @feedback.User.UserDetails.FirstOrDefault().FirstName <br />
+                                <strong>From Ticket: #</strong> @feedback.Ticket.Id <br />
+                                <strong>Comment:</strong> @feedback.Comments <br />
+                                <strong>Rating:</strong> @feedback.Star star<br />
+                                <div class="star-rating">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= @feedback.Star)
+                                        {
+                                            <label title="@i stars">
+                                                <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg" fill="#FFD700">
+                                                    <!-- Filled Star -->
+                                                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                                                </svg>
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label title="@i stars">
+                                                <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg" fill="#d3d3d3">
+                                                    <!-- Empty Star -->
+                                                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                                                </svg>
+                                            </label>
+                                        }
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No feedbacks available for this agent.</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <p style="margin-right: 10px"><strong>Average Rating:</strong> @ViewBag.AverageStarRating</p>
+                <div class="loader" style="width:30px; height: 30px; margin-right: 27%">
+                    <svg class="loader-svg" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 47.94 47.94" style="enable-background:new 0 0 47.94 47.94;" xml:space="preserve">
+                    <path style="fill:#fff;" d="M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757
+	                    c2.118,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042
+	                    c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685
+	                    c-1.894,0.996-4.108-0.613-3.746-2.722l2.065-12.042c0.144-0.837-0.134-1.692-0.742-2.285l-8.749-8.528
+	                    c-1.532-1.494-0.687-4.096,1.431-4.403l12.091-1.757c0.841-0.122,1.568-0.65,1.944-1.412l5.407-10.956
+	                    C22.602,0.567,25.338,0.567,26.285,2.486z"></path>
+                    </svg>
+                </div>
+                
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
