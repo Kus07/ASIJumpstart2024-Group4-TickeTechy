@@ -1,6 +1,8 @@
-﻿using ASI.Basecode.Services.Interfaces;
+﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -97,6 +99,38 @@ namespace ASI.Basecode.Services.Services
                 return 0;
             }
         }
+        [HttpPost]
+        public async Task<string> GenerateTicketSummary(string ticketDescription, string ticketCategory, IEnumerable<TicketMessage> conversationHistory)
+        {
+            var input = $"The ticket description is: {ticketDescription}. The ticket category is: {ticketCategory}.";
+            var conversation_history = JsonConvert.SerializeObject(conversationHistory);
+            dynamic jsonResponse = "";
 
+
+            using (var client = new HttpClient())
+            {
+                var values = new Dictionary<string, string>
+                    {
+                        { "input", input },
+                        { "conversation_history", conversation_history }
+                    };
+
+                var json = JsonConvert.SerializeObject(values);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync("http://localhost:5000/generateTicketSummary", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var responseData = JsonConvert.DeserializeObject<dynamic>(responseBody);
+                    return responseData.response;
+                }
+                else
+                {
+                    throw new Exception("Failed to generate ticket summary");
+                }
+            }
+        }
     }
 }

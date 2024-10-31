@@ -15,6 +15,7 @@ using static ASI.Basecode.Resources.Constants.Enums;
 using static ASI.Basecode.Resources.Messages.Common;
 using static ASI.Basecode.Resources.Messages.Errors;
 using System.Text.RegularExpressions;
+using ASI.Basecode.Services.Services;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -558,7 +559,18 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("View", "Ticket", new { id = ticketId }); // Redirect to the ticket details page after submission
 
         }
+        [HttpGet]
+        public ActionResult GetTicketSummary(int ticketId)
+        {
+            var ticket = _ticketRepo.Get(ticketId);
+            var ticketDescription = ticket.Description;
+            var ticketCategory = ticket.Category.CategoryName;
+            var conversationHistory = _ticketMessageRepo.Table.Where(m => m.TicketId == ticket.Id).OrderBy(m => m.CreatedAt);
+            var ticketSummary = _geminiService.GenerateTicketSummary(ticketDescription, ticketCategory, conversationHistory).Result;
+            return PartialView("_TicketSummary", ticketSummary);
+        }
 
+        
 
     }
 }

@@ -516,6 +516,16 @@
             <h3>Last Updated</h3>
             <p>@Model.Ticket.UpdatedAt?.ToString("dd MMM yyyy, hh:mm tt")</p>
         </div>
+        @if (Model.Ticket.Status.StatusName.Equals("CLOSED"))
+        {
+            <div class="detail-item">
+                <h3>Ticket Summary</h3
+                <p id="ticketSummary"></p>
+                <a href="@Url.Action("GetTicketSummary", "TicketController", new { ticketId = Model.Ticket.Id })">Get Ticket Summary</a>
+
+
+        </div>
+        }
 
         <button class="send-message-btn">View Details</button>
     </div>
@@ -1062,5 +1072,7 @@
             }
         });
     }
+
+
 </script>
 
