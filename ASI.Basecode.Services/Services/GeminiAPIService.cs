@@ -1,6 +1,8 @@
 ﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -100,37 +103,62 @@ namespace ASI.Basecode.Services.Services
             }
         }
         [HttpPost]
-        public async Task<string> GenerateTicketSummary(string ticketDescription, string ticketCategory, IEnumerable<TicketMessage> conversationHistory)
+        public async Task<string> GenerateTicketSummary(string ticketDescription, string ticketCategory, IEnumerable<TicketMessage> conversationHistory, IFormFile image)
         {
             var input = $"The ticket description is: {ticketDescription}. The ticket category is: {ticketCategory}.";
-            var conversation_history = JsonConvert.SerializeObject(conversationHistory);
+            var conversation_history = StringifyMessages(conversationHistory);
             dynamic jsonResponse = "";
+            var content = new MultipartFormDataContent();
+            if (image != null)
+            {
+                content.Add(new StringContent(image.FileName), "file");
+            }
 
 
             using (var client = new HttpClient())
             {
-                var values = new Dictionary<string, string>
+                /*var values = new Dictionary<string, string>
                     {
                         { "input", input },
                         { "conversation_history", conversation_history }
-                    };
+                    };*/
 
-                var json = JsonConvert.SerializeObject(values);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                //var json = JsonConvert.SerializeObject(values);
+                //var content = new FormUrlEncodedContent(values);
+                content.Add(new StringContent(input), "input");
+                content.Add(new StringContent(conversation_history), "conversation_history");
 
                 var response = await client.PostAsync("http://localhost:5000/generateTicketSummary", content);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    var responseData = JsonConvert.DeserializeObject<dynamic>(responseBody);
-                    return responseData.response;
+                    var jResponse = JObject.Parse(responseBody);
+                    //var responseData = JsonConvert.DeserializeObject<dynamic>(responseBody);
+                    var output = jResponse["response"].ToString();
+                    return output;
                 }
                 else
                 {
                     throw new Exception("Failed to generate ticket summary");
                 }
             }
+        }
+
+        public string StringifyMessages(IEnumerable<TicketMessage> messages) {
+            string chathistory = "Chat History: \n";
+            foreach (var message in messages)
+            {
+                if (message.User.RoleId == 1)
+                {
+                    chathistory += "Customer: " + message.Message + "\n";
+                }
+                else if (message.User.RoleId == 2)
+                { 
+                    chathistory += "Agent: " + message.Message + "\n";
+                }
+            }
+            return chathistory;
         }
     }
 }

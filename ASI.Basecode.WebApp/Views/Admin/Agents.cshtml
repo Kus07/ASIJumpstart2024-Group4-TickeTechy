@@ -690,7 +690,7 @@
         // Send AJAX request to generate report
         $.ajax({
             url: '@Url.Action("GenerateAgentReport", "Admin")',
-            type: 'POST',
+            type: 'GET',
             data: { agentId: agentId },
             success: function (report) {
                 console.log(report);

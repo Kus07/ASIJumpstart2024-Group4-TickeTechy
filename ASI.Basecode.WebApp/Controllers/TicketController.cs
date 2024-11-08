@@ -16,6 +16,9 @@ using static ASI.Basecode.Resources.Messages.Common;
 using static ASI.Basecode.Resources.Messages.Errors;
 using System.Text.RegularExpressions;
 using ASI.Basecode.Services.Services;
+using Newtonsoft.Json;
+using System.Net.Http;
+using Microsoft.Extensions.FileProviders;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -26,12 +29,15 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IUserService _userService;
         private readonly IGeminiAPIService _geminiService;
         private readonly IAgentService _agentService;
+        private readonly IFileProvider _fileProvider;
 
-        public TicketController(MailManager mailManager, IUserService userService, IGeminiAPIService geminiAPIService, IAgentService agentService, IHttpContextAccessor httpContextAccessor) : base(mailManager, httpContextAccessor)
+        public TicketController(MailManager mailManager, IUserService userService, IGeminiAPIService geminiAPIService, IAgentService agentService, IHttpContextAccessor httpContextAccessor, IFileProvider fileProvider) : base(mailManager, httpContextAccessor)
         {
             _userService = userService;
             _geminiService = geminiAPIService;
             _agentService = agentService;
+            _fileProvider = fileProvider;
+
         }
 
 
@@ -559,15 +565,44 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("View", "Ticket", new { id = ticketId }); // Redirect to the ticket details page after submission
 
         }
-        [HttpGet]
-        public ActionResult GetTicketSummary(int ticketId)
+        [HttpPost]
+        public async Task<IActionResult> GetTicketSummary(int ticketId)
         {
             var ticket = _ticketRepo.Get(ticketId);
             var ticketDescription = ticket.Description;
             var ticketCategory = ticket.Category.CategoryName;
-            var conversationHistory = _ticketMessageRepo.Table.Where(m => m.TicketId == ticket.Id).OrderBy(m => m.CreatedAt);
-            var ticketSummary = _geminiService.GenerateTicketSummary(ticketDescription, ticketCategory, conversationHistory).Result;
-            return PartialView("_TicketSummary", ticketSummary);
+            var conversationHistory = _ticketMessageRepo.Table.Where(m => m.TicketId == ticket.Id).OrderBy(m => m.CreatedAt).ToList();
+            var content = new MultipartFormDataContent();
+            var attachment = ticket.Attachments;
+            //declare image as null
+            IFormFile image = null;
+            if (!String.IsNullOrEmpty(attachment))
+            {
+
+                var filePath = Path.Combine(attachment);
+
+                // Get the file info
+                var fileInfo = _fileProvider.GetFileInfo(filePath);
+
+                // Check if file exists
+                if (!fileInfo.Exists)
+                {
+                    throw new FileNotFoundException("File not found", attachment);
+                }
+
+                // Open a stream to read the file
+                using var stream = new FileStream(fileInfo.PhysicalPath, FileMode.Open, FileAccess.Read);
+
+                // Create an IFormFile using a MemoryStream
+                var memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+                memoryStream.Position = 0;
+
+                image = new FormFile(memoryStream, 0, memoryStream.Length, "file", fileInfo.Name);
+
+            }
+            var ticketSummary = await _geminiService.GenerateTicketSummary(ticketDescription, ticketCategory, conversationHistory, image);
+            return Json(ticketSummary);
         }
 
         
