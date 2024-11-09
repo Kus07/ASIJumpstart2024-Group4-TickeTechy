@@ -135,4 +135,28 @@
   <data name="CreatingTicketError" xml:space="preserve">
     <value>There was an error creating the ticket.</value>
   </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>Invalid email!</value>
+  </data>
+  <data name="InvalidOTP" xml:space="preserve">
+    <value>Invalid OTP</value>
+  </data>
+  <data name="PassDoNotMatch" xml:space="preserve">
+    <value>Password do not match</value>
+  </data>
+  <data name="PlsEnterTitleForArticle" xml:space="preserve">
+    <value>Please enter a title for the article.</value>
+  </data>
+  <data name="PlsEnterContentForArticle" xml:space="preserve">
+    <value>Please enter content for the article.</value>
+  </data>
+  <data name="PlsSelectCategForArticle" xml:space="preserve">
+    <value>Please enter a category for the article.</value>
+  </data>
+  <data name="NoFeedbacks" xml:space="preserve">
+    <value>No feedbacks available for this agent.</value>
+  </data>
+  <data name="AddNewTicket" xml:space="preserve">
+    <value>Add New Ticket</value>
+  </data>
 </root>

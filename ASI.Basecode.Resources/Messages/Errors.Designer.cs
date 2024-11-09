@@ -61,11 +61,29 @@ namespace ASI.Basecode.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add New Ticket.
+        /// </summary>
+        public static string AddNewTicket {
+            get {
+                return ResourceManager.GetString("AddNewTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error creating the ticket..
         /// </summary>
         public static string CreatingTicketError {
             get {
                 return ResourceManager.GetString("CreatingTicketError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid email!.
+        /// </summary>
+        public static string InvalidEmail {
+            get {
+                return ResourceManager.GetString("InvalidEmail", resourceCulture);
             }
         }
         
@@ -79,11 +97,65 @@ namespace ASI.Basecode.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid OTP.
+        /// </summary>
+        public static string InvalidOTP {
+            get {
+                return ResourceManager.GetString("InvalidOTP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Limit up to 3 messages per turn only!.
         /// </summary>
         public static string LimitMessage {
             get {
                 return ResourceManager.GetString("LimitMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No feedbacks available for this agent..
+        /// </summary>
+        public static string NoFeedbacks {
+            get {
+                return ResourceManager.GetString("NoFeedbacks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password do not match.
+        /// </summary>
+        public static string PassDoNotMatch {
+            get {
+                return ResourceManager.GetString("PassDoNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter content for the article..
+        /// </summary>
+        public static string PlsEnterContentForArticle {
+            get {
+                return ResourceManager.GetString("PlsEnterContentForArticle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a title for the article..
+        /// </summary>
+        public static string PlsEnterTitleForArticle {
+            get {
+                return ResourceManager.GetString("PlsEnterTitleForArticle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a category for the article..
+        /// </summary>
+        public static string PlsSelectCategForArticle {
+            get {
+                return ResourceManager.GetString("PlsSelectCategForArticle", resourceCulture);
             }
         }
         

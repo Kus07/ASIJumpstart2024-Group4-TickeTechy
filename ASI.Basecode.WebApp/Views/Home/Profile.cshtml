@@ -1,5 +1,8 @@
 ﻿@model ASI.Basecode.Data.Models.UserDetail
 @using ASI.Basecode.Data.Models
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
     var feedbacks = ViewBag.Feedbacks as List<Feedback>;
@@ -130,35 +133,35 @@
             }            <span class="name mt-3">@Model.FirstName @Model.LastName</span>
             <span class="idd">@@@Model.Users.Username</span>
             <span class="email mt-2">Email: @Model.Users.Email</span>
-            <span class="contact mt-2">Contact No: @Model.ContactNo</span>
+            <span class="contact mt-2">@ContactNo: @Model.ContactNo</span>
             <div class="d-flex flex-row justify-content-center align-items-center gap-2">
                 <span class="idd1">@Model.Users.Role.RoleName</span>
             </div>
             <div class="d-flex flex-row justify-content-center align-items-center mt-3">
                 @if (User.IsInRole("1"))
                 {
-                    <span class="number">@ViewBag.TicketCount <span class="follow">Tickets created</span></span>
+                    <span class="number">@ViewBag.TicketCount <span class="follow">@TicketsCreated</span></span>
                 }
                 else if (User.IsInRole("2"))
                 {
-                    <span class="number">@ViewBag.TicketCount <span class="follow">Tickets resolved</span></span>
+                    <span class="number">@ViewBag.TicketCount <span class="follow">@TicketsResolved</span></span>
                 }
             </div>
             @if (User.IsInRole("2"))
             {
                 <div class="d-flex mt-2">
-                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewfeedbackModal">View Feedbacks</button>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewfeedbackModal">@ViewFeedbacksBtn</button>
                 </div>
             }
             <div class="d-flex mt-2">
-                <button class="btn1 btn-dark" onclick="window.location.href='@Url.Action("EditProfile", "Home")'">Edit Profile</button>
+                <button class="btn1 btn-dark" onclick="window.location.href='@Url.Action("EditProfile", "Home")'">@EditProfileBtn</button>
             </div>
             <div class="d-flex mt-2">
-                <button class="btn1 btn-dark" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+                <button class="btn1 btn-dark" data-bs-toggle="modal" data-bs-target="#changePasswordModal">@ChangePassBtn</button>
             </div>
             <div class="d-flex mt-2">
                 <form asp-controller="Account" asp-action="Logout" method="post">
-                    <button type="submit" class="btn btn-danger">Logout</button>
+                    <button type="submit" class="btn btn-danger">@LogoutBtn</button>
                 </form>
             </div>
 
@@ -182,27 +185,27 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                <h5 class="modal-title" id="changePasswordModalLabel">@ChangePassBtn</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="post" asp-controller="Home" asp-action="ChangePassword">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="currentPassword">Current Password</label>
+                        <label for="currentPassword">@CurrentPass</label>
                         <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
                     </div>
                     <div class="form-group">
-                        <label for="newPassword">New Password</label>
+                        <label for="newPassword">@NewPass</label>
                         <input type="password" class="form-control" id="newPassword" name="newPassword" required>
                     </div>
                     <div class="form-group">
-                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <label for="confirmNewPassword">@ConfirmNewPass</label>
                         <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Change Password</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@CloseBtn</button>
+                    <button type="submit" class="btn btn-primary">@ChangePassBtn</button>
                 </div>
             </form>
         </div>
@@ -214,7 +217,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="viewfeedbackModalLabel">Your Feedbacks</h5>
+                <h5 class="modal-title" id="viewfeedbackModalLabel">@YourFeedbacks</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -257,7 +260,7 @@
                 }
                 else
                 {
-                    <p>No feedbacks available for this agent.</p>
+                    <p>@NoFeedbacks</p>
                 }
             </div>
             <div class="modal-footer">
@@ -273,7 +276,7 @@
                     </svg>
                 </div>
                 
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@CloseBtn</button>
             </div>
         </div>
     </div>

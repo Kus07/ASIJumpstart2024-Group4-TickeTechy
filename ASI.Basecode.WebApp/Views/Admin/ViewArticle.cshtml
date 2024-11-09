@@ -1,4 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.ArticleViewModel
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -27,16 +30,16 @@
     <div class="card">
         <div class="card-header">
             <h1 class="card-title">@Model.Title</h1>
-            <p class="card-text">Category: @Model.Category.CategoryName</p>
-            <p class="card-text">Status: @Model.Status</p>
-            <p class="card-text">Author: @Model.Author</p>
+            <p class="card-text">@Category: @Model.Category.CategoryName</p>
+            <p class="card-text">@Status: @Model.Status</p>
+            <p class="card-text">@Author: @Model.Author</p>
         </div>
         <div class="card-body">
             <p class="card-text">@Model.Content</p>
         </div>
     </div>
 </div>
-<a class="btn btn-primary" onclick="goBack()">Go Back</a>
+<a class="btn btn-primary" onclick="goBack()">@GoBackBtn</a>
 
 <script>
     function goBack() {

@@ -1,5 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.TicketViewModel
-
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
@@ -135,7 +137,7 @@
 <br />
 <div class="articles-container">
     <div class="heading-box">
-        <h2>Below are the Articles that might help you</h2>
+        <h2>@ArticlesHeaderCustomerDashboard</h2>
     </div>
 
     @foreach (var article in Model.Articles)
@@ -154,8 +156,8 @@
                 }
 
                 <div class="author-details">
-                    <p><strong>Author:</strong> @article.Author</p>
-                    <p><strong>Posted On:</strong> @article.PublishDate?.ToString("yyyy-MM-dd")</p>
+                    <p><strong>@Author</strong> @article.Author</p>
+                    <p><strong>@PostedOn</strong> @article.PublishDate?.ToString("yyyy-MM-dd")</p>
                 </div>
             </div>
 
@@ -167,10 +169,10 @@
 
             <div class="article-info">
                 <div class="column">
-                    <p><strong>Status:</strong> @article.Status</p>
+                    <p><strong>@Status:</strong> @article.Status</p>
                 </div>
                 <div class="column">
-                    <p><strong>Category:</strong> @article.Category?.CategoryName</p>
+                    <p><strong>@Category:</strong> @article.Category?.CategoryName</p>
                 </div>
             </div>
 
@@ -231,7 +233,7 @@
                     </div>
                     <!-- Submit button -->
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">Create Ticket</button>
+                        <button type="submit" class="btn btn-primary btn-lg">@CreateTicketBtn</button>
                     </div>
                 </form>
             </div>

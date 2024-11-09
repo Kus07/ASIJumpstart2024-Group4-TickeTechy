@@ -1,4 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.AdminViewModel
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -28,19 +31,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">
-                            <h4>Articles</h4>
+                            <h4>@Articles</h4>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover" id="customersTable">
                                 <thead>
                                     <tr>
-                                        <th>Subject</th>
-                                        <th>Category</th>
-                                        <th>Status</th>
-                                        <th>Author</th>
-                                        <th>Date Published</th>
-                                        <th>Date Modified</th>
-                                        <th>Action</th>
+                                        <th>@Subject</th>
+                                        <th>@Category</th>
+                                        <th>@Status</th>
+                                        <th>@Author</th>
+                                        <th>@DatePublished</th>
+                                        <th>@DateModified</th>
+                                        <th>@ActionLabel</th>
                                     </tr>
                                 </thead>
                                 
@@ -57,13 +60,13 @@
                                     
                                             <td>
                                                 <a class="btn btn-warning roleAdminBtn" style="color: white;"
-                                                   href="@Url.Action("ViewArticle", "Admin", new { ArticleId = article.Id } )">View</a>
+                                                   href="@Url.Action("ViewArticle", "Admin", new { ArticleId = article.Id } )">@ViewBtn</a>
                                                 ||
-                                                <a class="btn btn-info editCustomerBtn" href="@Url.Action("EditArticle", "Admin", new { ArticleId = article.Id } )">Edit</a>
+                                                <a class="btn btn-info editCustomerBtn" href="@Url.Action("EditArticle", "Admin", new { ArticleId = article.Id } )">@EditBtn</a>
                                                 ||
                                                 <a class="btn btn-danger deleteArticleBtn" style="color: white;"
                                                    id="showDeleteArticleModalBtn" data-toggle="modal" data-id="@article.Id" data-title="@article.Title"
-                                                   data-target="#deleteArticleModal">Delete</a>
+                                                   data-target="#deleteArticleModal">@DeleteBtn</a>
                                             </td>
                                         </tr>
                                     }
@@ -73,7 +76,7 @@
                         <!-- Add Article Button -->
                         <div class="mt-3 text-right">
                             <a class="btn btn-info" href="@Url.Action("AddArticle", "Admin")">
-                                <i class="icon icon-plus"></i> Add Article
+                                <i class="icon icon-plus"></i> @AddArticleHeader
                             </a>
                         </div>
                     </div>
@@ -88,19 +91,19 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteArticleModalLabel">Confirm Deletion</h5>
+                <h5 class="modal-title" id="deleteArticleModalLabel">@ConfirmDeletion</h5>
             </div>
             <div class="modal-body">
-                <p id="output">Are you sure you want to delete this Article?</p>
-                <p>This action cannot be undone.</p>
+                <p id="output">@AreYouSureDeleteArticle</p>
+                <p>@ActionCantBeUndone.</p>
             </div>
             @using (Html.BeginForm("DeleteArticle", "Admin", FormMethod.Post, new { @id = "deleteArticleForm" }))
             {
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="articleId" name="ArticleId" />
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonDelete">Cancel</button>
-                    <button type="submit" class="btn btn-danger" id="confirmDeleteArticleBtn">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonDelete">@CancelBtn</button>
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteArticleBtn">@DeleteBtn</button>
                 </div>
             }
         </div>

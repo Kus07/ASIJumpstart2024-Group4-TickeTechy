@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<ASI.Basecode.Data.Models.Notification>
 @using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
@@ -9,7 +11,7 @@
 <br />
 <br />
 <br />
-<h2>Your Notifications</h2>
+<h2>@YourNotifs</h2>
 
 @if (Model == null || !Model.Any())
 {
@@ -24,8 +26,8 @@ else
                 <a href="@Url.Action("ViewNotification", "Home", new { ticketId = notification.TicketId, notificationId = notification.Id })">
                     <strong>@notification.Title</strong><br />
                     @notification.Content<br />
-                    <small>Received on: @notification.DateCreated?.ToString("g")</small><br />
-                    <span>Status: @notification.Status</span>
+                    <small>@ReceivedOn @notification.DateCreated?.ToString("g")</small><br />
+                    <span>@Status: @notification.Status</span>
                 </a>
             </li>
         }

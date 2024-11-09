@@ -1,4 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.RegisterViewModel
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = null;
 }
@@ -157,55 +160,55 @@
     <div class="form-container">
         <!-- Add logo above the Register title -->
         <img src="~/images/TickeTechy logo with text.png" alt="TicketTechy Logo" class="logo" style="width: 250px; border-radius: 30px;" />
-        <h1 class="title">REGISTER</h1>
-        <p class="tagline">Create your account.</p>
+        <h1 class="title">@Register</h1>
+        <p class="tagline">@CreateAccount.</p>
         <form class="form" action="/Account/Register" method="post">
             <div asp-validation-summary="ModelOnly" style="color: red !important;"></div>
 
             <!-- 2-column grid for input fields -->
             <div class="input-grid">
                 <div class="input-group">
-                    <label for="username">Username</label>
+                    <label for="username">@Username</label>
                     <input asp-for="Username" class="form-control" />
                     <span asp-validation-for="Username" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="email">Email</label>
+                    <label for="email">@Email</label>
                     <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="contact">Contact No.</label>
+                    <label for="contact">@ContactNo</label>
                     <input asp-for="Contact" class="form-control" />
                     <span asp-validation-for="Contact" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="firstName">First Name</label>
+                    <label for="firstName">@FirstName</label>
                     <input asp-for="FirstName" class="form-control" />
                     <span asp-validation-for="FirstName" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="lastName">Last Name</label>
+                    <label for="lastName">@LastName</label>
                     <input asp-for="LastName" class="form-control" />
                     <span asp-validation-for="LastName" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="password">Password</label>
+                    <label for="password">@Password</label>
                     <input asp-for="Password" type="password" class="form-control" id="password" />
                     <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                     <span asp-validation-for="Password" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="password">Confirm Password</label>
+                    <label for="password">@ConfirmPass</label>
                     <input asp-for="ConfirmPassword" type="password" class="form-control" id="password" />
                     <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                     <span asp-validation-for="ConfirmPassword" style="color: red !important;"></span>
                 </div>
             </div>
 
-            <button type="submit" class="sign-in">Sign up</button>
+            <button type="submit" class="sign-in">@SignUpBtn</button>
             <p class="sign-up">
-                Already have an account? <a asp-controller="Account" asp-action="Login">Sign in</a>
+                @AlreadyHaveAcc <a asp-controller="Account" asp-action="Login">@SignInBtn</a>
             </p>
         </form>
     </div>

@@ -1,4 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.LoginViewModel
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = null;
     ViewData["Title"] = "TickeTechy";
@@ -287,27 +290,27 @@
     <div class="form-container">
         <!-- Add logo above the Login title -->
         <img src="~/images/TickeTechy logo with text.png" alt="TicketTechy Logo" class="logo" style="width: 250px; border-radius: 30px;" />
-        <h1 class="title">LOGIN</h1>
-        <p class="tagline">Create. Assign. Track. Close.</p>
+        <h1 class="title">@Login</h1>
+        <p class="tagline">@Tagline</p>
         <form class="form" action="/Account/Login" method="post">
             <div asp-validation-summary="ModelOnly" style="color: red !important;"></div>
             <div class="input-group">
-                <label for="email">Email</label>
+                <label for="email">@Email</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" style="color: red !important;"></span>
             </div>
             <div class="input-group">
-                <label for="password">Password</label>
+                <label for="password">@Password</label>
                 <input asp-for="Password" type="password" class="form-control" id="password" />
                 <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                 <span asp-validation-for="Password" style="color: red !important;"></span>
             </div>
             <div class="forgot">
-                <a href="#">Forgot password?</a>
+                <a href="#">@ForgotPass</a>
             </div>
-            <button type="submit" class="sign-in">Sign in</button>
+            <button type="submit" class="sign-in">@SignInBtn</button>
             <p class="sign-up">
-                Don't have an account? <a asp-controller="Account" asp-action="Register">Sign up</a>
+                @DontHaveAcc <a asp-controller="Account" asp-action="Register">@SignUpBtn</a>
             </p>
         </form>
     </div>
@@ -316,39 +319,39 @@
     <div id="forgotPasswordModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
-            <h2 class="modal-title">Forgot Password</h2>
-            <p id="modalMessage" style="color: dimgrey;">Please enter your registered email to receive an OTP:</p>
+            <h2 class="modal-title">@ForgotPassword</h2>
+            <p id="modalMessage" style="color: dimgrey;">@EnterRegisteredEmailForOTP</p>
 
             <!-- Email Input -->
             <div class="input-group" id="emailGroup">
-                <label for="forgot-email" style="color: black;">Email</label>
+                <label for="forgot-email" style="color: black;">@Email</label>
                 <input type="email" id="forgot-email" class="form-control" style="color: darkblue;" required />
-                <span id="emailError" style="color: red; display: none;">Invalid Email</span>
+                <span id="emailError" style="color: red; display: none;">@InvalidEmail</span>
             </div>
 
             <!-- OTP Input (Hidden by default) -->
             <div class="input-group" id="otpGroup" style="display: none;">
-                <label style="color: black;" for="otp">Enter OTP</label>
+                <label style="color: black;" for="otp">@EnterOTP</label>
                 <input style="color: black;" type="text" id="otp" class="form-control" maxlength="6" required />
-                <span id="otpError" style="color: red; display: none;">Invalid OTP</span>
+                <span id="otpError" style="color: red; display: none;">@InvalidOTP</span>
             </div>
 
             <!-- New Password Input (Hidden by default) -->
             <div class="input-group" id="newPasswordGroup" style="display: none;">
-                <label style="color:black;" for="newPassword">New Password</label>
+                <label style="color:black;" for="newPassword">@NewPass</label>
                 <input style="color: black;" type="password" id="newPassword" class="form-control" required />
             </div>
 
             <!-- Confirm Password Input (Hidden by default) -->
             <div class="input-group" id="confirmPasswordGroup" style="display: none;">
-                <label style="color:black;" for="confirmPassword">Confirm Password</label>
+                <label style="color:black;" for="confirmPassword">@ConfirmPass</label>
                 <input style="color: black;" type="password" id="confirmPassword" class="form-control" required />
-                <span id="passwordError" style="color: red; display: none;">Passwords do not match</span>
+                <span id="passwordError" style="color: red; display: none;">@PassDoNotMatch</span>
             </div>
 
             <!-- Submit Button -->
-            <button id="sendOTP" class="sign-in">Send OTP</button>
-            <button id="resetPassword" class="sign-in" style="display: none;">Reset Password</button>
+            <button id="sendOTP" class="sign-in">@SendOTPBtn</button>
+            <button id="resetPassword" class="sign-in" style="display: none;">@ResetPassBtn</button>
         </div>
     </div>
 
@@ -357,7 +360,7 @@
     <!-- Custom Loader: initially hidden -->
     <div id="otpLoader">
         <div class="spinner"></div>
-        <p>Sending OTP...</p>
+        <p>@SendingOtpLoading</p>
     </div>
 
 

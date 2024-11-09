@@ -61,6 +61,231 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept Resolution.
+        /// </summary>
+        public static string AcceptResolutionBtn {
+            get {
+                return ResourceManager.GetString("AcceptResolutionBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Admin.
+        /// </summary>
+        public static string AddAdminBtn {
+            get {
+                return ResourceManager.GetString("AddAdminBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Agent.
+        /// </summary>
+        public static string AddAgentBtn {
+            get {
+                return ResourceManager.GetString("AddAgentBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string AddBtn {
+            get {
+                return ResourceManager.GetString("AddBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Customer.
+        /// </summary>
+        public static string AddCustomerBtn {
+            get {
+                return ResourceManager.GetString("AddCustomerBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add New Admin.
+        /// </summary>
+        public static string AddNewAdminBtn {
+            get {
+                return ResourceManager.GetString("AddNewAdminBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Ticket.
+        /// </summary>
+        public static string AddTicketBtn {
+            get {
+                return ResourceManager.GetString("AddTicketBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Approve.
+        /// </summary>
+        public static string ApproveBtn {
+            get {
+                return ResourceManager.GetString("ApproveBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string CancelBtn {
+            get {
+                return ResourceManager.GetString("CancelBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Password.
+        /// </summary>
+        public static string ChangePassBtn {
+            get {
+                return ResourceManager.GetString("ChangePassBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string CloseBtn {
+            get {
+                return ResourceManager.GetString("CloseBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Ticket.
+        /// </summary>
+        public static string CreateTicketBtn {
+            get {
+                return ResourceManager.GetString("CreateTicketBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string DeleteBtn {
+            get {
+                return ResourceManager.GetString("DeleteBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disapprove &amp; Reassign.
+        /// </summary>
+        public static string DisapproveAndReassignBtn {
+            get {
+                return ResourceManager.GetString("DisapproveAndReassignBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string EditBtn {
+            get {
+                return ResourceManager.GetString("EditBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Profile.
+        /// </summary>
+        public static string EditProfileBtn {
+            get {
+                return ResourceManager.GetString("EditProfileBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Ticket.
+        /// </summary>
+        public static string EditTicketBtn {
+            get {
+                return ResourceManager.GetString("EditTicketBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go Back.
+        /// </summary>
+        public static string GoBackBtn {
+            get {
+                return ResourceManager.GetString("GoBackBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string LogoutBtn {
+            get {
+                return ResourceManager.GetString("LogoutBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark as Resolved.
+        /// </summary>
+        public static string MarkedAsResolvedBtn {
+            get {
+                return ResourceManager.GetString("MarkedAsResolvedBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reassign.
+        /// </summary>
+        public static string ReassignBtn {
+            get {
+                return ResourceManager.GetString("ReassignBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string ResetBtn {
+            get {
+                return ResourceManager.GetString("ResetBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset password.
+        /// </summary>
+        public static string ResetPassBtn {
+            get {
+                return ResourceManager.GetString("ResetPassBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string SaveBtn {
+            get {
+                return ResourceManager.GetString("SaveBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Changes.
+        /// </summary>
+        public static string SaveChangesBtn {
+            get {
+                return ResourceManager.GetString("SaveChangesBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send.
         /// </summary>
         public static string SendBtn {
@@ -70,33 +295,92 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send OTP.
+        /// </summary>
+        public static string SendOTPBtn {
+            get {
+                return ResourceManager.GetString("SendOTPBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in.
+        /// </summary>
+        public static string SignInBtn {
+            get {
+                return ResourceManager.GetString("SignInBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign up.
+        /// </summary>
+        public static string SignUpBtn {
+            get {
+                return ResourceManager.GetString("SignUpBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        public static string SubmitBtn {
+            get {
+                return ResourceManager.GetString("SubmitBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket Reports.
+        /// </summary>
+        public static string TicketReportsBtn {
+            get {
+                return ResourceManager.GetString("TicketReportsBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string ViewBtn {
+            get {
+                return ResourceManager.GetString("ViewBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Details.
+        /// </summary>
+        public static string ViewDetailsBtn {
+            get {
+                return ResourceManager.GetString("ViewDetailsBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Feedback.
+        /// </summary>
+        public static string ViewFeedbackBtn {
+            get {
+                return ResourceManager.GetString("ViewFeedbackBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Feedbacks.
+        /// </summary>
+        public static string ViewFeedbacksBtn {
+            get {
+                return ResourceManager.GetString("ViewFeedbacksBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write Feedback.
         /// </summary>
         public static string WriteFeedbackBtn {
             get {
                 return ResourceManager.GetString("WriteFeedbackBtn", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to cancel button.
-        /// </summary>
-        public static string CancelBtn
-        {
-            get
-            {
-                return ResourceManager.GetString("CancelBtn", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to view feedback button.
-        /// </summary>
-        public static string ViewFeedbackBtn
-        {
-            get
-            {
-                return ResourceManager.GetString("ViewFeedbackBtn", resourceCulture);
             }
         }
     }

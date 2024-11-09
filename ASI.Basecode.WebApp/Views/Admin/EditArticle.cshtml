@@ -1,24 +1,25 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.ArticleViewModel
 @using static ASI.Basecode.Resources.Views.Screen
 @using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<h2>Edit Article</h2>
+<h2></h2>
 <form method="post" asp-action="EditArticle" asp-controller="Admin" class="needs-validation" novalidate>
     <input type="hidden" asp-for="Id" />
     <div class="form-group">
         <label asp-for="Title"></label>
         <input asp-for="Title" class="form-control" required />
         <div class="invalid-feedback">
-            Please enter a title for the article.
+            @PlsEnterTitleForArticle
         </div>
     </div>
     <div class="form-group">
         <label asp-for="Content"></label>
         <textarea asp-for="Content" class="form-control" rows="10" required></textarea>
         <div class="invalid-feedback">
-            Please enter the content of the article.
+            @PlsEnterContentForArticle
         </div>
     </div>
     <div class="form-group">

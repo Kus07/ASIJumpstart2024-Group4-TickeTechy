@@ -133,7 +133,7 @@
     <value>Forgot password?</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value>Login</value>
+    <value>LOGIN</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
@@ -143,5 +143,275 @@
   </data>
   <data name="NoNotifications" xml:space="preserve">
     <value>You have no notifications.</value>
+  </data>
+  <data name="PleaseSelectCategoryForArticle" xml:space="preserve">
+    <value>Please select category for the article</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Forgot Password</value>
+  </data>
+  <data name="EnterRegisteredEmailForOTP" xml:space="preserve">
+    <value>Please enter your registered email to receive an OTP:</value>
+  </data>
+  <data name="EnterOTP" xml:space="preserve">
+    <value>Enter OTP</value>
+  </data>
+  <data name="NewPass" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="ConfirmPass" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="SendingOtpLoading" xml:space="preserve">
+    <value>Sending OTP...</value>
+  </data>
+  <data name="Tagline" xml:space="preserve">
+    <value>Create. Assign. Track. Close.</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>REGISTER</value>
+  </data>
+  <data name="CreateAccount" xml:space="preserve">
+    <value>Create your account</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="ContactNo" xml:space="preserve">
+    <value>Contact No.</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="AlreadyHaveAcc" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="AgentDashboardLead" xml:space="preserve">
+    <value>Manage your tickets effectively and provide timely resolutions.</value>
+  </data>
+  <data name="TicketsOverview" xml:space="preserve">
+    <value>Tickets Overview</value>
+  </data>
+  <data name="TicketCreator" xml:space="preserve">
+    <value>Ticket Creator</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ActionLabel" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="ArticlesHeaderCustomerDashboard" xml:space="preserve">
+    <value>Below are the Articles that might help you</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>Author:</value>
+  </data>
+  <data name="PostedOn" xml:space="preserve">
+    <value>Posted On:</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="ProfilePic" xml:space="preserve">
+    <value>Profile Picture</value>
+  </data>
+  <data name="YourNotifs" xml:space="preserve">
+    <value>Your Notifications</value>
+  </data>
+  <data name="ReceivedOn" xml:space="preserve">
+    <value>Received On:</value>
+  </data>
+  <data name="TicketsCreated" xml:space="preserve">
+    <value>Tickets Created</value>
+  </data>
+  <data name="TicketsResolved" xml:space="preserve">
+    <value>Tickets Resolved</value>
+  </data>
+  <data name="CurrentPass" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="ConfirmNewPass" xml:space="preserve">
+    <value>Confirn New Password</value>
+  </data>
+  <data name="YourFeedbacks" xml:space="preserve">
+    <value>Your Feedbacks</value>
+  </data>
+  <data name="YourTickets" xml:space="preserve">
+    <value>Your Tickets</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="TimeSinceCreated" xml:space="preserve">
+    <value>Time Since Created</value>
+  </data>
+  <data name="TicketStatusSummary" xml:space="preserve">
+    <value>Ticket Status Summary</value>
+  </data>
+  <data name="TicketCategSummary" xml:space="preserve">
+    <value>Ticket Categories Summary</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Agent" xml:space="preserve">
+    <value>Agent</value>
+  </data>
+  <data name="TimeSubmitted" xml:space="preserve">
+    <value>Time Submitted</value>
+  </data>
+  <data name="LastUpdated" xml:space="preserve">
+    <value>Last Updated</value>
+  </data>
+  <data name="ViewTicketSummary" xml:space="preserve">
+    <value>View Ticket Summary</value>
+  </data>
+  <data name="TicketDescription" xml:space="preserve">
+    <value>Ticket Description</value>
+  </data>
+  <data name="Conversation" xml:space="preserve">
+    <value>Conversation</value>
+  </data>
+  <data name="NoConvoyet" xml:space="preserve">
+    <value>No conversation yet! Send one now</value>
+  </data>
+  <data name="ReassignTicketToAgent" xml:space="preserve">
+    <value>Reassign Ticket to Agent</value>
+  </data>
+  <data name="TicketSummary" xml:space="preserve">
+    <value>Ticket Summary</value>
+  </data>
+  <data name="AddArticleHeader" xml:space="preserve">
+    <value>Add Article</value>
+  </data>
+  <data name="AdminDashboard" xml:space="preserve">
+    <value>Admin Dashboard</value>
+  </data>
+  <data name="Customers" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="SupportAgents" xml:space="preserve">
+    <value>Support Agents</value>
+  </data>
+  <data name="Admins" xml:space="preserve">
+    <value>Admins</value>
+  </data>
+  <data name="TicketAnalytics" xml:space="preserve">
+    <value>Ticket Analytics</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Start Date</value>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="TotalReceived" xml:space="preserve">
+    <value>Total Received</value>
+  </data>
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>Confirm Deletion</value>
+  </data>
+  <data name="AreYouSureDeleteAdmin" xml:space="preserve">
+    <value>Are you sure you want to delete this admin?</value>
+  </data>
+  <data name="ActionCantBeUndone" xml:space="preserve">
+    <value>This action cannot be undone</value>
+  </data>
+  <data name="EditAdmin" xml:space="preserve">
+    <value>Edit Admin</value>
+  </data>
+  <data name="EditRole" xml:space="preserve">
+    <value>Edit Role</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Agents" xml:space="preserve">
+    <value>Agents</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="GenerateReport" xml:space="preserve">
+    <value>Generate Report</value>
+  </data>
+  <data name="AddNewAgent" xml:space="preserve">
+    <value>Add New Agent</value>
+  </data>
+  <data name="SpecificDepartment" xml:space="preserve">
+    <value>Specific Department</value>
+  </data>
+  <data name="AreYouSureDeleteAgent" xml:space="preserve">
+    <value>Are you sure you want to delete this agent?</value>
+  </data>
+  <data name="EditAgent" xml:space="preserve">
+    <value>Edit Agent</value>
+  </data>
+  <data name="Articles" xml:space="preserve">
+    <value>Articles</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="DatePublished" xml:space="preserve">
+    <value>Date Published</value>
+  </data>
+  <data name="DateModified" xml:space="preserve">
+    <value>Date Modified</value>
+  </data>
+  <data name="AreYouSureDeleteArticle" xml:space="preserve">
+    <value>Are you sure you want to delete this Article?</value>
+  </data>
+  <data name="AddNewCustomer" xml:space="preserve">
+    <value>Add New Customer</value>
+  </data>
+  <data name="AreYouSureDeleteCustomer" xml:space="preserve">
+    <value>Are you sure you want to delete this customer?</value>
+  </data>
+  <data name="EditCustomer" xml:space="preserve">
+    <value>Edit Customer</value>
+  </data>
+  <data name="Tickets" xml:space="preserve">
+    <value>Tickets</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Created By</value>
+  </data>
+  <data name="CreatedDate" xml:space="preserve">
+    <value>Created Date</value>
+  </data>
+  <data name="AgentAssigned" xml:space="preserve">
+    <value>Agent Assigned</value>
+  </data>
+  <data name="Attachments" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
+  <data name="EditTicket" xml:space="preserve">
+    <value>Edit Ticket</value>
+  </data>
+  <data name="DeleteTicket" xml:space="preserve">
+    <value>Delete Ticket</value>
+  </data>
+  <data name="AreYouSureDeleteTicket" xml:space="preserve">
+    <value>Are you sure you want to delete this ticket</value>
+  </data>
+  <data name="TicketsAssignment" xml:space="preserve">
+    <value>Tickets Assignment</value>
+  </data>
+  <data name="ConfirmApproval" xml:space="preserve">
+    <value>Confirm Approval</value>
+  </data>
+  <data name="AreYouSureApproveAssign" xml:space="preserve">
+    <value>Are you sure you want to approve this ticket assignment?</value>
+  </data>
+  <data name="IfReallyWantDisapprove" xml:space="preserve">
+    <value>If you really want to disapprove this ticket assignment, choose an appropriate agent below</value>
   </data>
 </root>

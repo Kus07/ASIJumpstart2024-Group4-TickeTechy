@@ -61,11 +61,308 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This action cannot be undone.
+        /// </summary>
+        public static string ActionCantBeUndone {
+            get {
+                return ResourceManager.GetString("ActionCantBeUndone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Action.
+        /// </summary>
+        public static string ActionLabel {
+            get {
+                return ResourceManager.GetString("ActionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Article.
+        /// </summary>
+        public static string AddArticleHeader {
+            get {
+                return ResourceManager.GetString("AddArticleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add New Agent.
+        /// </summary>
+        public static string AddNewAgent {
+            get {
+                return ResourceManager.GetString("AddNewAgent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add New Customer.
+        /// </summary>
+        public static string AddNewCustomer {
+            get {
+                return ResourceManager.GetString("AddNewCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Admin.
+        /// </summary>
+        public static string Admin {
+            get {
+                return ResourceManager.GetString("Admin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Admin Dashboard.
+        /// </summary>
+        public static string AdminDashboard {
+            get {
+                return ResourceManager.GetString("AdminDashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Admins.
+        /// </summary>
+        public static string Admins {
+            get {
+                return ResourceManager.GetString("Admins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agent.
+        /// </summary>
+        public static string Agent {
+            get {
+                return ResourceManager.GetString("Agent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agent Assigned.
+        /// </summary>
+        public static string AgentAssigned {
+            get {
+                return ResourceManager.GetString("AgentAssigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage your tickets effectively and provide timely resolutions..
+        /// </summary>
+        public static string AgentDashboardLead {
+            get {
+                return ResourceManager.GetString("AgentDashboardLead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agents.
+        /// </summary>
+        public static string Agents {
+            get {
+                return ResourceManager.GetString("Agents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Already have an account?.
+        /// </summary>
+        public static string AlreadyHaveAcc {
+            get {
+                return ResourceManager.GetString("AlreadyHaveAcc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to approve this ticket assignment?.
+        /// </summary>
+        public static string AreYouSureApproveAssign {
+            get {
+                return ResourceManager.GetString("AreYouSureApproveAssign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this admin?.
+        /// </summary>
+        public static string AreYouSureDeleteAdmin {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this agent?.
+        /// </summary>
+        public static string AreYouSureDeleteAgent {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteAgent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this Article?.
+        /// </summary>
+        public static string AreYouSureDeleteArticle {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteArticle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this customer?.
+        /// </summary>
+        public static string AreYouSureDeleteCustomer {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this ticket.
+        /// </summary>
+        public static string AreYouSureDeleteTicket {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Articles.
+        /// </summary>
+        public static string Articles {
+            get {
+                return ResourceManager.GetString("Articles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Below are the Articles that might help you.
+        /// </summary>
+        public static string ArticlesHeaderCustomerDashboard {
+            get {
+                return ResourceManager.GetString("ArticlesHeaderCustomerDashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attachments.
+        /// </summary>
+        public static string Attachments {
+            get {
+                return ResourceManager.GetString("Attachments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author:.
+        /// </summary>
+        public static string Author {
+            get {
+                return ResourceManager.GetString("Author", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        public static string Category {
+            get {
+                return ResourceManager.GetString("Category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Approval.
+        /// </summary>
+        public static string ConfirmApproval {
+            get {
+                return ResourceManager.GetString("ConfirmApproval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Deletion.
+        /// </summary>
+        public static string ConfirmDeletion {
+            get {
+                return ResourceManager.GetString("ConfirmDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirn New Password.
+        /// </summary>
+        public static string ConfirmNewPass {
+            get {
+                return ResourceManager.GetString("ConfirmNewPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm password.
+        /// </summary>
+        public static string ConfirmPass {
+            get {
+                return ResourceManager.GetString("ConfirmPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact No..
+        /// </summary>
+        public static string ContactNo {
+            get {
+                return ResourceManager.GetString("ContactNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conversation.
+        /// </summary>
+        public static string Conversation {
+            get {
+                return ResourceManager.GetString("Conversation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ©2023 Alliance Software Inc. All rights reserved..
         /// </summary>
         public static string Copyright {
             get {
                 return ResourceManager.GetString("Copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create your account.
+        /// </summary>
+        public static string CreateAccount {
+            get {
+                return ResourceManager.GetString("CreateAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created By.
+        /// </summary>
+        public static string CreatedBy {
+            get {
+                return ResourceManager.GetString("CreatedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created Date.
+        /// </summary>
+        public static string CreatedDate {
+            get {
+                return ResourceManager.GetString("CreatedDate", resourceCulture);
             }
         }
         
@@ -79,11 +376,164 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current Password.
+        /// </summary>
+        public static string CurrentPass {
+            get {
+                return ResourceManager.GetString("CurrentPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer.
+        /// </summary>
+        public static string Customer {
+            get {
+                return ResourceManager.GetString("Customer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customers.
+        /// </summary>
+        public static string Customers {
+            get {
+                return ResourceManager.GetString("Customers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date Modified.
+        /// </summary>
+        public static string DateModified {
+            get {
+                return ResourceManager.GetString("DateModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date Published.
+        /// </summary>
+        public static string DatePublished {
+            get {
+                return ResourceManager.GetString("DatePublished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Ticket.
+        /// </summary>
+        public static string DeleteTicket {
+            get {
+                return ResourceManager.GetString("DeleteTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Department.
+        /// </summary>
+        public static string Department {
+            get {
+                return ResourceManager.GetString("Department", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Don&apos;t have an account?.
         /// </summary>
         public static string DontHaveAcc {
             get {
                 return ResourceManager.GetString("DontHaveAcc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Admin.
+        /// </summary>
+        public static string EditAdmin {
+            get {
+                return ResourceManager.GetString("EditAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Agent.
+        /// </summary>
+        public static string EditAgent {
+            get {
+                return ResourceManager.GetString("EditAgent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Customer.
+        /// </summary>
+        public static string EditCustomer {
+            get {
+                return ResourceManager.GetString("EditCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Role.
+        /// </summary>
+        public static string EditRole {
+            get {
+                return ResourceManager.GetString("EditRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Ticket.
+        /// </summary>
+        public static string EditTicket {
+            get {
+                return ResourceManager.GetString("EditTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Date.
+        /// </summary>
+        public static string EndDate {
+            get {
+                return ResourceManager.GetString("EndDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter OTP.
+        /// </summary>
+        public static string EnterOTP {
+            get {
+                return ResourceManager.GetString("EnterOTP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter your registered email to receive an OTP:.
+        /// </summary>
+        public static string EnterRegisteredEmailForOTP {
+            get {
+                return ResourceManager.GetString("EnterRegisteredEmailForOTP", resourceCulture);
             }
         }
         
@@ -106,11 +556,74 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Login.
+        ///   Looks up a localized string similar to Forgot Password.
+        /// </summary>
+        public static string ForgotPassword {
+            get {
+                return ResourceManager.GetString("ForgotPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate Report.
+        /// </summary>
+        public static string GenerateReport {
+            get {
+                return ResourceManager.GetString("GenerateReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you really want to disapprove this ticket assignment, choose an appropriate agent below.
+        /// </summary>
+        public static string IfReallyWantDisapprove {
+            get {
+                return ResourceManager.GetString("IfReallyWantDisapprove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Name.
+        /// </summary>
+        public static string LastName {
+            get {
+                return ResourceManager.GetString("LastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Updated.
+        /// </summary>
+        public static string LastUpdated {
+            get {
+                return ResourceManager.GetString("LastUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LOGIN.
         /// </summary>
         public static string Login {
             get {
                 return ResourceManager.GetString("Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Password.
+        /// </summary>
+        public static string NewPass {
+            get {
+                return ResourceManager.GetString("NewPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No conversation yet! Send one now.
+        /// </summary>
+        public static string NoConvoyet {
+            get {
+                return ResourceManager.GetString("NoConvoyet", resourceCulture);
             }
         }
         
@@ -133,6 +646,258 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select category for the article.
+        /// </summary>
+        public static string PleaseSelectCategoryForArticle {
+            get {
+                return ResourceManager.GetString("PleaseSelectCategoryForArticle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Posted On:.
+        /// </summary>
+        public static string PostedOn {
+            get {
+                return ResourceManager.GetString("PostedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Priority.
+        /// </summary>
+        public static string Priority {
+            get {
+                return ResourceManager.GetString("Priority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile Picture.
+        /// </summary>
+        public static string ProfilePic {
+            get {
+                return ResourceManager.GetString("ProfilePic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reassign Ticket to Agent.
+        /// </summary>
+        public static string ReassignTicketToAgent {
+            get {
+                return ResourceManager.GetString("ReassignTicketToAgent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received On:.
+        /// </summary>
+        public static string ReceivedOn {
+            get {
+                return ResourceManager.GetString("ReceivedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to REGISTER.
+        /// </summary>
+        public static string Register {
+            get {
+                return ResourceManager.GetString("Register", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sending OTP....
+        /// </summary>
+        public static string SendingOtpLoading {
+            get {
+                return ResourceManager.GetString("SendingOtpLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specific Department.
+        /// </summary>
+        public static string SpecificDepartment {
+            get {
+                return ResourceManager.GetString("SpecificDepartment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Date.
+        /// </summary>
+        public static string StartDate {
+            get {
+                return ResourceManager.GetString("StartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subject.
+        /// </summary>
+        public static string Subject {
+            get {
+                return ResourceManager.GetString("Subject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support Agents.
+        /// </summary>
+        public static string SupportAgents {
+            get {
+                return ResourceManager.GetString("SupportAgents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create. Assign. Track. Close..
+        /// </summary>
+        public static string Tagline {
+            get {
+                return ResourceManager.GetString("Tagline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket Analytics.
+        /// </summary>
+        public static string TicketAnalytics {
+            get {
+                return ResourceManager.GetString("TicketAnalytics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket Categories Summary.
+        /// </summary>
+        public static string TicketCategSummary {
+            get {
+                return ResourceManager.GetString("TicketCategSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket Creator.
+        /// </summary>
+        public static string TicketCreator {
+            get {
+                return ResourceManager.GetString("TicketCreator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket Description.
+        /// </summary>
+        public static string TicketDescription {
+            get {
+                return ResourceManager.GetString("TicketDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tickets.
+        /// </summary>
+        public static string Tickets {
+            get {
+                return ResourceManager.GetString("Tickets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tickets Assignment.
+        /// </summary>
+        public static string TicketsAssignment {
+            get {
+                return ResourceManager.GetString("TicketsAssignment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tickets Created.
+        /// </summary>
+        public static string TicketsCreated {
+            get {
+                return ResourceManager.GetString("TicketsCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tickets Overview.
+        /// </summary>
+        public static string TicketsOverview {
+            get {
+                return ResourceManager.GetString("TicketsOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tickets Resolved.
+        /// </summary>
+        public static string TicketsResolved {
+            get {
+                return ResourceManager.GetString("TicketsResolved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket Status Summary.
+        /// </summary>
+        public static string TicketStatusSummary {
+            get {
+                return ResourceManager.GetString("TicketStatusSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ticket Summary.
+        /// </summary>
+        public static string TicketSummary {
+            get {
+                return ResourceManager.GetString("TicketSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Since Created.
+        /// </summary>
+        public static string TimeSinceCreated {
+            get {
+                return ResourceManager.GetString("TimeSinceCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Submitted.
+        /// </summary>
+        public static string TimeSubmitted {
+            get {
+                return ResourceManager.GetString("TimeSubmitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Received.
+        /// </summary>
+        public static string TotalReceived {
+            get {
+                return ResourceManager.GetString("TotalReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UserId.
         /// </summary>
         public static string UserId {
@@ -140,15 +905,49 @@ namespace ASI.Basecode.Resources.Views {
                 return ResourceManager.GetString("UserId", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to please select category.
+        ///   Looks up a localized string similar to Username.
         /// </summary>
-        public static string PleaseSelectCategoryForArticle
-        {
-            get
-            {
-                return ResourceManager.GetString("PleaseSelectCategoryForArticle", resourceCulture);
+        public static string Username {
+            get {
+                return ResourceManager.GetString("Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Ticket Summary.
+        /// </summary>
+        public static string ViewTicketSummary {
+            get {
+                return ResourceManager.GetString("ViewTicketSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Feedbacks.
+        /// </summary>
+        public static string YourFeedbacks {
+            get {
+                return ResourceManager.GetString("YourFeedbacks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Notifications.
+        /// </summary>
+        public static string YourNotifs {
+            get {
+                return ResourceManager.GetString("YourNotifs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Tickets.
+        /// </summary>
+        public static string YourTickets {
+            get {
+                return ResourceManager.GetString("YourTickets", resourceCulture);
             }
         }
     }

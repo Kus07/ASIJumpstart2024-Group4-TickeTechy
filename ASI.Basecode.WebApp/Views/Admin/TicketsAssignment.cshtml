@@ -1,4 +1,7 @@
 ﻿@model ASI.Basecode.Services.ServiceModels.AdminViewModel
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Views.Button
+@using static ASI.Basecode.Resources.Messages.Errors
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -157,21 +160,21 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">
-                            <h4>Tickets Assignment</h4>
+                            <h4>@TicketsAssignment</h4>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover" id="ticketsTable">
                                 <thead>
                                     <tr>
-                                        <th>Description</th>
-                                        <th>Category</th>
-                                        <th>Created By</th>
-                                        <th>Created Date</th>
-                                        <th>Status</th>
-                                        <th>Agent Assigned (through AI)</th>
-                                        <th>Priority</th>
-                                        <th>Attachments</th>
-                                        <th>Action</th>
+                                        <th>@Description</th>
+                                        <th>@Category</th>
+                                        <th>@CreatedBy</th>
+                                        <th>@CreatedDate</th>
+                                        <th>@Status</th>
+                                        <th>@AgentAssigned (through AI)</th>
+                                        <th>@Priority</th>
+                                        <th>@Attachments</th>
+                                        <th>@ActionLabel</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -247,15 +250,15 @@
             <div class="modal-content">
                 <form method="post" action="/Admin/ApproveTicket">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="approveTicketModalLabel">Confirm Approval</h5>
+                        <h5 class="modal-title" id="approveTicketModalLabel">@ConfirmApproval</h5>
                     </div>
                     <div class="modal-body">
-                        <p>Are you sure you want to approve this ticket assignment?</p>
+                        <p>@AreYouSureApproveAssign</p>
                         <input type="hidden" name="ticketId" id="approveTicketId">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-info">Approve</button>
+                        <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">@CancelBtn</button>
+                        <button type="submit" class="btn btn-info">@ApproveBtn</button>
                     </div>
                 </form>
             </div>
@@ -271,7 +274,7 @@
                         <h5 class="modal-title" id="disapproveTicketModalLabel">Confirm Disapproval & Reassign Agent</h5>
                     </div>
                     <div class="modal-body">
-                        <p>If you raelly want to disapprove this ticket assignment, choose an appropriate agent below.</p>
+                        <p>@IfReallyWantDisapprove</p>
 
                         <!-- Hidden Ticket ID -->
                         <input type="hidden" name="ticketId" id="disapproveTicketId">
@@ -289,8 +292,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Disapprove & Reassign</button>
+                        <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">@CancelBtn</button>
+                        <button type="submit" class="btn btn-danger">@DisapproveAndReassignBtn</button>
                     </div>
                 </form>
             </div>

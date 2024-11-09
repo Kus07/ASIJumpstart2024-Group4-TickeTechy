@@ -1,6 +1,8 @@
 ﻿@using static ASI.Basecode.Resources.Constants.Enums
 @using static ASI.Basecode.Resources.Views.Button
 @using static ASI.Basecode.Resources.Messages.Common
+@using static ASI.Basecode.Resources.Views.Screen
+@using static ASI.Basecode.Resources.Messages.Errors
 @model ASI.Basecode.Services.ServiceModels.ViewTicketModel
 
 @{
@@ -483,37 +485,37 @@
     <!-- Ticket Stub -->
     <div class="ticket-stub">
         <h3 style="color: darkgray;">Ticket #@Model.Ticket.Id</h3>
-        <h2>Description: @Model.Ticket.Description</h2>
+        <h2>@Description: @Model.Ticket.Description</h2>
     </div>
 
     <!-- Ticket Body -->
     <div class="ticket-body">
         <div class="detail-item">
-            <h3>Customer</h3>
+            <h3>@Customer</h3>
             <p>@Model.Customer</p>
         </div>
         <div class="detail-item">
-            <h3>Agent</h3>
+            <h3>@Agent</h3>
             <p>@Model.Agent</p>
         </div>
         <div class="detail-item">
-            <h3>Category</h3>
+            <h3>@Category</h3>
             <p>@Model.Ticket.Category.CategoryName</p>
         </div>
         <div class="detail-item">
-            <h3>Priority</h3>
+            <h3>@Priority</h3>
             <p>@Model.Ticket.Priority</p>
         </div>
         <div class="detail-item">
-            <h3>Status</h3>
+            <h3>@ASI.Basecode.Resources.Views.Screen.Status</h3>
             <p>@Model.Ticket.Status.StatusName</p>
         </div>
         <div class="detail-item">
-            <h3>Time Submitted</h3>
+            <h3>@TimeSubmitted</h3>
             <p>@Model.Ticket.CreatedAt?.ToString("dd MMM yyyy, hh:mm tt")</p>
         </div>
         <div class="detail-item">
-            <h3>Last Updated</h3>
+            <h3>@LastUpdated</h3>
             <p>@Model.Ticket.UpdatedAt?.ToString("dd MMM yyyy, hh:mm tt")</p>
         </div>
         @if (Model.Ticket.Status.StatusName.Equals("CLOSED"))
@@ -522,13 +524,13 @@
                 <h3>Ticket Summary</h3>
                 <p id="ticketSummary"></p>
                 <a id="viewTicketSummaryButton" class="btn btn-info" data-bs-toggle="modal" data-target="#ticketsummaryModal" data-ticketid="@Model.Ticket.Id">
-                View Ticket Summary
+                @ViewTicketSummary
                 </a>
 
             </div>
         }
 
-        <button class="send-message-btn">View Details</button>
+        <button class="send-message-btn">@ViewDetailsBtn</button>
     </div>
 </div>
 
@@ -536,7 +538,7 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Ticket Description</h2>
+        <h2>@TicketDescription</h2>
         <p>@Model.Ticket.Description</p>
         @if (!string.IsNullOrEmpty(Model.Ticket.Attachments))
         {
@@ -544,14 +546,14 @@
                 <img src="~/@Url.Content(Model.Ticket.Attachments)" alt="attachment" class="attachment-img" />
             </div>
         }
-        <h3>Conversation</h3>
+        <h3>@Conversation</h3>
 
 
         <!-- Message Container -->
         <div class="message-container">
             @if (Model.Messages.Count == 0)
             {
-                <div id="noConversation" class="alert alert-info text-center">No conversation yet! Send one now</div>
+                <div id="noConversation" class="alert alert-info text-center">@NoConvoyet</div>
             }
 
             @foreach (var message in Model.Messages)
@@ -655,7 +657,7 @@
         {
             <div class="reassign-section">
                 <form asp-action="ReassignTicket" method="post">
-                    <label for="agentSelect">Reassign Ticket to Agent:</label>
+                    <label for="agentSelect">@ReassignTicketToAgent:</label>
                     <select id="agentSelect" name="newAgent">
                         @foreach (var agent in Model.Agents)
                         {
@@ -663,7 +665,7 @@
                         }
                     </select>
                     <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
-                    <button type="submit">Reassign</button>
+                    <button type="submit">@ReassignBtn</button>
                 </form>
             </div>
         }
@@ -720,20 +722,20 @@
             if (User.FindFirst("UserId").Value == Model.TicketAssigned.ReassignedToId.ToString() && (Model.Ticket.StatusId != 4 && Model.Ticket.StatusId != 5))
             {
                 <div class="resolved-section mt-3">
-                    <button onclick="markAsResolved()" id="markResolvedBtn" class="btn btn-success w-100">Mark as Resolved</button>
+                    <button onclick="markAsResolved()" id="markResolvedBtn" class="btn btn-success w-100">@MarkedAsResolvedBtn</button>
                 </div>
             }
         }
         else if (User.FindFirst("UserId").Value == Model.TicketAssigned.AgentId.ToString() && (Model.Ticket.StatusId != 4 && Model.Ticket.StatusId != 5))
         {
             <div class="resolved-section mt-3">
-                <button onclick="markAsResolved()" id="markResolvedBtn" class="btn btn-success w-100">Mark as Resolved</button>
+                <button onclick="markAsResolved()" id="markResolvedBtn" class="btn btn-success w-100">@MarkedAsResolvedBtn</button>
             </div>
         }
         @if (User.FindFirst("UserId").Value == Model.Ticket.UserId.ToString() && Model.Ticket.StatusId == 4)
         {
             <div class="resolved-section mt-3">
-                <button onclick="acceptResolution()" id="markResolvedBtn" class="btn btn-success w-100">Accept Resolution</button>
+                <button onclick="acceptResolution()" id="markResolvedBtn" class="btn btn-success w-100">@AcceptResolutionBtn</button>
             </div>
         }
     </div>
@@ -744,7 +746,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="feedbackModalLabel">Write Feedback</h5> 
+                <h5 class="modal-title" id="feedbackModalLabel">@WriteFeedbackBtn</h5> 
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -798,7 +800,7 @@
                     </div>
 
                     <!-- Send button -->
-                    <button type="submit" class="btn btn-primary" id="submitRating">Send</button>
+                    <button type="submit" class="btn btn-primary" id="submitRating">@SendBtn</button>
                 </form>
             </div>
         </div>
@@ -809,7 +811,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="viewfeedbackModalLabel">View Feedback</h5>
+                <h5 class="modal-title" id="viewfeedbackModalLabel">@ViewFeedbackBtn</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -847,7 +849,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeModalButton" data-bs-dismiss=" modal">Close</button>
+                <button type="button" class="btn btn-secondary" id="closeModalButton" data-bs-dismiss=" modal">@CloseBtn</button>
             </div>
         </div>
     </div>
@@ -857,7 +859,7 @@
     <div class="modal-dialog">
         <div class="modal-content" style="width: 100%">
             <div class="modal-header">
-                <h5 class="modal-title" id="ticketsummaryModalLabel">Ticket Summary</h5>
+                <h5 class="modal-title" id="ticketsummaryModalLabel">@TicketSummary</h5>
             </div>
             <div class="modal-body">
                 <p id="summarycontent"></p>

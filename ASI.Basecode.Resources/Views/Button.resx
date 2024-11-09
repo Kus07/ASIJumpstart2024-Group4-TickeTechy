@@ -129,4 +129,100 @@
   <data name="ViewFeedbackBtn" xml:space="preserve">
     <value>View Feedback</value>
   </data>
+  <data name="SignInBtn" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="SignUpBtn" xml:space="preserve">
+    <value>Sign up</value>
+  </data>
+  <data name="SendOTPBtn" xml:space="preserve">
+    <value>Send OTP</value>
+  </data>
+  <data name="ResetPassBtn" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="CreateTicketBtn" xml:space="preserve">
+    <value>Create Ticket</value>
+  </data>
+  <data name="SaveChangesBtn" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+  <data name="ViewFeedbacksBtn" xml:space="preserve">
+    <value>View Feedbacks</value>
+  </data>
+  <data name="EditProfileBtn" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
+  <data name="ChangePassBtn" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="LogoutBtn" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="CloseBtn" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="TicketReportsBtn" xml:space="preserve">
+    <value>Ticket Reports</value>
+  </data>
+  <data name="EditTicketBtn" xml:space="preserve">
+    <value>Edit Ticket</value>
+  </data>
+  <data name="ViewDetailsBtn" xml:space="preserve">
+    <value>View Details</value>
+  </data>
+  <data name="ReassignBtn" xml:space="preserve">
+    <value>Reassign</value>
+  </data>
+  <data name="MarkedAsResolvedBtn" xml:space="preserve">
+    <value>Mark as Resolved</value>
+  </data>
+  <data name="AcceptResolutionBtn" xml:space="preserve">
+    <value>Accept Resolution</value>
+  </data>
+  <data name="SaveBtn" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SubmitBtn" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="ResetBtn" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="AddAdminBtn" xml:space="preserve">
+    <value>Add Admin</value>
+  </data>
+  <data name="AddNewAdminBtn" xml:space="preserve">
+    <value>Add New Admin</value>
+  </data>
+  <data name="AddBtn" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="DeleteBtn" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="AddAgentBtn" xml:space="preserve">
+    <value>Add Agent</value>
+  </data>
+  <data name="ViewBtn" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="EditBtn" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="AddCustomerBtn" xml:space="preserve">
+    <value>Add Customer</value>
+  </data>
+  <data name="AddTicketBtn" xml:space="preserve">
+    <value>Add Ticket</value>
+  </data>
+  <data name="ApproveBtn" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="DisapproveAndReassignBtn" xml:space="preserve">
+    <value>Disapprove &amp; Reassign</value>
+  </data>
+  <data name="GoBackBtn" xml:space="preserve">
+    <value>Go Back</value>
+  </data>
 </root>
