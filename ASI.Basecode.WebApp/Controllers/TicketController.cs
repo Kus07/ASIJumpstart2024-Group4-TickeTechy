@@ -476,7 +476,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [Authorize(Roles = "1")] 
         [HttpPost]
-        public IActionResult AcceptResolution(int ticketId)
+        public async Task<IActionResult> AcceptResolution(int ticketId)
         {
             var ticket = _ticketRepo.Get(ticketId);
             if (ticket == null)
@@ -517,7 +517,8 @@ namespace ASI.Basecode.WebApp.Controllers
                     ref errResponse
                 );
             }
-
+            var ticketSummary = await GetTicketSummary(ticketId);
+            ticket.Summary = ticketSummary;
             _ticketRepo.Update(ticketId, ticket);
 
 
@@ -566,7 +567,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> GetTicketSummary(int ticketId)
+        public async Task<String> GetTicketSummary(int ticketId)
         {
             var ticket = _ticketRepo.Get(ticketId);
             var ticketDescription = ticket.Description;
@@ -602,7 +603,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             }
             var ticketSummary = await _geminiService.GenerateTicketSummary(ticketDescription, ticketCategory, conversationHistory, image);
-            return Json(ticketSummary);
+            return ticketSummary;
         }
 
         

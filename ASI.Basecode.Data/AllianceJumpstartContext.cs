@@ -41,6 +41,8 @@ namespace ASI.Basecode.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
             modelBuilder.Entity<Article>(entity =>
             {
                 entity.ToTable("Article");
@@ -226,6 +228,10 @@ namespace ASI.Basecode.Data
                 entity.Property(e => e.Reassigned).HasColumnName("reassigned");
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
+
+                entity.Property(e => e.Summary)
+                    .IsUnicode(false)
+                    .HasColumnName("summary");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")

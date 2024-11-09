@@ -48,7 +48,6 @@ modelTicket = genai.GenerativeModel(
     system_instruction="""
     Summarize this help desk ticket based on its category, description, and chat history. Include:
 
-        Ticket Category: (e.g., "Technical Issue," "Billing Inquiry")
         Problem Overview: Briefly describe the issue reported by the user.
         Image Details: Briefly describe the image provided and how it relates to the ticket
         Key Steps Taken: Summarize significant actions or troubleshooting steps from the chat.
@@ -56,7 +55,15 @@ modelTicket = genai.GenerativeModel(
             
     Format the summary in very brief, clear bullet points for easy readability, Do not bold any characters and do not use asterisks(*).
     Languages may be in Filipino(Cebuano or Tagalog).
-    All tickets here are all already resolved.
+    All tickets here are all already resolved. Follow the sample format below:
+    
+    "
+    **Problem Overview**: The customer requested help with their laptop, but provided no specific details about the issue.
+    **Image Details**: No image was provided.
+    **Key Steps Taken**: The agent likely asked clarifying questions about the issue with the laptop.
+    **Resolution Details**: The ticket was likely resolved through a combination of clarifying questions and troubleshooting steps. The customer's final message, "wa pa nahuman," suggests they were satisfied with the assistance provided.
+    "
+    
     """,
 )
 
