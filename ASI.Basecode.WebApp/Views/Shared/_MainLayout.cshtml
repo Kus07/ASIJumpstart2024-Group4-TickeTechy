@@ -1,10 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using static ASI.Basecode.Resources.Views.Screen
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TickeTechy - Your Alliance Help Desk Ticketing System.</title>
+    <title>@TickeTechy</title>
     <link rel="icon" href="~/images/TicketTechy Logo.jpeg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
@@ -41,34 +42,34 @@
                         @if (User.IsInRole("1"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="CustomerDashboard">Home</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="CustomerDashboard">@Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Tickets">Your Tickets</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="Tickets">@YourTickets</a>
                             </li>
                         }
                         else if (User.IsInRole("2"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="AgentDashboard">Home</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="AgentDashboard">@Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="AgentPerformanceReport">My Performance Report</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="AgentPerformanceReport">@MyPerformanceReport</a>
                             </li>
                         }
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Profile">Profile</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Profile">@Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link notification-link" asp-controller="Home" asp-action="Notification"> Notifications @if (!String.IsNullOrEmpty(TempData["notifications"] as string))
+                            <a class="nav-link notification-link" asp-controller="Home" asp-action="Notification"> @Notifications @if (!String.IsNullOrEmpty(TempData["notifications"] as string))
                                 {
                                     <text>🔴</text>
                                 } 
                              </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="ContactUs">@ContactUs</a>
                         </li>
                     </ul>
                 </div>
@@ -102,7 +103,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="newslatter_main">
-                        <h1 class="useful_text">Follow Us</h1>
+                        <h1 class="useful_text">@FollowUs</h1>
                         <div class="footer_social_icon">
                             <ul>
                                 <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -124,7 +125,7 @@
     <!-- Copyright Section -->
     <div class="copyright_section">
         <div class="container">
-            <p class="copyright_text">2024 All Rights Reserved. &copy; TickeTechy. In integration with Alliance.</p>
+            <p class="copyright_text">@Copyright</p>
         </div>
     </div>
     <!-- Copyright Section End -->

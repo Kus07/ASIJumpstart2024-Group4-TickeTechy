@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Copyright" xml:space="preserve">
-    <value>©2023 Alliance Software Inc. All rights reserved.</value>
+    <value>©2024 All Rights Reserved. TickeTechy. In integration with Alliance.</value>
   </data>
   <data name="CreateNew" xml:space="preserve">
     <value>Create new</value>
@@ -413,5 +413,29 @@
   </data>
   <data name="IfReallyWantDisapprove" xml:space="preserve">
     <value>If you really want to disapprove this ticket assignment, choose an appropriate agent below</value>
+  </data>
+  <data name="TickeTechy" xml:space="preserve">
+    <value>TickeTechy - Your Alliance Help Desk Ticketing System.</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="MyPerformanceReport" xml:space="preserve">
+    <value>My Performance Report</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="ContactUs" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="FollowUs" xml:space="preserve">
+    <value>Follow Us</value>
+  </data>
+  <data name="ReachOut" xml:space="preserve">
+    <value>Reach out to us for more inquiries about our service. Here at TickeTechy, you CREATE, we ASSIGN, you TRACK, you CLOSE.</value>
   </data>
 </root>

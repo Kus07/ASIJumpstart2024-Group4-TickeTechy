@@ -322,6 +322,15 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact Us.
+        /// </summary>
+        public static string ContactUs {
+            get {
+                return ResourceManager.GetString("ContactUs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Conversation.
         /// </summary>
         public static string Conversation {
@@ -331,7 +340,7 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ©2023 Alliance Software Inc. All rights reserved..
+        ///   Looks up a localized string similar to ©2024 All Rights Reserved. TickeTechy. In integration with Alliance..
         /// </summary>
         public static string Copyright {
             get {
@@ -547,6 +556,15 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Follow Us.
+        /// </summary>
+        public static string FollowUs {
+            get {
+                return ResourceManager.GetString("FollowUs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Forgot password?.
         /// </summary>
         public static string ForgotPass {
@@ -570,6 +588,15 @@ namespace ASI.Basecode.Resources.Views {
         public static string GenerateReport {
             get {
                 return ResourceManager.GetString("GenerateReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string Home {
+            get {
+                return ResourceManager.GetString("Home", resourceCulture);
             }
         }
         
@@ -610,6 +637,15 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Performance Report.
+        /// </summary>
+        public static string MyPerformanceReport {
+            get {
+                return ResourceManager.GetString("MyPerformanceReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Password.
         /// </summary>
         public static string NewPass {
@@ -633,6 +669,15 @@ namespace ASI.Basecode.Resources.Views {
         public static string NoNotifications {
             get {
                 return ResourceManager.GetString("NoNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string Notifications {
+            get {
+                return ResourceManager.GetString("Notifications", resourceCulture);
             }
         }
         
@@ -673,11 +718,29 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profile.
+        /// </summary>
+        public static string Profile {
+            get {
+                return ResourceManager.GetString("Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profile Picture.
         /// </summary>
         public static string ProfilePic {
             get {
                 return ResourceManager.GetString("ProfilePic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reach out to us for more inquiries about our service. Here at TickeTechy, you CREATE, we ASSIGN, you TRACK, you CLOSE..
+        /// </summary>
+        public static string ReachOut {
+            get {
+                return ResourceManager.GetString("ReachOut", resourceCulture);
             }
         }
         
@@ -804,6 +867,15 @@ namespace ASI.Basecode.Resources.Views {
         public static string TicketDescription {
             get {
                 return ResourceManager.GetString("TicketDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TickeTechy - Your Alliance Help Desk Ticketing System..
+        /// </summary>
+        public static string TickeTechy {
+            get {
+                return ResourceManager.GetString("TickeTechy", resourceCulture);
             }
         }
         
