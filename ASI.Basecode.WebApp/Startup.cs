@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Resources.Constants;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.WebApp.Authentication;

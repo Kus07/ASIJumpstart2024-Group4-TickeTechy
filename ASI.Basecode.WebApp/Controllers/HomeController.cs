@@ -408,7 +408,40 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return RedirectToAction("View", "Ticket", new { id = ticketId });
         }
+        public IActionResult Settings()
+        {
+            var currentUserId = GetUserId();
+            var user = _userRepo.Get(currentUserId);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
+            ViewBag.EmailNotifications = user.EmailNotificationSetting == 1 ? true : false;
+
+            return View(user);
+        }
+
+
+        [HttpPost]
+        public IActionResult SaveEmailNotification(bool emailNotifications)
+        {
+            int currentUserId = GetUserId();
+            var user = _userRepo.Get(currentUserId);
+            if (user != null)
+            {
+                user.EmailNotificationSetting = emailNotifications ? 1 : 0;
+                _userRepo.Update(user.Id, user);
+                _db.SaveChanges();
+            }
+            TempData["message"] = "Successfully saved your settings!";
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
 
         public bool UnreadNotifications()
         {

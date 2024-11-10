@@ -231,7 +231,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 var agent = _userRepo.Get(ticketAssigned.AgentId);
                 var agentDetails = _userDetailRepo.Table.Where(m => m.UserId == agent.Id).FirstOrDefault();
 
-                if (!string.IsNullOrEmpty(agent.Email))
+                if (!string.IsNullOrEmpty(agent.Email) && agent.EmailNotificationSetting == 1)
                 {
                     emailSent = _mailManager.EmailRespond(
                         recipientEmail: agent.Email,
@@ -247,7 +247,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 var customer = _userRepo.Get(ticket.UserId);
                 var customerDetails = _userDetailRepo.Table.Where(m => m.UserId == customer.Id).FirstOrDefault();
 
-                if (!string.IsNullOrEmpty(customer.Email))
+                if (!string.IsNullOrEmpty(customer.Email) && customer.EmailNotificationSetting == 1)
                 {
                     emailSent = _mailManager.EmailRespond(
                         recipientEmail: customer.Email,
@@ -451,7 +451,7 @@ namespace ASI.Basecode.WebApp.Controllers
             string errResponse = string.Empty;
             bool emailSent = false;
 
-            if (!string.IsNullOrEmpty(customer.Email))
+            if (!string.IsNullOrEmpty(customer.Email) && customer.EmailNotificationSetting == 1)
             {
                 emailSent = _mailManager.ResolveNotif(
                     recipientEmail: customer.Email,
@@ -506,7 +506,7 @@ namespace ASI.Basecode.WebApp.Controllers
             string errResponse = string.Empty;
             bool emailSent = false;
 
-            if (!string.IsNullOrEmpty(agent.Email))
+            if (!string.IsNullOrEmpty(agent.Email) && agent.EmailNotificationSetting == 1)
             {
 
                 emailSent = _mailManager.ResolveNotifToClient(

@@ -14,6 +14,7 @@ namespace ASI.Basecode.Data.Models
         public DateTime? LastmodifiedDate { get; set; }
         public int? CategoryId { get; set; }
         public int? UserDetailId { get; set; }
+        public string Attachments { get; set; }
 
         public virtual Category Category { get; set; }
         public virtual UserDetail UserDetail { get; set; }
