@@ -7,7 +7,7 @@
 }
 <h2>@AddArticleHeader</h2>
 
-<form asp-action="CreateArticle" method="post" class="needs-validation" novalidate>
+<form asp-action="CreateArticle" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
     <div class="form-group">
         <label asp-for="Title"></label>
         <input asp-for="Title" class="form-control" required />
@@ -34,6 +34,10 @@
         <div class="invalid-feedback">
             @PleaseSelectCategoryForArticle
         </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Attachment">Attachment</label>
+        <input asp-for="@Model.Attachment" type="file" accept="image/x-png,image/gif,image/jpeg" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">@SaveBtn</button>
 </form>

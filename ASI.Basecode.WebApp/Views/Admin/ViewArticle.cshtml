@@ -25,6 +25,15 @@
         font-size: 16px;
         margin-bottom: 1rem;
     }
+
+    .attachment-img {
+        max-width: 300px;
+        max-height: 300px;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
 </style>
 <div class="container">
     <div class="card">
@@ -37,6 +46,12 @@
         <div class="card-body">
             <p class="card-text">@Model.Content</p>
         </div>
+        @if (Model.AttachmentPath != null)
+        {
+            <div class="card-body">
+                <img src="~/@Url.Content(Model.AttachmentPath)" alt="Article Image" class="attachment-img" />
+            </div>
+        }
     </div>
 </div>
 <a class="btn btn-primary" onclick="goBack()">@GoBackBtn</a>

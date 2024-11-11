@@ -918,7 +918,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateArticle(ArticleViewModel model)
+        public async Task<IActionResult> CreateArticle(ArticleViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -927,6 +927,32 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     ModelState.AddModelError("", "Please fill in all required fields.");
                     return View(model);
+                }
+                string attachmentPath = "";
+                if (model.Attachment != null && model.Attachment.Length > 0)
+                {
+                    // Create the path for the Attachments folder inside wwwroot
+                    var attachmentsPicturesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ArticleAttachments");
+
+                    if (!Directory.Exists(attachmentsPicturesFolder))
+                    {
+                        Directory.CreateDirectory(attachmentsPicturesFolder);
+                    }
+                    
+                    // Create a unique file name to avoid overwriting files with the same name
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Attachment.FileName;
+
+                    // Full file path
+                    string filePath = Path.Combine(attachmentsPicturesFolder, uniqueFileName);
+
+                    // Copy the file to the target location
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.Attachment.CopyToAsync(fileStream);
+                    }
+
+                    // Save the relative path to the file (relative to wwwroot)
+                    attachmentPath = Path.Combine("ArticleAttachments", uniqueFileName).Replace("\\", "/");
                 }
 
                 // Save the article to the database
@@ -938,6 +964,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     CategoryId = model.CategoryId,
                     Status = "Draft", // Set the initial status to "Draft"
                     Author = currentUser, // Set the user or author who created the article
+                    Attachments = attachmentPath,
                     PublishDate = DateTime.Now, // Set the publish date to null initially
                     LastmodifiedDate = DateTime.Now // Set the modified date to the current date and time
                 };
@@ -1020,6 +1047,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Status = article.Status,
                 Author = article.Author,
                 PublishDate = article.PublishDate,
+                AttachmentPath = article.Attachments,
                 LastModifiedDate = DateTime.Now
             };
 

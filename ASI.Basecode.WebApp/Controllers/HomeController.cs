@@ -63,7 +63,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 PublishDate = article.PublishDate,
                 LastModifiedDate = article.LastmodifiedDate ?? DateTime.Now,
                 ProfilePicturePath = article.UserDetail?.ProfilePicturePath,
-                UserDetail = article.UserDetail
+                UserDetail = article.UserDetail,
+                AttachmentPath = article.Attachments
             }).ToList();
 
             var viewModel = new TicketViewModel()
@@ -459,5 +460,24 @@ namespace ASI.Basecode.WebApp.Controllers
             return unreadNotificationsAvailable;
 
         }
+        [HttpPost]
+        public IActionResult ClearAllNotifications()
+        {
+            var user = GetUserId();
+            var notifications = _notificationRepo.Table.Where(n => n.ToUserId == user).ToList();
+            foreach (var notification in notifications)
+            {
+                _notificationRepo.Delete(notification.Id);
+            }
+            return RedirectToAction("Notification");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteNotification(int notificationId)
+        {
+            _notificationRepo.Delete(notificationId);
+            return RedirectToAction("Notification");
+        }
+
     }
 }

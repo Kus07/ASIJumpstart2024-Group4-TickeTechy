@@ -128,6 +128,14 @@
         font-size: 24px;
         color: white;
     }
+
+    .attachment-img {
+        max-width: 300px;
+        max-height: 300px;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
 </style>
 
 <br />
@@ -140,7 +148,7 @@
         <h2>@ArticlesHeaderCustomerDashboard</h2>
     </div>
 
-    @foreach (var article in Model.Articles)
+    @foreach (var article in Model.Articles.OrderByDescending(a => a.PublishDate)) 
     {
         <div class="article">
             <div class="author-info">
@@ -179,6 +187,20 @@
             <div class="article-content-box">
                 <p>@article.Content</p>
             </div>
+            @if (@article.AttachmentPath != null)
+            {
+                <div class="article-content-box">
+                    <img src="~/@Url.Content(article.AttachmentPath)" alt="Article Image" class="attachment-img" />
+                </div>
+                <!--<div class="article-content-box">
+                    <h5 class="card-title">Attachment</h5>
+                    <div class="card-body">
+                        <a href="@Url.Content("~/images/" + article.AttachmentPath)" download="@article.AttachmentPath">
+                            <i class="fas fa-file-download"></i> Download Attachment
+                        </a>
+                    </div>  
+                </div> -->
+            }
         </div>
     }
 </div>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ASI.Basecode.Data.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ASI.Basecode.Services.ServiceModels
 {
@@ -21,6 +22,9 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<Category> Categories { get; set; }
         public virtual Category Category { get; set; }
         public virtual UserDetail UserDetail { get; set; }
+        public IFormFile Attachment { get; set; }
+        public string AttachmentPath { get; set; }
+
         public ArticleViewModel()
         {
             Categories = new List<Category>();

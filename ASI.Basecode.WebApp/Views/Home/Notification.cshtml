@@ -5,32 +5,66 @@
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
+<style>
+    .list-group-item .float-right {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+</style>
 
-<br />
-<br />
-<br />
-<br />
-<br />
-<h2>@YourNotifs</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@YourNotifs</h2>
+            <button class="btn btn-danger float-right" onclick="clearAllNotifications()">Clear All</button>
+        </div>
+    </div>
+    <br />
+    @if (Model == null || !Model.Any())
+    {
+        <p>@NoNotifications</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var notification in Model)
+            {
+                <li class="list-group-item @(notification.Status == "UNREAD" ? "font-weight-bold" : "")">
+                    <a href="@Url.Action("ViewNotification", "Home", new { ticketId = notification.TicketId, notificationId = notification.Id })">
+                        <strong>@notification.Title</strong><br />
+                        @notification.Content<br />
+                        <small>@ReceivedOn @notification.DateCreated?.ToString("g")</small><br />
+                        <span>@Status: @notification.Status</span>
+                    </a>                    
+                        <button class="btn btn-danger float-right" onclick="deleteNotification(@notification.Id)">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                </li>
+            }
+        </ul>
+    }
+</div>
 
-@if (Model == null || !Model.Any())
-{
-    <p>@NoNotifications</p>
-}
-else
-{
-    <ul class="list-group">
-        @foreach (var notification in Model)
-        {
-            <li class="list-group-item @(notification.Status == "UNREAD" ? "font-weight-bold" : "")">
-                <a href="@Url.Action("ViewNotification", "Home", new { ticketId = notification.TicketId, notificationId = notification.Id })">
-                    <strong>@notification.Title</strong><br />
-                    @notification.Content<br />
-                    <small>@ReceivedOn @notification.DateCreated?.ToString("g")</small><br />
-                    <span>@Status: @notification.Status</span>
-                </a>
-            </li>
-        }
+<script>
+    function clearAllNotifications() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ClearAllNotifications", "Home")',
+            success: function () {
+                location.reload();
+            }
+        });
+    }
 
-    </ul>
-}
+    function deleteNotification(notificationId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DeleteNotification", "Home")',
+            data: { notificationId: notificationId },
+            success: function () {
+                location.reload();
+            }
+        });
+    }
+</script>
