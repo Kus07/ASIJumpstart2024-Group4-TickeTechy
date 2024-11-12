@@ -21,6 +21,14 @@
         max-width: 100%;
         height: auto; 
     }
+
+    .ticket-section {
+        display: none;
+    }
+
+    .btn-toggle {
+        margin-bottom: 1rem;
+    }
 </style>
 
 <h1>
@@ -29,72 +37,126 @@
         @TicketReportsBtn
     </button>
 </h1>
-<table class="table" id="ticketListTable">
-    <thead>
-        <tr>
-            <th>@Category</th>
-            <th>@Description</th>
-            <th>@Priority</th>
-            <th>@Status</th>
-            <th>@TimeSinceCreated</th>
-            <th>@ActionLabel</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var ticket in Model)
-        {
-            var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
-            var description = ticket.Description;
-            var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description; 
 
-            <tr>
-                <td>@ticket.CategoryName</td>
-                <td title="@description">@truncatedDescription</td> 
-                <td>@ticket.Priority</td>
-                <td style="color: white; font-size: 16px;">
-                    @if (ticket.Status== "OPEN")
-                    {
-                        <span class="badge bg-primary">@ticket.Status</span> <!-- Blue for OPEN -->
-                    }
-                    else if (ticket.Status == "WAITINGRESPONSE" || ticket.Status== "ONGOING")
-                    {
-                        <span class="badge bg-warning text-dark">@ticket.Status</span> <!-- Orange for WAITINGFORAPPROVAL and ONGOING -->
-                    }
-                    else if (ticket.Status== "RESOLVED")
-                    {
-                        <span class="badge bg-success">@ticket.Status</span> <!-- Green for RESOLVED -->
-                    }
-                    else if (ticket.Status == "CLOSED")
-                    {
-                        <span class="badge bg-danger">@ticket.Status</span> <!-- Red for CLOSED -->
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">@ticket.Status</span> <!-- Grey for any other statuses -->
-                    }
-                </td>
-                <td>@timeSinceCreation.Days days @timeSinceCreation.Hours hours @timeSinceCreation.Minutes minutes ago</td>
-                <td>
-                    <button class="btn btn-warning btn-sm"
-                            data-toggle="modal"
-                            data-target="#editTicketModal"
-                            data-id="@ticket.Id"
-                            data-description="@ticket.Description"
-                            data-priority="@ticket.Priority"
-                            data-categoryid="@ticket.CategoryId"
-                            data-attachments="@ticket.Attachments"
-                            data-userid="@ticket.UserId">
-                        Edit
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(@ticket.Id)">Delete</button>
-                    <a class="btn btn-info btn-sm" asp-controller="Ticket" asp-action="View" asp-route-id="@ticket.Id">View Ticket</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<!-- Toggle Buttons -->
+<div class="d-flex justify-content-start btn-toggle">
+    <button id="openTicketsButton" class="btn btn-primary me-2">Open Tickets</button>
+    <button id="closedTicketsButton" class="btn btn-outline-secondary">Closed Tickets</button>
+</div>
 
+<!-- Open Tickets Section -->
+<div id="openTicketsSection" class="ticket-section">
+    <h2>Open Tickets</h2>
+    @if (Model.Any(ticket => ticket.Status == "OPEN"))
+    {
+        <table class="table" id="openTicketListTable">
+            <thead>
+                <tr>
+                    <th>@Category</th>
+                    <th>@Description</th>
+                    <th>@Priority</th>
+                    <th>@Status</th>
+                    <th>@TimeSinceCreated</th>
+                    <th>@ActionLabel</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model.Where(t => t.Status == "OPEN").OrderByDescending(t => t.CreatedAt))
+                {
+                    var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
+                    var description = ticket.Description;
+                    var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description;
 
+                    <tr>
+                        <td>@ticket.CategoryName</td>
+                        <td title="@description">@truncatedDescription</td>
+                        <td>@ticket.Priority</td>
+                        <td style="color: white; font-size: 16px;">
+                            <span class="badge bg-primary">@ticket.Status</span>
+                        </td>
+                        <td>@timeSinceCreation.Days days @timeSinceCreation.Hours hours @timeSinceCreation.Minutes minutes ago</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm"
+                                    data-toggle="modal"
+                                    data-target="#editTicketModal"
+                                    data-id="@ticket.Id"
+                                    data-description="@ticket.Description"
+                                    data-priority="@ticket.Priority"
+                                    data-categoryid="@ticket.CategoryId"
+                                    data-attachments="@ticket.Attachments"
+                                    data-userid="@ticket.UserId">
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="confirmDelete(@ticket.Id)">Delete</button>
+                            <a class="btn btn-info btn-sm" asp-controller="Ticket" asp-action="View" asp-route-id="@ticket.Id">View Ticket</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Nothing to show.</p>
+    }
+</div>
+
+<!-- Closed Tickets Section -->
+<div id="closedTicketsSection" class="ticket-section">
+    <h2>Closed Tickets</h2>
+    @if (Model.Any(ticket => ticket.Status == "CLOSED"))
+    {
+        <table class="table" id="closedTicketListTable">
+            <thead>
+                <tr>
+                    <th>@Category</th>
+                    <th>@Description</th>
+                    <th>@Priority</th>
+                    <th>@Status</th>
+                    <th>@TimeSinceCreated</th>
+                    <th>@ActionLabel</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model.Where(t => t.Status == "CLOSED").OrderByDescending(t => t.CreatedAt))
+                {
+                    var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
+                    var description = ticket.Description;
+                    var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description;
+
+                    <tr>
+                        <td>@ticket.CategoryName</td>
+                        <td title="@description">@truncatedDescription</td>
+                        <td>@ticket.Priority</td>
+                        <td style="color: white; font-size: 16px;">
+                            <span class="badge bg-danger">@ticket.Status</span>
+                        </td>
+                        <td>@timeSinceCreation.Days days @timeSinceCreation.Hours hours @timeSinceCreation.Minutes minutes ago</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm"
+                                    data-toggle="modal"
+                                    data-target="#editTicketModal"
+                                    data-id="@ticket.Id"
+                                    data-description="@ticket.Description"
+                                    data-priority="@ticket.Priority"
+                                    data-categoryid="@ticket.CategoryId"
+                                    data-attachments="@ticket.Attachments"
+                                    data-userid="@ticket.UserId">
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="confirmDelete(@ticket.Id)">Delete</button>
+                            <a class="btn btn-info btn-sm" asp-controller="Ticket" asp-action="View" asp-route-id="@ticket.Id">View Ticket</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Nothing to show.</p>
+    }
+</div>
 
 <!-- Edit Ticket Modal -->
 <div class="modal fade" id="editTicketModal" tabindex="-1" role="dialog" aria-labelledby="editTicketModalLabel" aria-hidden="true">
@@ -177,6 +239,28 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> 
 
 
+<!-- JavaScript to Toggle Sections -->
+<script>
+    $(document).ready(function () {
+        // Show Open Tickets section by default
+        $('#openTicketsSection').show();
+        $('#openTicketsButton').addClass('btn-primary').removeClass('btn-outline-primary');
+
+        $('#openTicketsButton').on('click', function () {
+            $('#openTicketsSection').show();
+            $('#closedTicketsSection').hide();
+            $('#openTicketsButton').addClass('btn-primary').removeClass('btn-outline-primary');
+            $('#closedTicketsButton').addClass('btn-outline-secondary').removeClass('btn-secondary');
+        });
+
+        $('#closedTicketsButton').on('click', function () {
+            $('#closedTicketsSection').show();
+            $('#openTicketsSection').hide();
+            $('#closedTicketsButton').addClass('btn-secondary').removeClass('btn-outline-secondary');
+            $('#openTicketsButton').addClass('btn-outline-primary').removeClass('btn-primary');
+        });
+    });
+</script>
 
 <script>
     $(document).ready(function () {
