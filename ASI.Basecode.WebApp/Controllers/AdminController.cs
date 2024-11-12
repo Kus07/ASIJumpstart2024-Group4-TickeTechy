@@ -990,7 +990,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 CategoryId = article.CategoryId,
                 Status = article.Status,
                 Author = article.Author,
-                LastModifiedDate = DateTime.Now
+                LastModifiedDate = DateTime.Now,
+                AttachmentPath = article.Attachments
             };
 
             model.Categories = _categoryRepo.GetAll().ToList();
@@ -998,7 +999,7 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult EditArticle(ArticleViewModel model)
+        public async Task<IActionResult> EditArticle(ArticleViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -1015,11 +1016,41 @@ namespace ASI.Basecode.WebApp.Controllers
                     return NotFound();
                 }
 
+                string attachmentPath = "";
+                if (model.Attachment != null && model.Attachment.Length > 0)
+                {
+                    // Create the path for the Attachments folder inside wwwroot
+                    var attachmentsPicturesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ArticleAttachments");
+
+                    if (!Directory.Exists(attachmentsPicturesFolder))
+                    {
+                        Directory.CreateDirectory(attachmentsPicturesFolder);
+                    }
+
+                    // Create a unique file name to avoid overwriting files with the same name
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Attachment.FileName;
+
+                    // Full file path
+                    string filePath = Path.Combine(attachmentsPicturesFolder, uniqueFileName);
+
+                    // Copy the file to the target location
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.Attachment.CopyToAsync(fileStream);
+                    }
+
+                    // Save the relative path to the file (relative to wwwroot)
+                    attachmentPath = Path.Combine("ArticleAttachments", uniqueFileName).Replace("\\", "/");
+                }
+
                 article.Title = model.Title;
                 article.Content = model.Content;
                 article.CategoryId = model.CategoryId;
                 article.Status = model.Status;
                 article.LastmodifiedDate = DateTime.Now;
+                if((model.Attachment != null && model.Attachment.Length > 0) && attachmentPath != "") {
+                    article.Attachments = attachmentPath;
+                }
 
                 _articleRepo.Update(model.Id, article);
 

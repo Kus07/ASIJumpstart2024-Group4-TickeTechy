@@ -88,6 +88,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == GetUserId() || m.ReassignedToId == GetUserId() && m.Status.Equals("APPROVED")).Include(m => m.Ticket).Include(m => m.Ticket.User).ToList();
 
+
             if (UnreadNotifications())
             {
                 TempData["notifications"] = "true";
@@ -477,6 +478,57 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             _notificationRepo.Delete(notificationId);
             return RedirectToAction("Notification");
+        }
+
+
+        public IActionResult AgentPerformanceReport()
+        {
+            var agentId = GetUserId();
+            var agent = _userRepo.Get(agentId);
+            if (agent == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
+            var tickets = _ticketAssignedRepo.Table
+                                .Where(m => m.AgentId == agent.Id)
+                                .ToList();
+            var resolvedTicketsByCategory = tickets
+                .Where(t => t.Ticket.StatusId == Convert.ToInt32(TicketStatus.CLOSED))
+                .GroupBy(t => t.Ticket.Category)
+                .Select(g => new CategoryTicketCount
+                {
+                    Category = g.Key,
+                    Count = g.Count()
+                })
+                .ToList();
+            var ticketsAssigned = tickets.Count();
+            var ticketsWithFeedback = _feedbackRepo.Table.Where(m => m.AgentId == agent.Id).ToList();
+            var averageFeedbackRating = ticketsWithFeedback.Average(m => m.Star);
+            //get the average resolution time of the agent
+            var totalResolutionTime = tickets.Where(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5)
+            .Sum(t =>
+            {
+                var ticket = _ticketRepo.Get(t.TicketId.Value);
+                var resolutionTime = ticket.UpdatedAt.Value - ticket.CreatedAt.Value;
+                return resolutionTime.TotalHours;
+            });
+            var averageResolutionTime = tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) > 0 ? totalResolutionTime / tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) : 0;
+            var ticketsOngoing = tickets.Where(t => t.Ticket.StatusId == Convert.ToInt32(TicketStatus.ONGOING) || t.Ticket.StatusId == Convert.ToInt32(TicketStatus.WAITINGRESPONSE)).ToList().Count();
+            var viewModel = new AgentPerformanceViewModel
+            {
+                TicketsAssigned = ticketsAssigned,
+                TicketsWithFeedback = ticketsWithFeedback.Count(),
+                AverageFeedbackRating = averageFeedbackRating,
+                ResolvedTicketsByCategory = resolvedTicketsByCategory,
+                AverageTicketResolutionTime = averageResolutionTime,
+                TicketsOngoing = ticketsOngoing
+            };
+            return View(viewModel);
         }
 
     }

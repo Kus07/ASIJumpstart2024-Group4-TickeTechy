@@ -5,8 +5,18 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<style>
+    .attachment-img {
+        max-width: 300px;
+        max-height: 300px;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+</style>
+
 <h2></h2>
-<form method="post" asp-action="EditArticle" asp-controller="Admin" class="needs-validation" novalidate>
+<form method="post" asp-action="EditArticle" asp-controller="Admin" class="needs-validation" enctype="multipart/form-data" novalidate>
     <input type="hidden" asp-for="Id" />
     <div class="form-group">
         <label asp-for="Title"></label>
@@ -23,7 +33,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="CategoryId"></label>
+        <label asp-for="CategoryId">Category</label>
         <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control" required>
             <option value="">Select a category</option>
             @foreach (var category in Model.Categories)
@@ -34,6 +44,13 @@
         <div class="invalid-feedback">
             @PleaseSelectCategoryForArticle
         </div>
+    </div>
+    <div class="form-group">
+        @if(Model.AttachmentPath != null && Model.AttachmentPath != ""){
+        <img src="~/@Url.Content(Model.AttachmentPath)" alt="Article Image" class="attachment-img" />
+        }
+        <label asp-for="@Model.Attachment">Attachment</label>
+        <input asp-for="@Model.Attachment" type="file" accept="image/x-png,image/gif,image/jpeg" class="form-control" />
     </div>
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary" />
