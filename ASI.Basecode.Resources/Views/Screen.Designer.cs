@@ -250,6 +250,15 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to *.
+        /// </summary>
+        public static string Asterisk {
+            get {
+                return ResourceManager.GetString("Asterisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attachments.
         /// </summary>
         public static string Attachments {

@@ -295,12 +295,12 @@
         <form class="form" action="/Account/Login" method="post">
             <div asp-validation-summary="ModelOnly" style="color: red !important;"></div>
             <div class="input-group">
-                <label for="email">@Email</label>
+                <label for="email">@Email <span style="color: red;">@Asterisk</span></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" style="color: red !important;"></span>
             </div>
             <div class="input-group">
-                <label for="password">@Password</label>
+                <label for="password">@Password <span style="color: red;">@Asterisk</span></label>
                 <input asp-for="Password" type="password" class="form-control" id="password" />
                 <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                 <span asp-validation-for="Password" style="color: red !important;"></span>
@@ -324,7 +324,7 @@
 
             <!-- Email Input -->
             <div class="input-group" id="emailGroup">
-                <label for="forgot-email" style="color: black;">@Email</label>
+                <label for="forgot-email" style="color: black;">@Email <span style="color: red;">@Asterisk</span> </label>
                 <input type="email" id="forgot-email" class="form-control" style="color: darkblue;" required />
                 <span id="emailError" style="color: red; display: none;">@InvalidEmail</span>
             </div>
@@ -434,6 +434,8 @@
                             if (response.success) {
                                 otpSent = true;
                                 $('#otpGroup').fadeIn(); // Show OTP input
+                                $('#emailError').hide();
+
                                 startInterval();
                             } else {
                                 if (response.message == "Invalid email format.") {

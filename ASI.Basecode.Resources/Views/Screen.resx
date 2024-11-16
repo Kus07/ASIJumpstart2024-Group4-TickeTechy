@@ -438,4 +438,7 @@
   <data name="ReachOut" xml:space="preserve">
     <value>Reach out to us for more inquiries about our service. Here at TickeTechy, you CREATE, we ASSIGN, you TRACK, you CLOSE.</value>
   </data>
+  <data name="Asterisk" xml:space="preserve">
+    <value>*</value>
+  </data>
 </root>

@@ -168,38 +168,38 @@
             <!-- 2-column grid for input fields -->
             <div class="input-grid">
                 <div class="input-group">
-                    <label for="username">@Username</label>
+                    <label for="username">@Username <span style="color: red;">@Asterisk</span></label>
                     <input asp-for="Username" class="form-control" />
                     <span asp-validation-for="Username" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="email">@Email</label>
+                    <label for="email">@Email <span style="color: red;">@Asterisk</span></label>
                     <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="contact">@ContactNo</label>
+                    <label for="contact">@ContactNo <span style="color: red;">@Asterisk</span></label>
                     <input asp-for="Contact" class="form-control" />
                     <span asp-validation-for="Contact" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="firstName">@FirstName</label>
+                    <label for="firstName">@FirstName <span style="color: red;">@Asterisk</span></label>
                     <input asp-for="FirstName" class="form-control" />
                     <span asp-validation-for="FirstName" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="lastName">@LastName</label>
+                    <label for="lastName">@LastName <span style="color: red;">@Asterisk</span></label>
                     <input asp-for="LastName" class="form-control" />
                     <span asp-validation-for="LastName" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="password">@Password</label>
+                    <label for="password">@Password <span style="color: red;">@Asterisk</span></label>
                     <input asp-for="Password" type="password" class="form-control" id="password" />
                     <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                     <span asp-validation-for="Password" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="password">@ConfirmPass</label>
+                    <label for="password">@ConfirmPass <span style="color: red;">@Asterisk</span></label>
                     <input asp-for="ConfirmPassword" type="password" class="form-control" id="password" />
                     <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                     <span asp-validation-for="ConfirmPassword" style="color: red !important;"></span>
