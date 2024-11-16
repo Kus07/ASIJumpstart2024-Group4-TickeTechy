@@ -173,11 +173,7 @@
             <input type="checkbox" class="toggle-switch" id="email-notifications" @(ViewBag.EmailNotifications == true ? "checked" : "unchecked")>
     </div>
 
-    <div class="setting">
-        <label>DARK MODE</label>
-        <p>Easier on the eyes and saves battery.</p>
-        <input type="checkbox" class="toggle-switch">
-    </div>
+   
 
         <div class="setting">
             <label>ARTICLE VIEW STYLE</label>
@@ -199,14 +195,6 @@
             </div>
         </div>
 
-    <div class="setting">
-        <label>SCREEN BRIGHTNESS</label>
-        <input type="range" min="0" max="100" value="50" class="slider">
-        <div class="checkbox-container">
-            <input type="checkbox" id="auto-brightness" checked>
-            <label for="auto-brightness">Auto-adjust screen brightness</label>
-        </div>
-    </div>
     <form asp-controller="Home" asp-action="SaveEmailNotification" method="post">
     <div class="button-group">
         <input type="hidden" id="email-notifications-hidden" name="emailNotifications" />

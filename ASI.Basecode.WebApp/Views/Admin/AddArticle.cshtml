@@ -9,22 +9,22 @@
 
 <form asp-action="CreateArticle" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
     <div class="form-group">
-        <label asp-for="Title"></label>
+        <label asp-for="Title">Title <span style="color: red">@Asterisk</span></label>
         <input asp-for="Title" class="form-control" required />
         <div class="invalid-feedback">
-            @PlsEnterTitleForArticle
+            @PlsEnterTitleForArticle 
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="Content"></label>
+        <label asp-for="Content">Content <span style="color: red">@Asterisk</span></label>
         <textarea asp-for="Content" class="form-control" rows="10" required></textarea>
         <div class="invalid-feedback">
             @PlsEnterContentForArticle
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="CategoryId"></label>
-        <select asp-for="CategoryId" class="form-control" required>
+        <label asp-for="CategoryId">@Category <span style="color: red">@Asterisk</span></label>
+        <select asp-for="CategoryId" class="form-control dropdown" required>
             <option value="">Select a category</option>
             @foreach (var category in Model.Categories)
             {
@@ -39,7 +39,7 @@
         <label asp-for="@Model.Attachment">Attachment</label>
         <input asp-for="@Model.Attachment" type="file" accept="image/x-png,image/gif,image/jpeg" class="form-control" />
     </div>
-    <button type="submit" class="btn btn-primary">@SaveBtn</button>
+    <button type="submit" class="btn btn-primary mt-3">@SaveBtn</button>
 </form>
 
 <script>

@@ -197,7 +197,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 ViewBag.FeedbackCount = feedbacks.Count;
                 ViewBag.Feedbacks = feedbacks; 
-                ViewBag.AverageStarRating = averageStarRating;
+                ViewBag.AverageStarRating = averageStarRating.Value.ToString("F2");
             }
 
             if (UnreadNotifications())

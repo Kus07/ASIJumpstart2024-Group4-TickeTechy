@@ -11,8 +11,8 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: rgb(20, 20, 20);
-        border: none;
+        background-color: white;
+        border: 0.1rem solid black;
         font-weight: 600;
         display: flex;
         align-items: center;
@@ -31,14 +31,14 @@
     }
 
         .edit-svgIcon path {
-            fill: white;
+            fill: black;
         }
 
     .edit-button:hover {
         width: 120px;
         border-radius: 50px;
         transition-duration: 0.3s;
-        background-color: rgb(255, 69, 69);
+        background-color: olivedrab;
         align-items: center;
     }
 
@@ -80,6 +80,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        border: 0.1rem solid black;
         box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
         cursor: pointer;
         transition-duration: 0.3s;
@@ -137,11 +138,12 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: orangered;
+        background-color: white;
         border: none;
         font-weight: 600;
         display: flex;
         align-items: center;
+        border: 0.1rem solid black;
         justify-content: center;
         box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
         cursor: pointer;
@@ -157,7 +159,7 @@
     }
 
         .delete-svgIcon path {
-            fill: white;
+            fill: black;
         }
 
     .delete-button:hover {
@@ -200,8 +202,8 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: lightgreen;
-        border: none;
+        background-color: white;
+        border: 0.1rem solid black;
         font-weight: 600;
         display: flex;
         align-items: center;
@@ -220,14 +222,14 @@
     }
 
         .generate-svgIcon path {
-            /* fill: white; */
+            fill: black;
         }
 
     .generate-button:hover {
         width: 120px;
         border-radius: 50px;
         transition-duration: 0.3s;
-        background-color: pl;
+        background-color: #6C4D0B;
         align-items: center;
     }
     
@@ -257,6 +259,10 @@
         opacity: 1;
         transform: translateY(0px);
         transition-duration: 0.3s;
+    }
+
+    .st0 {
+        fill: black;
     }
 
 </style>
@@ -348,7 +354,7 @@
                                                 id = "showGenerateReportModalBtn" data-toggle="modal" data-target="#generateReportModal"
                                                 data-agentid="@agent.Id" data-agentname="@agent.FirstName @agent.LastName">
                                             
-                                                <svg class="generate-svgIcon" height="42px" width="42px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#b30000" stroke="#b30000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .st0{fill:#3e9800;} </style> <g> <polygon class="st0" points="374.107,448.835 34.01,448.835 34.01,194.102 164.947,194.102 164.947,63.165 374.107,63.165 374.107,96.698 408.117,64.049 408.117,29.155 164.947,29.155 34.01,160.092 0,194.102 0,482.845 408.117,482.845 408.117,282.596 374.107,318.034 "></polygon> <path class="st0" d="M508.609,118.774l-51.325-51.325c-4.521-4.522-11.852-4.522-16.372,0L224.216,275.561 c-1.344,1.344-2.336,2.998-2.889,4.815l-26.21,86.117c-2.697,8.861,5.586,17.144,14.447,14.447l88.886-27.052l210.159-218.741 C513.13,130.626,513.13,123.295,508.609,118.774z M243.986,349.323l-16.877-18.447l11.698-38.447l29.139,15.678l15.682,29.145 L243.986,349.323z M476.036,110.577L291.414,296.372l-11.728-11.728l185.804-184.631l10.547,10.546 C476.036,110.567,476.036,110.571,476.036,110.577z"></path> </g> </g></svg>
+                                                <svg class="generate-svgIcon" height="42px" width="42px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#b30000" stroke="#b30000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .st0{fill:black;} </style> <g> <polygon class="st0" points="374.107,448.835 34.01,448.835 34.01,194.102 164.947,194.102 164.947,63.165 374.107,63.165 374.107,96.698 408.117,64.049 408.117,29.155 164.947,29.155 34.01,160.092 0,194.102 0,482.845 408.117,482.845 408.117,282.596 374.107,318.034 "></polygon> <path class="st0" d="M508.609,118.774l-51.325-51.325c-4.521-4.522-11.852-4.522-16.372,0L224.216,275.561 c-1.344,1.344-2.336,2.998-2.889,4.815l-26.21,86.117c-2.697,8.861,5.586,17.144,14.447,14.447l88.886-27.052l210.159-218.741 C513.13,130.626,513.13,123.295,508.609,118.774z M243.986,349.323l-16.877-18.447l11.698-38.447l29.139,15.678l15.682,29.145 L243.986,349.323z M476.036,110.577L291.414,296.372l-11.728-11.728l185.804-184.631l10.547,10.546 C476.036,110.567,476.036,110.571,476.036,110.577z"></path> </g> </g></svg>
                                             </a>
                                             </td>
                                         </tr>
@@ -375,9 +381,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="generateReportModalLabel">@GenerateReport</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <p id="reportList"></p>
@@ -693,7 +696,7 @@
         // Send AJAX request to generate report
         $.ajax({
             url: '@Url.Action("GenerateAgentReport", "Admin")',
-            type: 'GET',
+            type: 'POST',
             data: { agentId: agentId },
             success: function (report) {
                 console.log(report);
