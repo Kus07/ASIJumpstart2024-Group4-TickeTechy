@@ -14,6 +14,45 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
 
 <style>
+  /*    .btn {
+         position: relative;
+         display: inline-flex;
+         align-items: center;
+         justify-content: center;
+         padding: 10px 20px;
+         font-size: 16px;
+         font-weight: 500;
+         border: none;
+         border-radius: 5px;
+         background-color: #6c757d;
+         color: white;
+         cursor: pointer;
+         transition: background-color 0.3s ease;
+     } */
+
+    .btn:hover {
+        background-color: #5a6268;
+    }
+
+    .custom-spinner {
+        width: 16px;
+        height: 16px;
+        border: 3px solid transparent;
+        border-top: 3px solid #fff;
+        border-right: 3px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 10px; /* Adds spacing between text and spinner */
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
     .view-button {
         width: 40px;
         height: 40px;
@@ -491,8 +530,14 @@
                 </div>
             </div>
             <div class="modal-footer justify-content-center">
+                <button type="button" id="downloadReportPDF" class="btn btn-secondary">
+                    <span id="buttonText">@DownloadReportPDF</span>
+                    <span id="loadingSpinner" class="custom-spinner" style="display: none;">Downloading...</span>
+                </button>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">@CloseBtn</button>
             </div>
+
         </div>
     </div>
 </div>
@@ -541,6 +586,55 @@
             $('#closedTicketsButton').addClass('btn-outline-secondary').removeClass('btn-secondary');
         });
     });
+
+    $(document).ready(function () {
+        $('#downloadReportPDF').on('click', function () {
+            var $button = $(this);
+            var $spinner = $('#loadingSpinner');
+            var $buttonText = $('#buttonText');
+
+            // Show spinner and hide button text
+            $spinner.show();
+            $buttonText.hide();
+
+            $.ajax({
+                url: '/File/DownloadTicketReport',
+                type: 'GET',
+                xhrFields: {
+                    responseType: 'blob' // Important to receive the response as a blob
+                },
+                success: function (data, status, xhr) {
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                    }
+
+                    // Create a new Blob object using the response data
+                    var blob = new Blob([data], { type: "application/pdf" });
+
+                    // Create a link element, set the URL to the blob, and download
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename || 'TicketReport.pdf';
+                    link.click();
+
+                    // Reset button state
+                    $spinner.hide();
+                    $buttonText.show();
+                },
+                error: function () {
+                    alert('Error downloading the report.');
+                    // Reset button state
+                    $spinner.hide();
+                    $buttonText.show();
+                }
+            });
+        });
+    });
+
 </script>
 
 <script>

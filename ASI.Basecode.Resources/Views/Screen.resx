@@ -441,4 +441,7 @@
   <data name="Asterisk" xml:space="preserve">
     <value>*</value>
   </data>
+  <data name="DownloadReportPDF" xml:space="preserve">
+    <value>Download Report (PDF)</value>
+  </data>
 </root>

@@ -1,0 +1,226 @@
+﻿@model ASI.Basecode.Services.ServiceModels.TicketReportViewModel
+
+@{
+    var base64Image = ViewBag.Base64Image;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Ticket Report Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #444;
+            margin-top: 30px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .container {
+            width: 85%;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+            ul li {
+                margin: 10px 0;
+                font-size: 16px;
+            }
+
+        .charts-container {
+            margin-top: 30px;
+        }
+
+        .chart-box {
+            width: 90%;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+              /* .chart-box:last-of-type {
+                  page-break-after: auto;
+              } */
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 500px;
+            height: 300px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #555;
+            background: #f9f9f9;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <style>
+            #pdfLogo {
+                height: 100px;
+                width: 100%;
+            }
+
+            #divPdfHeader {
+                display: flex;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        </style>
+        <div id="divPdfHeader">
+            <img id="pdfLogo" src="data:image/png;base64,@base64Image" alt="Header Image" />
+        </div>
+        <h1>Ticket Report</h1>
+
+        <h2>Status Counts</h2>
+        <ul>
+            @foreach (var status in Model.StatusCounts)
+            {
+                <li>@status.Key: <strong>@status.Value</strong></li>
+            }
+        </ul>
+
+        <h2>Category Counts</h2>
+        <ul>
+            @foreach (var category in Model.CategoryCounts)
+            {
+                <li>@category.Key: <strong>@category.Value</strong></li>
+            }
+        </ul>
+
+        <div class="charts-container">
+            <!-- Ticket Status Pie Chart -->
+            <div class="chart-box">
+                <canvas id="ticketStatusChart"></canvas>
+            </div>
+
+            <!-- Ticket Category Bar Chart -->
+            <div class="chart-box">
+                <canvas id="ticketCategoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Generated on: @DateTime.Now.ToString("MMMM dd, yyyy")
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function generateRandomColors(count) {
+                const colors = [];
+                for (let i = 0; i < count; i++) {
+                    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Generate random hex color
+                    colors.push(randomColor);
+                }
+                return colors;
+            }
+            // Ticket Status Pie Chart
+            var statusData = @Html.Raw(Json.Serialize(Model.StatusCounts));
+            var statusValues = Object.values(statusData);
+            var randomColors = generateRandomColors(statusValues.length);
+
+            var ctxStatus = document.getElementById('ticketStatusChart').getContext('2d');
+            new Chart(ctxStatus, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(statusData),
+                    datasets: [{
+                        data: statusValues,
+                        backgroundColor: randomColors, // Use the generated random colors
+                        borderColor: randomColors.map(color => color), // Optional: Use the same colors for borders
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    let percentage = ((context.raw / total) * 100).toFixed(2);
+                                    return `${context.label}: ${context.raw} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Ticket Category Bar Chart
+            var categoryData = @Html.Raw(Json.Serialize(Model.CategoryCounts));
+            var ctxCategory = document.getElementById('ticketCategoryChart').getContext('2d');
+            new Chart(ctxCategory, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(categoryData),
+                    datasets: [{
+                        label: 'Tickets',
+                        data: Object.values(categoryData),
+                        backgroundColor: '#3f51b5',
+                        borderColor: '#303f9f',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Categories'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Tickets'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
