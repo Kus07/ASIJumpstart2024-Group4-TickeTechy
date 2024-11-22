@@ -27,6 +27,7 @@ namespace ASI.Basecode.Data.Models
         public DateTime? CreatedAt { get; set; }
         public string ForgotPassOtp { get; set; }
         public int? EmailNotificationSetting { get; set; }
+        public int? ArticleViewSetting { get; set; }
 
         public virtual Department Department { get; set; }
         public virtual Role Role { get; set; }

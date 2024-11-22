@@ -473,18 +473,16 @@ namespace ASI.Basecode.Resources.Views {
                 return ResourceManager.GetString("DontHaveAcc", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Download Report (PDF).
         /// </summary>
-        public static string DownloadReportPDF
-        {
-            get
-            {
+        public static string DownloadReportPDF {
+            get {
                 return ResourceManager.GetString("DownloadReportPDF", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Edit Admin.
         /// </summary>
@@ -657,7 +655,7 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Performance Report.
+        ///   Looks up a localized string similar to My Performance.
         /// </summary>
         public static string MyPerformanceReport {
             get {

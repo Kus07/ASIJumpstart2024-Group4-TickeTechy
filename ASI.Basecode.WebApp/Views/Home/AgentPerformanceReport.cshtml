@@ -5,51 +5,83 @@
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
+<style>
+    #assignedTicketsByCategoryChart, #ticketsStatusChart {
+        width: 100%;
+        height: 300px;
+    }
+
+</style>
 <div class="row">
     <div class="col-md-3">
-        <div class="card">
-            <div class="card-body">
+        <div class="card shadow-sm border border-secondary">
+            <div class="card-header bg-white border-bottom">
                 <h5 class="card-title">Assigned Tickets</h5>
+            </div>
+            <div class="card-body">
                 <p class="card-text">@Model.TicketsAssigned</p>
+                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 1 })'">View Details</button> *@
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Ongoing Tickets</h5>
-                <p class="card-text">@Model.TicketsOngoing</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card">
-            <div class="card-body">
+        <div class="card shadow-sm border border-secondary">
+            <div class="card-header bg-white border-bottom">
                 <h5 class="card-title">Tickets with Feedback</h5>
+            </div>
+            <div class="card-body">
                 <p class="card-text">@Model.TicketsWithFeedback</p>
+                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 2 })'">View Details</button> *@
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card">
-            <div class="card-body">
+        <div class="card shadow-sm border border-secondary">
+            <div class="card-header bg-white border-bottom">
                 <h5 class="card-title">Average Feedback Rating</h5>
+            </div>
+            <div class="card-body">
                 <p class="card-text">@($"{Model.AverageFeedbackRating:F2}")</p>
+                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 3 })'">View Details</button> *@
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card">
-            <div class="card-body">
+        <div class="card shadow-sm border border-secondary">
+            <div class="card-header bg-white border-bottom">
                 <h5 class="card-title">Average Resolution Time</h5>
+            </div>
+            <div class="card-body">
                 <p class="card-text">@($"{Model.AverageTicketResolutionTime:F2} hours")</p>
+                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 4 })'">View Details</button> *@
             </div>
         </div>
     </div>
 </div>
 
-<div>
-    <canvas id="resolvedTicketsByCategoryChart"></canvas>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Assigned Tickets by Category</h3>
+                </div>
+                <div class="panel-body">
+                    <canvas id="assignedTicketsByCategoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tickets Status</h3>
+                </div>
+                <div class="panel-body">
+                    <canvas id="ticketsStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -58,17 +90,17 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var ctx = document.getElementById('resolvedTicketsByCategoryChart').getContext('2d');
+    var ctx = document.getElementById('assignedTicketsByCategoryChart').getContext('2d');
     var chart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: [@Html.Raw(string.Join(",", Model.ResolvedTicketsByCategory.Select(c => $"\"{c.Category.CategoryName}\"")))],
+            labels: [@Html.Raw(string.Join(",", Model.AssignedTicketsByCategory.Select(c => $"\"{c.Category.CategoryName}\"")))],
             datasets: [{
-                label: 'Resolved Tickets by Category',
-                data: [@Html.Raw(string.Join(",", Model.ResolvedTicketsByCategory.Select(c => c.Count)))],
+                label: 'Assigned Tickets by Category',
+                data: [@Html.Raw(string.Join(",", Model.AssignedTicketsByCategory.Select(c => c.Count)))],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -98,4 +130,33 @@
             }
         }
     });
+
+    // Add this code after the previous chart
+
+var ctx2 = document.getElementById('ticketsStatusChart').getContext('2d');
+var chart2 = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: ['Resolved', 'Ongoing'],
+        datasets: [{
+            label: 'Tickets Status',
+            data: [@Model.TicketsResolved, @Model.TicketsOngoing],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Tickets Status'
+        }
+    }
+});
 </script>

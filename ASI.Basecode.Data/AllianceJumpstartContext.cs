@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ASI.Basecode.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace ASI.Basecode.Data
+namespace ASI.Basecode.Data.Models
 {
     public partial class AllianceJumpstartContext : DbContext
     {
@@ -42,7 +41,6 @@ namespace ASI.Basecode.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
-
             modelBuilder.Entity<Article>(entity =>
             {
                 entity.ToTable("Article");
@@ -324,6 +322,8 @@ namespace ASI.Basecode.Data
                 entity.ToTable("User");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ArticleViewSetting).HasColumnName("articleViewSetting");
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
