@@ -5,6 +5,7 @@ using ASI.Basecode.Services.Manager;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Extensions.Configuration;
 using ASI.Basecode.WebApp.Models;
+using Basecode.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
@@ -94,16 +95,16 @@ namespace ASI.Basecode.WebApp
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
-            //Configuration
+            // Configuration
             services.Configure<TokenAuthentication>(Configuration.GetSection("TokenAuthentication"));
-            
+
             // Session
             services.AddSession(options =>
             {
                 options.Cookie.Name = Const.Issuer;
             });
 
-            // DI Services AutoMapper(Add Profile)
+            // DI Services AutoMapper (Add Profile)
             this.ConfigureAutoMapper();
 
             // DI Services
@@ -120,6 +121,19 @@ namespace ASI.Basecode.WebApp
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
+            // Add Dependencies for SLAMonitoringService
+            services.AddScoped<BaseRepository<Ticket>>();
+            services.AddScoped<BaseRepository<TicketAssigned>>();
+            services.AddScoped<BaseRepository<Data.Models.Notification>>();
+            services.AddScoped<BaseRepository<User>>();
+            services.AddScoped<MailManager>();
+
+            // Register SLAMonitoringService
+            services.AddScoped<SLAMonitoringService>();
+
+            // Register SLAMonitoringBackgroundTask
+            services.AddHostedService<SLAMonitoringBackgroundTask>();
         }
 
         /// <summary>
