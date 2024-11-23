@@ -560,10 +560,10 @@ namespace ASI.Basecode.WebApp.Controllers
             }
 
             // Update the user's role
-            user.RoleId = newRoleId;
 
             if (user.RoleId != 2)
             {
+                user.RoleId = newRoleId;
                 user.DepartmentId = 7;
             }
 
