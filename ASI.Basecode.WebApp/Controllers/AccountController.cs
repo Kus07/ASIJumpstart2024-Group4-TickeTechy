@@ -152,6 +152,8 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Register Method
         /// </summary>
         [HttpPost]
+        [AllowAnonymous]
+
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -170,7 +172,8 @@ namespace ASI.Basecode.WebApp.Controllers
                     Username = model.Username,
                     Email = model.Email,
                     Password = model.Password,
-                    RoleId = 1
+                    RoleId = 1,
+                    ArticleViewSetting = 1
                 };
 
                 // Add the new user to the database
@@ -192,6 +195,8 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 // After registration, automatically log in the user
                 await _userService.AuthenticateUser(newUser);
+
+                TempData["success"] = "Successfully registered! You may log in now.";
 
                 // Redirect based on role after registration
                 switch (newUser.RoleId)

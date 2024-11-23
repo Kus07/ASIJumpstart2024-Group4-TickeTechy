@@ -496,7 +496,12 @@
         </div>
         <div class="detail-item">
             <h3>@Agent</h3>
-            <p>@Model.Agent</p>
+            @if (Model.TicketAssigned.Status.Equals("PENDING"))
+            {
+                <p>To be approved</p>
+            }else{
+                <p>@Model.TicketAssigned.Agent.UserDetails.FirstOrDefault().FirstName</p>
+            }
         </div>
         <div class="detail-item">
             <h3>@Category</h3>
@@ -527,7 +532,10 @@
         </div>
         }
 
-        <button class="send-message-btn">@ViewDetailsBtn</button>
+        @if (!Model.TicketAssigned.Status.Equals("PENDING"))
+        {
+            <button class="send-message-btn">@ViewDetailsBtn</button>
+        }
     </div>
 </div>
 

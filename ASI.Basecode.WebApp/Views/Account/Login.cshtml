@@ -21,6 +21,10 @@
     <link rel="icon" href="~/images/TicketTechy Logo.jpeg" />
 
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+
+
     <!-- Inline CSS -->
     <style>
         * {
@@ -370,6 +374,7 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
         function togglePassword() {
@@ -387,6 +392,16 @@
         }
 
         $(document).ready(function () {
+
+            var errorMessage = '@TempData["ErrorMessage"]';
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+
+            var successMessage = '@TempData["success"]';
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
             var otpSent = false; // flag to check if OTP is sent
             var otpVerified = false; // flag to check if OTP is verified
             var interval = null;
@@ -567,9 +582,8 @@
 @section scripts {
     <script>
         // Check for error message and display Toastr notification
-        var errorMessage = '@TempData["ErrorMessage"]';
-        if (errorMessage) {
-            toastr.error(errorMessage);
-        }
+
+
+        
     </script>
 }

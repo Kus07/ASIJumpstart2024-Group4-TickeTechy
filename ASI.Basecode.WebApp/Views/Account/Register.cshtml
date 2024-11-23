@@ -162,7 +162,7 @@
         <img src="~/images/TickeTechy logo with text.png" alt="TicketTechy Logo" class="logo" style="width: 250px; border-radius: 30px;" />
         <h1 class="title">@Register</h1>
         <p class="tagline">@CreateAccount.</p>
-        <form class="form" action="/Account/Register" method="post">
+        <form class="form" asp-controller="Account" asp-action="Register" method="post">
             <div asp-validation-summary="ModelOnly" style="color: red !important;"></div>
 
             <!-- 2-column grid for input fields -->
