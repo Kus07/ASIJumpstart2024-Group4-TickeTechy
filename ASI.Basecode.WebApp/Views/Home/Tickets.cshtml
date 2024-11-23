@@ -292,12 +292,20 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var ticket in Model.Where(t => t.Status == "OPEN").OrderByDescending(t => t.CreatedAt))
+                @foreach (var ticket in Model
+               .Where(t => t.Status == "OPEN")
+               .OrderBy(t => t.Priority switch
+               {
+                   "High" => 1,
+                   "Medium" => 2,
+                   "Low" => 3,
+                   _ => 4 // Default for unknown priorities
+               })
+               .ThenByDescending(t => t.CreatedAt))
                 {
                     var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
                     var description = ticket.Description;
                     var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description;
-
                     <tr>
                         <td>@ticket.CategoryName</td>
                         <td title="@description">@truncatedDescription</td>
