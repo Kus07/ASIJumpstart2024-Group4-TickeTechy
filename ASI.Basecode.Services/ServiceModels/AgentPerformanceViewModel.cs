@@ -11,10 +11,11 @@ namespace ASI.Basecode.Services.ServiceModels
     {
         public double AverageTicketResolutionTime { get; set; }
         public double? AverageFeedbackRating { get; set; }
-        public List<CategoryTicketCount> ResolvedTicketsByCategory { get; set; }
+        public List<CategoryTicketCount> AssignedTicketsByCategory { get; set; }
         public int TicketsAssigned { get; set; }
         public int TicketsWithFeedback { get; set; }
         public int TicketsOngoing { get; set; }
+        public int TicketsResolved { get; set; }
 
 
         //public Dictionary<string, int> StatusCounts { get; set; }

@@ -78,6 +78,9 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 TempData["notifications"] = "true";
             }
+            var user = _userRepo.Get(GetUserId());
+
+            ViewBag.ArticleViewSetting = user.ArticleViewSetting;
 
             return View(viewModel);
         }
@@ -425,19 +428,21 @@ namespace ASI.Basecode.WebApp.Controllers
             }
 
             ViewBag.EmailNotifications = user.EmailNotificationSetting == 1 ? true : false;
+            ViewBag.ArticleViewSetting = user.ArticleViewSetting;
 
             return View(user);
         }
 
 
         [HttpPost]
-        public IActionResult SaveEmailNotification(bool emailNotifications)
+        public IActionResult SaveSettings(bool emailNotifications, int articleViewSetting)
         {
             int currentUserId = GetUserId();
             var user = _userRepo.Get(currentUserId);
             if (user != null)
             {
                 user.EmailNotificationSetting = emailNotifications ? 1 : 0;
+                user.ArticleViewSetting = articleViewSetting;
                 _userRepo.Update(user.Id, user);
                 _db.SaveChanges();
             }
@@ -495,10 +500,10 @@ namespace ASI.Basecode.WebApp.Controllers
             }
 
             var tickets = _ticketAssignedRepo.Table
-                                .Where(m => m.AgentId == agent.Id)
+                                .Where(m => (m.AgentId == agent.Id || m.ReassignedToId == agent.Id) && m.Status.Equals("APPROVED"))
                                 .ToList();
-            var resolvedTicketsByCategory = tickets
-                .Where(t => t.Ticket.StatusId == Convert.ToInt32(TicketStatus.CLOSED))
+
+            var assignedTicketsByCategory = tickets
                 .GroupBy(t => t.Ticket.Category)
                 .Select(g => new CategoryTicketCount
                 {
@@ -506,7 +511,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     Count = g.Count()
                 })
                 .ToList();
-            var ticketsAssigned = tickets.Count();
+
             var ticketsWithFeedback = _feedbackRepo.Table.Where(m => m.AgentId == agent.Id).ToList();
             var averageFeedbackRating = ticketsWithFeedback.Average(m => m.Star);
             //get the average resolution time of the agent
@@ -519,14 +524,16 @@ namespace ASI.Basecode.WebApp.Controllers
             });
             var averageResolutionTime = tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) > 0 ? totalResolutionTime / tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) : 0;
             var ticketsOngoing = tickets.Where(t => t.Ticket.StatusId == Convert.ToInt32(TicketStatus.ONGOING) || t.Ticket.StatusId == Convert.ToInt32(TicketStatus.WAITINGRESPONSE)).ToList().Count();
+            var ticketsResolved = tickets.Where(t => t.Ticket.StatusId == Convert.ToInt32(TicketStatus.CLOSED)).Count();
             var viewModel = new AgentPerformanceViewModel
             {
-                TicketsAssigned = ticketsAssigned,
+                TicketsAssigned = tickets.Count(),
                 TicketsWithFeedback = ticketsWithFeedback.Count(),
                 AverageFeedbackRating = averageFeedbackRating,
-                ResolvedTicketsByCategory = resolvedTicketsByCategory,
+                AssignedTicketsByCategory = assignedTicketsByCategory,
                 AverageTicketResolutionTime = averageResolutionTime,
-                TicketsOngoing = ticketsOngoing
+                TicketsOngoing = ticketsOngoing,
+                TicketsResolved = ticketsResolved
             };
             return View(viewModel);
         }

@@ -20,6 +20,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public string CategoryName { get; set; }
         public DateTime CreatedAt { get; set; }
         public List<ArticleViewModel> Articles { get; set; }
+        public List<User> User { get; set; }
     }
 
 }
