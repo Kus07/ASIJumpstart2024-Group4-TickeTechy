@@ -293,7 +293,29 @@ namespace ASI.Basecode.Resources.Views {
                 return ResourceManager.GetString("SendBtn", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Send and Decline.
+        /// </summary>
+        public static string SendAndDecline
+        {
+            get
+            {
+                return ResourceManager.GetString("SendAndDecline", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Send and Accept.
+        /// </summary>
+        public static string SendAndAccept
+        {
+            get
+            {
+                return ResourceManager.GetString("SendAndAccept", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Send OTP.
         /// </summary>

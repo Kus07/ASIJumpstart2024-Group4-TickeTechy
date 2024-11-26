@@ -272,7 +272,7 @@
 <div class="d-flex justify-content-start btn-toggle">
     <button id="openTicketsButton" class="btn btn-primary me-2">Open Tickets</button>
     <button id="closedTicketsButton" class="btn btn-outline-secondary">Closed Tickets</button>
-    <button id="ongoingTicketsButton" class="btn btn-outline-secondary">Ongoing Tickets</button>
+    <button id="ongoingTicketsButton" class="btn btn-outline-secondary">Ongoing/Resolved Tickets</button>
 </div>
 
 <!-- Open Tickets Section -->
@@ -413,7 +413,7 @@
 <!-- Ongoing Tickets Section -->
 <div id="ongoingTicketsSection" class="ticket-section">
     <h2>Ongoing Tickets</h2>
-    @if (Model.Any(ticket => ticket.Status == "ONGOING" || ticket.Status == "WAITINGRESPONSE"))
+    @if (Model.Any(ticket => ticket.Status == "ONGOING" || ticket.Status == "WAITINGRESPONSE" || ticket.Status == "RESOLVED"))
     {
         <table class="table" id="ongoingTicketListTable">
             <thead>
@@ -427,7 +427,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var ticket in Model.Where(t => t.Status == "ONGOING" || t.Status == "WAITINGRESPONSE").OrderByDescending(t => t.CreatedAt))
+                @foreach (var ticket in Model.Where(t => t.Status == "ONGOING" || t.Status == "WAITINGRESPONSE" || t.Status == "RESOLVED").OrderByDescending(t => t.CreatedAt))
                 {
                     var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
                     var description = ticket.Description;
@@ -438,7 +438,14 @@
                         <td title="@description">@truncatedDescription</td>
                         <td>@ticket.Priority</td>
                         <td style="color: white; font-size: 16px;">
-                            <span class="badge bg-warning">@ticket.Status</span>
+                            @if (ticket.Status.Equals("RESOLVED"))
+                            {
+                                <span class="badge bg-success">@ticket.Status (for your approval)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@ticket.Status</span>
+                            }
                         </td>
                         <td>@timeSinceCreation.Days days @timeSinceCreation.Hours hours @timeSinceCreation.Minutes minutes ago</td>
                         <td>

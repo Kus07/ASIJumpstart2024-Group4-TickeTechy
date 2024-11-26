@@ -9,7 +9,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 CORS(app)
 
 # Set the API key
-os.environ["GEMINI_API_KEY"] = "AIzaSyAH3ry6V5G5HOLoLDzG0hFzQvi_OAYlvwk"
+os.environ["GEMINI_API_KEY"] = "AIzaSyCKhhy5Y4Vtoo4rFbYbqC_F48tnzCeLbjs"
 
 
 

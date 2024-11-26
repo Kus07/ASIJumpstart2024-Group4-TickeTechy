@@ -465,7 +465,8 @@
         }
 
         .reassign-section button {
-            margin-top: 10px;
+            margin-top: 2px;
+            margin-left: 20px;
             padding: 10px;
             background-color: #007bff;
             color: white;
@@ -716,8 +717,23 @@
                 }
                 else
                 {
-                    <input type="text" id="messageInput" placeholder="Type your message..." onkeydown="handleKeyDown(event)">
-                    <button id="sendMessageButton" onclick="sendMessage()" class="btn btn-indigo" style="background: blue;">@SendBtn</button>
+                    if (User.FindFirst("UserId").Value == Model.Ticket.UserId.ToString() && Model.Ticket.StatusId == 4)
+                    {
+                        <div class="text-center" style="margin-left: 12%;">
+                            <input type="text" id="messageInput" placeholder="Type your message..."
+                                   class="form-control mb-3" onkeydown="handleKeyDown(event)">
+                            <div class="btn-group">
+                                <button id="sendMessageButton" onclick="sendMessage()" style="background: red;" class="btn btn-indigo mr-3">@SendAndDecline</button>
+                                <button id="sendMessageAndAcceptButton" onclick="sendMessageAndAccept()" class="btn btn-primary">@SendAndAccept</button>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="text" id="messageInput" placeholder="Type your message..." onkeydown="handleKeyDown(event)">
+                        <button id="sendMessageButton" onclick="sendMessage()" class="btn btn-indigo" style="background: blue;">@SendBtn</button>
+                    }
+
                 }
             }
         </div>
@@ -1041,6 +1057,76 @@
                         // Reset the send button
                         sendButton.innerHTML = '@SendBtn';
                         sendButton.disabled = false;
+                    }
+                });
+            } else {
+                alert('Please enter a message before sending.');
+            }
+        }
+
+         function sendMessageAndAccept() {
+            var input = document.getElementById("messageInput");
+            var message = input.value.trim();
+            var ticketId = @Model.Ticket.Id;
+            var sendButton = document.getElementById('sendMessageAndAcceptButton');
+            var sendButtonDecline = document.getElementById('sendMessageButton');
+            var noMessageAlert = document.getElementById('noConversation');
+
+            // Proceed only if the message is not empty
+            if (message !== "") {
+                // Show the loader
+                sendButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
+                sendButton.disabled = true;
+
+                // Send the message via AJAX
+                $.ajax({
+                    url: '/Ticket/SendMessageAndAccept',
+                    type: 'POST',
+                    data: { ticketId: ticketId, message: message },
+                    success: function (response) {
+                        if (response.success) {
+                            // If there's no previous message, hide the no message alert
+                            if (noMessageAlert) {
+                                noMessageAlert.style.display = "none";
+                            }
+
+                            // Create the new message element
+                            var messageContainer = document.querySelector(".message-container");
+                            var newMessage = createMessageElement("You", message);
+
+                            // Append the new message to the message container
+                            messageContainer.appendChild(newMessage);
+
+                            // Scroll to the bottom of the message container
+                            messageContainer.scrollTop = messageContainer.scrollHeight;
+
+                            sendButtonDecline.style.display = "none";
+                            sendButton.style.display = "none";
+
+                            // Clear the input field
+                            input.value = "";
+
+                            if ('@User.IsInRole("1")' == "True") {
+                                $('#markResolvedBtn').remove();
+                            }
+
+                            toastr.success(response.responseText);
+
+                            setInterval(function () {
+                                location.reload();  // Reload the current page
+                            }, 3000);
+
+                        } else {
+                            toastr.error(response.responseText);
+                        }
+                    },
+                    error: function () {
+                        alert("Error sending message.");
+                    },
+                    complete: function () {
+                        // Reset the send button
+                        // sendButton.innerHTML = '@SendBtn';
+                        sendButton.disabled = true;
                     }
                 });
             } else {

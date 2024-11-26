@@ -225,4 +225,10 @@
   <data name="GoBackBtn" xml:space="preserve">
     <value>Go Back</value>
   </data>
+  <data name="SendAndDecline" xml:space="preserve">
+    <value>Send and Decline Resolution</value>
+  </data>
+  <data name="SendAndAccept" xml:space="preserve">
+    <value>Send and Accept Resolution</value>
+  </data>
 </root>

@@ -269,6 +269,116 @@ namespace ASI.Basecode.WebApp.Controllers
 
 
         [HttpPost]
+        public async Task<IActionResult> SendMessageAndAccept(int ticketId, string message)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return Json(new { success = false, responseText = "Message cannot be empty" });
+            }
+
+            var ticket = _ticketRepo.Get(ticketId);
+            int currUserId = GetUserId();
+
+
+            var lastThreeMessages = _ticketMessageRepo.Table
+                .Where(m => m.TicketId == ticketId)
+                .OrderByDescending(m => m.CreatedAt)
+                .Take(3)
+                .ToList();
+
+            bool areAllFromUser = lastThreeMessages.All(m => m.UserId == currUserId);
+
+            if (lastThreeMessages.Count == 3 && (areAllFromUser && User.IsInRole("1")) && ticket.StatusId != (int)TicketStatus.RESOLVED)
+            {
+                return Json(new { success = false, responseText = LimitMessage });
+            }
+
+            var ticketMessage = new TicketMessage()
+            {
+                CreatedAt = DateTime.Now,
+                Message = message,
+                TicketId = ticketId,
+                UserId = currUserId,
+            };
+
+            _ticketMessageRepo.Create(ticketMessage);
+
+            var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+
+            if (User.IsInRole("2"))
+            {
+                ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
+            }
+            else
+            {
+                ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
+            }
+
+            var notif = new Notification()
+            {
+                ToUserId = ticketAssigned.AgentId,
+                FromUserId = ticket.UserId,
+                Content = NotifToAgent + ticket.Id,
+                DateCreated = DateTime.Now,
+                Status = "UNREAD",
+                TicketId = ticketId,
+                Title = $"Ticket #{ticket.Id}"
+            };
+
+            _notificationRepo.Create(notif);
+
+            _ticketRepo.Update(ticket.Id, ticket);
+
+            string errResponse = string.Empty;
+            bool emailSent = false;
+
+            if (User.IsInRole("1"))
+            {
+                var agent = _userRepo.Get(ticketAssigned.AgentId);
+                var agentDetails = _userDetailRepo.Table.Where(m => m.UserId == agent.Id).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(agent.Email) && agent.EmailNotificationSetting == 1)
+                {
+                    emailSent = _mailManager.EmailRespond(
+                        recipientEmail: agent.Email,
+                        firstName: agentDetails?.FirstName ?? "Agent",
+                        ticketId: ticketId,
+                        ticketMessage: message,
+                        ref errResponse
+                    );
+                }
+            }
+            else if (User.IsInRole("2"))
+            {
+                var customer = _userRepo.Get(ticket.UserId);
+                var customerDetails = _userDetailRepo.Table.Where(m => m.UserId == customer.Id).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(customer.Email) && customer.EmailNotificationSetting == 1)
+                {
+                    emailSent = _mailManager.EmailRespond(
+                        recipientEmail: customer.Email,
+                        firstName: customerDetails?.FirstName ?? "Customer",
+                        ticketId: ticketId,
+                        ticketMessage: message,
+                        ref errResponse
+                    );
+                }
+            }
+
+            var ticketSummary = await GetTicketSummary(ticketId);
+            ticket.Summary = ticketSummary;
+            _ticketRepo.Update(ticketId, ticket);
+
+            if (!emailSent && !string.IsNullOrEmpty(errResponse))
+            {
+                return Json(new { success = true, responseText = "Message sent, but failed to send email: " + errResponse });
+            }
+
+            return Json(new { success = true, responseText = "Message sent successfully!" });
+        }
+
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TicketViewModel viewModel)
         {
@@ -422,7 +532,9 @@ namespace ASI.Basecode.WebApp.Controllers
                 return NotFound();
             }
 
-            var result = _ticketRepo.Delete(ticket.Id);
+            //var result = _ticketRepo.Delete(ticket.Id);
+            ticket.StatusId = 6; // DELETED
+            var result = _ticketRepo.Update(ticket.Id, ticket);
             if (result == ErrorCode.Success)
             {
                 TempData["message"] = SuccessDeleteTicket;
