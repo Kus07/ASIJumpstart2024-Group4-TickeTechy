@@ -112,7 +112,7 @@
     display: none;
     position: absolute;
     height: 100%;
-    width: calc(var(--container_width) / 3);
+    width: calc(var(--container_width) / 2);
     z-index: 0;
     left: 0;
     top: 0;
@@ -129,15 +129,11 @@
     }
 
     .radio-input label:nth-child(1):has(input:checked) ~ .selection {
-    transform: translateX(calc(var(--container_width) * 0/3));
+    transform: translateX(calc(var(--container_width) * 0/2));
     }
 
     .radio-input label:nth-child(2):has(input:checked) ~ .selection {
-    transform: translateX(calc(var(--container_width) * 1/3));
-    }
-
-    .radio-input label:nth-child(3):has(input:checked) ~ .selection {
-    transform: translateX(calc(var(--container_width) * 2/3));
+    transform: translateX(calc(var(--container_width) * 1/2));
     }
     .button-group {
     display: flex;
@@ -178,41 +174,58 @@
         {
             <div class="setting">
                 <label>ARTICLE VIEW STYLE</label>
-            <p>Select your preferred style for viewing articles.</p>
-            <div class="radio-input">
-                <label>
-                    <input type="radio" id="value-1" name="articleViewSetting" value="1" @(ViewBag.ArticleViewSetting == 1 ? "checked" : "unchecked")>
-                    <span>Standard</span>
-                </label>
-                <label>
-                    <input type="radio" id="value-2" name="articleViewSetting" value="2" @(ViewBag.ArticleViewSetting == 2 ? "checked" : "unchecked")>
-                    <span>Card</span>
-                </label>
-                <label>
-                    <input type="radio" id="value-3" name="articleViewSetting" value="3" @(ViewBag.ArticleViewSetting == 3 ? "checked" : "unchecked")>
-                    <span>Slideshow</span>
-                </label>
-                <span class="selection"></span>
+                <p>Select your preferred style for viewing articles.</p>
+                <div class="radio-input">
+                    <label>
+                        <input type="radio" id="value-1" name="articleViewSetting" value="1" @(ViewBag.ArticleViewSetting == 1 ? "checked" : "unchecked")>
+                        <span>Standard</span>
+                    </label>
+                    <label>
+                        <input type="radio" id="value-2" name="articleViewSetting" value="2" @(ViewBag.ArticleViewSetting == 2 ? "checked" : "unchecked")>
+                        <span>Card</span>
+                    </label>
+
+                    <span class="selection"></span>
+                </div>
             </div>
-        </div>
+        }
+        @if (User.IsInRole("1"))
+        {
+            <form asp-controller="Home" asp-action="SaveSettingsCustomer" method="post">
+                <div class="button-group">
+                    <input type="hidden" id="email-notifications-hidden" name="emailNotifications" />
+                    <input type="hidden" id="articleViewSetting-hidden" name="articleViewSetting"/>
+                    <button id="save-btn" onclick="submitCustomerSetting()">SAVE</button>
+                </div>
+            </form>
+        }
+        else if (User.IsInRole("2")) {
+            <form asp-controller="Home" asp-action="SaveSettingsAdmin" method="post">
+                <div class="button-group">
+                    <input type="hidden" id="email-notifications-hidden" name="emailNotifications" />
+                    <button id="save-btn" onclick="submitAdminSetting()">SAVE</button>
+                </div>
+            </form>
         }
 
-    <form asp-controller="Home" asp-action="SaveSettings" method="post">
-    <div class="button-group">
-        <input type="hidden" id="email-notifications-hidden" name="emailNotifications" />
-        <input type="hidden" id="articleViewSetting-hidden" name="articleViewSetting" />
-        <button id="save-btn" onclick="submitForm()">SAVE</button>
-    </div>
-    </form>
 </div>
     </div>
 
 <script>
-    function submitForm() {
+    function submitCustomerSetting() {
         var emailNotifications = document.getElementById("email-notifications").checked;
-        var preferredViewStyle = document.querySelector('input[name="articleViewSetting"]:checked').value;
+        console.log(emailNotifications);
         document.getElementById("email-notifications-hidden").value = emailNotifications;
-        document.getElementById("articleViewSetting-hidden").value = preferredViewStyle;
+        console.log(document.getElementById("email-notifications-hidden").value)
+        var preferredViewStyle = document.querySelector('input[name="articleViewSetting"]:checked');
+        document.getElementById("articleViewSetting-hidden").value = preferredViewStyle.value;
+        document.querySelector("form").submit();
+    }
+    function submitAdminSetting() {
+        var emailNotifications = document.getElementById("email-notifications").checked;
+        console.log(emailNotifications);
+        document.getElementById("email-notifications-hidden").value = emailNotifications;
+        console.log(document.getElementById("email-notifications-hidden").value)
         document.querySelector("form").submit();
     }
 </script>

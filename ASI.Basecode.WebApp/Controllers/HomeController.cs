@@ -435,9 +435,8 @@ namespace ASI.Basecode.WebApp.Controllers
             return View(user);
         }
 
-
         [HttpPost]
-        public IActionResult SaveSettings(bool emailNotifications, int articleViewSetting)
+        public IActionResult SaveSettingsCustomer(bool emailNotifications, int articleViewSetting)
         {
             int currentUserId = GetUserId();
             var user = _userRepo.Get(currentUserId);
@@ -445,6 +444,21 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 user.EmailNotificationSetting = emailNotifications ? 1 : 0;
                 user.ArticleViewSetting = articleViewSetting;
+                _userRepo.Update(user.Id, user);
+                _db.SaveChanges();
+            }
+            TempData["message"] = "Successfully saved your settings!";
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        [HttpPost]
+        public IActionResult SaveSettingsAdmin(bool emailNotifications)
+        {
+            int currentUserId = GetUserId();
+            var user = _userRepo.Get(currentUserId);
+            if (user != null)
+            {
+                user.EmailNotificationSetting = emailNotifications ? 1 : 0;
                 _userRepo.Update(user.Id, user);
                 _db.SaveChanges();
             }
