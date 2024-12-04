@@ -23,7 +23,7 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 
-model = genai.GenerativeModel(
+modelTickeTechy = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     generation_config=generation_config,
     system_instruction="""
@@ -90,7 +90,7 @@ def to_markdown(text):
     return textwrap.indent(text, '> ', predicate=lambda _: True)
 
 
-@app.route('/chat', methods=['POST'])
+@app.route('/assignTicket', methods=['POST'])
 def chat():
     try:
         user_input = request.form.get('input')
@@ -140,7 +140,7 @@ def generate_ticket_summary():
         return jsonify({"error": str(e)})
 
 def process_text_input(user_input):
-    chat_session = model.start_chat(
+    chat_session = modelTickeTechy.start_chat(
         history=[
             {
                 "role": "user",

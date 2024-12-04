@@ -41,7 +41,7 @@ namespace ASI.Basecode.Services.Services
                     var content = new FormUrlEncodedContent(values);
 
                     // Post the request to the external API
-                    var response = await client.PostAsync("http://127.0.0.1:5000/chat", content);
+                    var response = await client.PostAsync("https://proctocodeapis.et.r.appspot.com/assignTicket", content);
                     response.EnsureSuccessStatusCode();
 
                     // Read the API response
@@ -128,7 +128,7 @@ namespace ASI.Basecode.Services.Services
                 content.Add(new StringContent(input), "input");
                 content.Add(new StringContent(conversation_history), "conversation_history");
 
-                var response = await client.PostAsync("http://localhost:5000/generateTicketSummary", content);
+                var response = await client.PostAsync("https://proctocodeapis.et.r.appspot.com/generateTicketSummary", content);
 
                 if (response.IsSuccessStatusCode)
                 {

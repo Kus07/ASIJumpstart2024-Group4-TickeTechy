@@ -231,7 +231,7 @@
     <!--if user has EmailNotificationSetting set to 1-->
     @foreach (var article in Model.Articles.OrderByDescending(a => a.PublishDate)) 
     {
-        @if(ViewBag.ArticleViewSetting == 1 ){
+        @if(ViewBag.ArticleViewSetting == 1 || ViewBag.ArticleViewSetting == null){
         <div class="article">
             <div class="author-info">
                 @if (!string.IsNullOrEmpty(article.UserDetail?.ProfilePicturePath))
@@ -378,8 +378,13 @@
                     </div>
                     <!-- Submit button -->
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">@CreateTicketBtn</button>
+                        <button id="createTicketBtn"
+                                type="submit"
+                                class="btn btn-primary btn-lg">
+                            @CreateTicketBtn
+                        </button>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -417,6 +422,16 @@
 
 
 <script>
+    document.getElementById('createTicketForm').addEventListener('submit', function (event) {
+        const button = document.getElementById('createTicketBtn');
+        button.disabled = true; // Disable the button to prevent multiple submissions
+        button.innerHTML = `
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Loading...
+        `;
+    });
+
+
     $('#floating-svg').click(function () {
         $('#createTicketModal').modal('show');
     });

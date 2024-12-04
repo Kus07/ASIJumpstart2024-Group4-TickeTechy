@@ -11,6 +11,13 @@ public class SLAMonitoringService
     private readonly BaseRepository<Notification> _notificationRepo;
     private readonly BaseRepository<User> _userRepo;
     private readonly MailManager _mailManager;
+    public static DateTime utcNow = DateTime.UtcNow;
+
+    // Define the timezone offset for UTC+08:00
+    public static TimeSpan utcOffset = TimeSpan.FromHours(8); // UTC+08:00
+
+    // Apply the timezone offset to get the local time in UTC+08:00
+    Nullable<DateTime> PHTIME = utcNow + utcOffset;
 
     public SLAMonitoringService(
         BaseRepository<Ticket> ticketRepo,
@@ -43,7 +50,7 @@ public class SLAMonitoringService
 
         // Filter tickets in memory
         var overdueTickets = openTickets
-            .Where(t => DateTime.Now.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 2)
+            .Where(t => PHTIME.Value.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 2)
             .ToList();
 
         foreach (var ticket in overdueTickets)
@@ -53,7 +60,7 @@ public class SLAMonitoringService
             else if (ticket.Priority == "Medium")
                 ticket.Priority = "High";
 
-            ticket.UpdatedAt = DateTime.Now;
+            ticket.UpdatedAt = PHTIME;
             _ticketRepo.Update(ticket.Id, ticket);
 
             // Notify assigned agent
@@ -93,13 +100,13 @@ public class SLAMonitoringService
 
         // Filter tickets in memory
         var overdueTickets = ongoingTickets
-            .Where(t => DateTime.Now.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 12)
+            .Where(t => PHTIME.Value.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 12)
             .ToList();
 
         foreach (var ticket in overdueTickets)
         {
             ticket.Priority = "High"; // Escalate to High
-            ticket.UpdatedAt = DateTime.Now;
+            ticket.UpdatedAt = PHTIME;
             _ticketRepo.Update(ticket.Id, ticket);
 
             // Notify agent or manager
@@ -139,7 +146,7 @@ public class SLAMonitoringService
 
         // Filter tickets in memory
         var overdueTickets = waitingTickets
-            .Where(t => DateTime.Now.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 24)
+            .Where(t => PHTIME.Value.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 24)
             .ToList();
 
         foreach (var ticket in overdueTickets)
@@ -157,7 +164,7 @@ public class SLAMonitoringService
 
         // Filter tickets in memory
         var overdueTickets = resolvedTickets
-            .Where(t => DateTime.Now.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 24)
+            .Where(t => PHTIME.Value.Subtract((t.UpdatedAt ?? t.CreatedAt).GetValueOrDefault()).TotalHours > 24)
             .ToList();
 
         foreach (var ticket in overdueTickets)
@@ -191,7 +198,7 @@ public class SLAMonitoringService
         {
             ToUserId = toUserId,
             Content = content,
-            DateCreated = DateTime.Now,
+            DateCreated = PHTIME,
             Status = "UNREAD",
             TicketId = ticketId,
             Title = $"Ticket #{ticketId}"

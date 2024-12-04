@@ -36,6 +36,13 @@ namespace ASI.Basecode.WebApp.Controllers
             _userService = userService;
         }
 
+        public static DateTime utcNow = DateTime.UtcNow;
+
+        // Define the timezone offset for UTC+08:00
+        public static TimeSpan utcOffset = TimeSpan.FromHours(8); // UTC+08:00
+
+        // Apply the timezone offset to get the local time in UTC+08:00
+        Nullable<DateTime> PHTIME = utcNow + utcOffset;
 
         [Authorize(Roles = "1")]
         public IActionResult CustomerDashboard()
@@ -61,7 +68,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Status = article.Status,
                 Author = article.Author,
                 PublishDate = article.PublishDate,
-                LastModifiedDate = article.LastmodifiedDate ?? DateTime.Now,
+                LastModifiedDate = article.LastmodifiedDate ?? PHTIME.Value,
                 ProfilePicturePath = article.UserDetail?.ProfilePicturePath,
                 UserDetail = article.UserDetail,
                 AttachmentPath = article.Attachments

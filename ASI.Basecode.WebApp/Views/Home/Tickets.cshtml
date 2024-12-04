@@ -3,7 +3,16 @@
 @using static ASI.Basecode.Resources.Views.Button
 @using static ASI.Basecode.Resources.Messages.Errors
 @{
-   Layout = "~/Views/Shared/_MainLayout.cshtml";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+
+    // Current UTC time
+    DateTime utcNow = DateTime.UtcNow;
+
+    // Define the timezone offset for UTC+08:00
+    TimeSpan utcOffset = TimeSpan.FromHours(8); // UTC+08:00
+
+    // Apply the timezone offset to get the local time in UTC+08:00
+    DateTime? PHTIME = utcNow + utcOffset;
 }
 
 <br />
@@ -303,7 +312,7 @@
                })
                .ThenByDescending(t => t.CreatedAt))
                 {
-                    var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
+                    var timeSinceCreation = PHTIME.Value - ticket.CreatedAt;
                     var description = ticket.Description;
                     var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description;
                     <tr>
@@ -366,7 +375,7 @@
             <tbody>
                 @foreach (var ticket in Model.Where(t => t.Status == "CLOSED").OrderByDescending(t => t.CreatedAt))
                 {
-                    var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
+                    var timeSinceCreation = PHTIME.Value - ticket.CreatedAt;
                     var description = ticket.Description;
                     var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description;
 
@@ -429,7 +438,8 @@
             <tbody>
                 @foreach (var ticket in Model.Where(t => t.Status == "ONGOING" || t.Status == "WAITINGRESPONSE" || t.Status == "RESOLVED").OrderByDescending(t => t.CreatedAt))
                 {
-                    var timeSinceCreation = DateTime.Now - ticket.CreatedAt;
+                    
+                    var timeSinceCreation = PHTIME.Value - ticket.CreatedAt;
                     var description = ticket.Description;
                     var truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description;
 

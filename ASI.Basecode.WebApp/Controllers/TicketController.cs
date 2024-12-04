@@ -40,6 +40,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
         }
 
+        public static DateTime utcNow = DateTime.UtcNow;
+
+        // Define the timezone offset for UTC+08:00
+        public static TimeSpan utcOffset = TimeSpan.FromHours(8); // UTC+08:00
+
+        // Apply the timezone offset to get the local time in UTC+08:00
+        Nullable<DateTime> PHTIME = utcNow + utcOffset;
 
         public int GetUserId()
         {
@@ -153,7 +160,7 @@ namespace ASI.Basecode.WebApp.Controllers
            
             if (ticket.CreatedAt.HasValue)
             {
-                if (ticket.CreatedAt.Value.AddHours(12) < DateTime.Now && ticket.StatusId == Convert.ToInt32(TicketStatus.OPEN))
+                if (ticket.CreatedAt.Value.AddHours(12) < PHTIME && ticket.StatusId == Convert.ToInt32(TicketStatus.OPEN))
                 {
                     ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
                     _ticketRepo.Update(ticket.Id, ticket);
@@ -189,7 +196,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var ticketMessage = new TicketMessage()
             {
-                CreatedAt = DateTime.Now,
+                CreatedAt = PHTIME,
                 Message = message,
                 TicketId = ticketId,
                 UserId = currUserId,
@@ -213,7 +220,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 ToUserId = ticketAssigned.AgentId,
                 FromUserId = ticket.UserId,
                 Content = NotifToAgent + ticket.Id,
-                DateCreated = DateTime.Now,
+                DateCreated = PHTIME,
                 Status = "UNREAD", 
                 TicketId = ticketId, 
                 Title = $"Ticket #{ticket.Id}"
@@ -295,7 +302,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var ticketMessage = new TicketMessage()
             {
-                CreatedAt = DateTime.Now,
+                CreatedAt = PHTIME,
                 Message = message,
                 TicketId = ticketId,
                 UserId = currUserId,
@@ -319,7 +326,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 ToUserId = ticketAssigned.AgentId,
                 FromUserId = ticket.UserId,
                 Content = NotifToAgent + ticket.Id,
-                DateCreated = DateTime.Now,
+                DateCreated = PHTIME,
                 Status = "UNREAD",
                 TicketId = ticketId,
                 Title = $"Ticket #{ticket.Id}"
@@ -418,8 +425,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 Description = descriptionWithoutTags,
                 Priority = viewModel.Priority,
                 Attachments = attachmentPath,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                CreatedAt = PHTIME,
+                UpdatedAt = PHTIME,
                 StatusId = Convert.ToInt32(TicketStatus.OPEN),
             };
 
@@ -489,7 +496,7 @@ namespace ASI.Basecode.WebApp.Controllers
             ticket.Description = viewModel.Description;
             ticket.Priority = viewModel.Priority;
             ticket.Attachments = viewModel.AttachmentPath;
-            ticket.UpdatedAt = DateTime.Now;
+            ticket.UpdatedAt = PHTIME;
 
             var result = _ticketRepo.Update(ticket.Id, ticket);
             if (result == ErrorCode.Success)
@@ -555,7 +562,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
 
             ticket.StatusId = Convert.ToInt32(TicketStatus.RESOLVED);
-            ticket.UpdatedAt = DateTime.Now;
+            ticket.UpdatedAt = PHTIME;
 
             var customer = _userRepo.Get(ticket.UserId);
             var userDetails = _userDetailRepo.Table.FirstOrDefault(m => m.UserId == customer.Id);
@@ -598,7 +605,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
 
             ticket.StatusId = Convert.ToInt32(TicketStatus.CLOSED);
-            ticket.UpdatedAt = DateTime.Now;
+            ticket.UpdatedAt = PHTIME;
 
 
             var ticketAssigned = _ticketAssignedRepo.Table.FirstOrDefault(m => m.TicketId == ticketId);

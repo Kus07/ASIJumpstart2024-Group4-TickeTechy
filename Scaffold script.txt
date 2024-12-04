@@ -3,3 +3,5 @@ Scaffold-DbContext "Server=JULES-IRWIN\SQLEXPRESS;Database=AllianceJumpstart;Tru
 
 Update Table/Model:
  Scaffold-DbContext "Server=JULES-IRWIN\SQLEXPRESS;Database=AllianceJumpstart;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -t tablename -f
+
+Scaffold-DbContext "Data Source=SQL9001.site4now.net;Initial Catalog=db_aaf86b_alliancejumpstart;User Id=db_aaf86b_alliancejumpstart_admin;Password=jules0019" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -f

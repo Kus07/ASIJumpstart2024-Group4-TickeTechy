@@ -188,5 +188,32 @@ namespace ASI.Basecode.Services.Manager
 
             return SendEmail(recipientEmail, $"New Message for Ticket #{ticketId}", ResolveTemplate, ref errResponse);
         }
+
+        public bool AssignedToAgentEmail(string recipientEmail, string firstName, string description, ref string errResponse)
+        {
+            string ResolveTemplate = $@"<!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Ticket Assigned to you from TickeTechy</title>
+            </head>
+            <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;'>
+                <div style='max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 10px; overflow: hidden;'>
+                    <div style='background-color: #e1f4fe; color: #333; text-align: center; padding: 20px 0;'>
+                        <h1 style='margin: 0; font-size: 24px;'>A new ticket has arrived!</h1>
+                    </div>
+                    <div style='padding: 20px;'>
+                        <p style='font-size: 16px;'>Hi, Agent {firstName}!</p>
+                        <p style='font-size: 16px;'>A ticket has been assigned to you!</p>                        
+                        <p style='font-size: 16px;'>Ticket Description: {description}</p>
+                        <p style='font-size: 16px;'>Thank you for using TickeTechy for your ticketing solutions!</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            return SendEmail(recipientEmail, $"Ticket Assigned to you", ResolveTemplate, ref errResponse);
+        }
     }
 }

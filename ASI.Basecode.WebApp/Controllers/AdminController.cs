@@ -28,6 +28,14 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
+        public static DateTime utcNow = DateTime.UtcNow;
+
+        // Define the timezone offset for UTC+08:00
+        public static TimeSpan utcOffset = TimeSpan.FromHours(8); // UTC+08:00
+
+        // Apply the timezone offset to get the local time in UTC+08:00
+        Nullable<DateTime> PHTIME = utcNow + utcOffset;
+
         public AdminController(IMapper mapper, MailManager mailManager, IUserService userService, IHttpContextAccessor httpContextAccessor) : base(mailManager, httpContextAccessor)
         {
             _userService = userService;
@@ -118,8 +126,8 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult AddCustomer(string firstName, string lastName, string contactNo, string email, string username)
         {
             // trappings
-            if (String.IsNullOrEmpty(firstName.Trim()) || String.IsNullOrEmpty(lastName.Trim()) || String.IsNullOrEmpty(contactNo.Trim())
-                || String.IsNullOrEmpty(email.Trim()) || String.IsNullOrEmpty(username.Trim())
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName) || String.IsNullOrEmpty(contactNo)
+                || String.IsNullOrEmpty(email) || String.IsNullOrEmpty(username)
                 )
             {
                 TempData["error"] = "Fill all the given fields!";
@@ -139,7 +147,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Username = username,
                 Password = lastName + contactNo,
                 RoleId = 1,
-                CreatedAt = DateTime.Now
+                CreatedAt = PHTIME
             };
 
             _userRepo.Create(newCustomer);
@@ -204,7 +212,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 return RedirectToAction("Customers", "Admin");
             }
 
-            var customer = _userRepo.Table.Where(m => m.Id == CustomerId && m.RoleId == 2).FirstOrDefault();
+            var customer = _userRepo.Table.Where(m => m.Id == CustomerId && m.RoleId == 1).FirstOrDefault();
             if (customer == null)
             {
                 TempData["error"] = "Invalid customer ID";
@@ -255,9 +263,8 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult AddAgent(string firstName, string lastName, string contactNo, string email, string username, int department)
         {
             // trappings
-            if (String.IsNullOrEmpty(firstName.Trim()) || String.IsNullOrEmpty(lastName.Trim()) || String.IsNullOrEmpty(contactNo.Trim())
-                || String.IsNullOrEmpty(email.Trim()) || String.IsNullOrEmpty(username.Trim())
-                )
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName) || String.IsNullOrEmpty(contactNo)
+                || String.IsNullOrEmpty(email) || String.IsNullOrEmpty(username))
             {
                 TempData["error"] = "Fill all the given fields!";
                 return RedirectToAction("Agents", "Admin");
@@ -277,7 +284,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Password = lastName + contactNo,
                 RoleId = 2,
                 DepartmentId = 7,
-                CreatedAt = DateTime.Now
+                CreatedAt = PHTIME
             };
 
             if (department != 0)
@@ -437,8 +444,8 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult AddAdmin(string firstName, string lastName, string contactNo, string email, string username, int department)
         {
             // Check if fields are filled
-            if (String.IsNullOrEmpty(firstName.Trim()) || String.IsNullOrEmpty(lastName.Trim()) || String.IsNullOrEmpty(contactNo.Trim())
-                || String.IsNullOrEmpty(email.Trim()) || String.IsNullOrEmpty(username.Trim()))
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName) || String.IsNullOrEmpty(contactNo)
+                || String.IsNullOrEmpty(email) || String.IsNullOrEmpty(username))
             {
                 TempData["error"] = "Fill all the given fields!";
                 return RedirectToAction("Admins", "Admin");
@@ -459,7 +466,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Username = username,
                 Password = lastName + contactNo,
                 RoleId = 3, // Assuming RoleId = 1 is for Admins
-                CreatedAt = DateTime.Now
+                CreatedAt = PHTIME
             };
 
             if (department != 0)
@@ -682,8 +689,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 UserId = customerId, // Assuming this is the customer
                 StatusId = status,
                 Priority = priority,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                CreatedAt = PHTIME,
+                UpdatedAt = PHTIME
             };
 
             // Handle file attachment if provided
@@ -827,7 +834,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             var model = new AdminViewModel();
 
-            var ticketsAssigneds = _ticketAssignedRepo.Table.Where(m => m.Status.Equals("PENDING")).Include(m => m.Ticket.User.Department).ToList();
+            var ticketsAssigneds = _ticketAssignedRepo.Table.Where(m => m.Status.Equals("PENDING") && m.Ticket.StatusId != 6).Include(m => m.Ticket.User.Department).ToList();
             var agents = _userDetailRepo.Table.Where(m => m.Users.RoleId == 2).Include(m => m.Users).Include(m => m.Users.Department).ToList();
 
             model.Agents = agents;
@@ -851,6 +858,10 @@ namespace ASI.Basecode.WebApp.Controllers
             ticketAssigned.Status = "APPROVED";
             _ticketAssignedRepo.Update(ticketAssigned.Id, ticketAssigned);
 
+            string errResponse = "";
+
+            _mailManager.AssignedToAgentEmail(ticketAssigned.Agent.Email, ticketAssigned.Agent.UserDetails.FirstOrDefault().FirstName, ticket.Description, ref errResponse);
+
             TempData["message"] = SuccessApproveTicket;
             return RedirectToAction("TicketsAssignment", "Admin");
         }
@@ -872,6 +883,11 @@ namespace ASI.Basecode.WebApp.Controllers
             ticketAssigned.AgentId = agentId;
             ticketAssigned.Status = "APPROVED";
             _ticketAssignedRepo.Update(ticketAssigned.Id, ticketAssigned);
+
+            string errResponse = "";
+
+            _mailManager.AssignedToAgentEmail(ticketAssigned.Agent.Email, ticketAssigned.Agent.UserDetails.FirstOrDefault().FirstName, ticket.Description, ref errResponse);
+
 
             TempData["message"] = SuccessReassign + " agent " + agent.UserDetails.FirstOrDefault().LastName;
             return RedirectToAction("TicketsAssignment", "Admin");
@@ -965,8 +981,8 @@ namespace ASI.Basecode.WebApp.Controllers
                     Status = "Draft", // Set the initial status to "Draft"
                     Author = currentUser, // Set the user or author who created the article
                     Attachments = attachmentPath,
-                    PublishDate = DateTime.Now, // Set the publish date to null initially
-                    LastmodifiedDate = DateTime.Now // Set the modified date to the current date and time
+                    PublishDate = PHTIME, // Set the publish date to null initially
+                    LastmodifiedDate = PHTIME // Set the modified date to the current date and time
                 };
 
                 _articleRepo.Create(article);
@@ -990,7 +1006,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 CategoryId = article.CategoryId,
                 Status = article.Status,
                 Author = article.Author,
-                LastModifiedDate = DateTime.Now,
+                LastModifiedDate = PHTIME.Value,
                 AttachmentPath = article.Attachments
             };
 
@@ -1047,7 +1063,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 article.Content = model.Content;
                 article.CategoryId = model.CategoryId;
                 article.Status = model.Status;
-                article.LastmodifiedDate = DateTime.Now;
+                article.LastmodifiedDate = PHTIME;
                 if((model.Attachment != null && model.Attachment.Length > 0) && attachmentPath != "") {
                     article.Attachments = attachmentPath;
                 }
@@ -1079,7 +1095,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Author = article.Author,
                 PublishDate = article.PublishDate,
                 AttachmentPath = article.Attachments,
-                LastModifiedDate = DateTime.Now
+                LastModifiedDate = PHTIME.Value
             };
 
             model.Categories = _categoryRepo.GetAll().ToList();
