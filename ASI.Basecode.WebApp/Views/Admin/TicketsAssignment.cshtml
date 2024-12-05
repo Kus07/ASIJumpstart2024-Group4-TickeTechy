@@ -286,7 +286,7 @@
                                 <option value="">Select an agent</option>
                                 @foreach (var agent in Model.Agents) // Assuming Model.Agents contains a list of agents
                                 {
-                                    <option value="@agent.Id">@agent.FirstName @agent.LastName (Department: @agent.Users.Department.DepartmentName)</option>
+                                    <option value="@agent.Users.Id">@agent.FirstName @agent.LastName (Department: @agent.Users.Department.DepartmentName)</option>
                                 }
                             </select>
                         </div>
@@ -336,6 +336,7 @@
             const ticketId = $(this).data('id');
             $('#disapproveTicketModal').modal('show');
             $('#disapproveTicketModal #disapproveTicketId').val(ticketId);
+            console.log(ticketId)
         });
 
         // Show Add Ticket modal on button click

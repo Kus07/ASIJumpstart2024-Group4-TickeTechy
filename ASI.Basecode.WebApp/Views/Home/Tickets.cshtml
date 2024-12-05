@@ -23,21 +23,12 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
 
 <style>
-  /*    .btn {
-         position: relative;
-         display: inline-flex;
-         align-items: center;
-         justify-content: center;
-         padding: 10px 20px;
-         font-size: 16px;
-         font-weight: 500;
-         border: none;
-         border-radius: 5px;
-         background-color: #6c757d;
-         color: white;
-         cursor: pointer;
-         transition: background-color 0.3s ease;
-     } */
+    #floating-svg {
+        position: fixed;
+        bottom: 50px;
+        right: 70px;
+        z-index: 9999;
+    }
 
     .btn:hover {
         background-color: #5a6268;
@@ -568,6 +559,16 @@
 </div>
 
 
+@if (User.IsInRole("1"))
+{
+    <a asp-controller="Home" asp-action="CustomerDashboard">
+    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" id="floating-svg" viewBox="0 0 88 84" fill="none">
+        <ellipse cx="44" cy="42" rx="44" ry="42" fill="#192B5D" />
+        <path d="M44.7719 20.6038V42.7924M44.7719 42.7924V64.9811M44.7719 42.7924H23.1579M44.7719 42.7924H66.3859" stroke="white" stroke-width="4" stroke-linecap="round" />
+    </svg>
+    </a>
+}
+
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -575,6 +576,9 @@
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> 
+
+
+
 
 
 <!-- JavaScript to Toggle Sections -->

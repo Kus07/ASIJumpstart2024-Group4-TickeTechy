@@ -115,6 +115,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 Feedback = feedBack // Set the feedback in the model
             };
 
+            if (UnreadNotifications())
+            {
+                TempData["notifications"] = "true";
+            }
+
             return View(model);
         }
 
@@ -647,6 +652,23 @@ namespace ASI.Basecode.WebApp.Controllers
             }
 
             return Json(new { success = true, message = "Ticket officially resolved and the agent has been notified." });
+        }
+
+        public bool UnreadNotifications()
+        {
+            int currentUserId = GetUserId();
+            bool unreadNotificationsAvailable = false;
+
+            var user = _userRepo.Get(currentUserId);
+            var notifications = _notificationRepo.Table.Where(m => m.ToUserId == user.Id && m.Status.Equals("UNREAD")).ToList();
+
+            if (notifications.Count > 0)
+            {
+                unreadNotificationsAvailable = true;
+            }
+
+            return unreadNotificationsAvailable;
+
         }
 
 

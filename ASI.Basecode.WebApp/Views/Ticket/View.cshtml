@@ -922,59 +922,31 @@
             $('#viewfeedbackModal').modal('hide');
         });
 
-        $('#viewTicketSummaryButton').click(function () {
-            // Manually open the modal without the backdrop
-            $('#ticketsummaryModal').modal({
-                backdrop: false
-            });
-            var ticketId = $(this).data('ticketid');
-            // Send AJAX request to generate report
-            $.ajax({
-                    url: '/Ticket/GetTicketSummary',
-                type: 'POST',
-                data: { ticketId: ticketId },
-                success: function (summary) {
-                    console.log(summary);
-                    var Content = $('#summarycontent');
-                    Content.empty(); // Clear existing list items
-                    // append the summary content in a nice and indented way. bold words enclosed with double asterisk
-                    summary = summary.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-                    summary = summary.replace(/\n/g, "<br>");
-                    Content.append(summary);
-                    $('#generateReportModal').modal('show');
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    // Handle error
-                    console.log(errorThrown);
-                }
-            });
-        });
-
-        $('#closeSummaryModalButton').click(function () {
-            $('#ticketsummaryModal').modal('hide');
-        });
-
+        
         // Format Summary Content neatly
-        var pTag = document.getElementById("summarycontent");
-        var content = pTag.innerHTML;
-        var lines = content.split("\n").map(line => line.trim()).filter(line => line.length > 0);
-        var formattedContent = '<ul>';
+         var pTag = document.getElementById("summarycontent");
+         var content = pTag.innerHTML;
+         console.log(content)
+         var lines = content.split("\n").map(line => line.trim()).filter(line => line.length > 0);
+         var formattedContent = '<ul>';
 
-        lines.forEach(line => {
-            // Check if the line starts with a bullet point "*"
-            if (line.startsWith('*')) {
-                // Remove the leading "*" and trim the line
-                line = line.substring(1).trim(); // Remove the "*"
+         lines.forEach(line => {
+             // Check if the line starts with a bullet point "*"
+             if (line.startsWith('*')) {
+                 // Remove the leading "*" and trim the line
+                 line = line.substring(1).trim(); // Remove the "*"
 
-                // Bold text enclosed in "**"
-                line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Replace **text** with <strong>text</strong>
+                 // Bold text enclosed in "**"
+                 line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Replace **text** with <strong>text</strong>
 
+                 formattedContent += `<li>${line}</li>`;
+             }else{
                 formattedContent += `<li>${line}</li>`;
-            }
+             }
         });
-        formattedContent += '</ul>';
-        pTag.innerHTML = formattedContent;
-    });
+         formattedContent += '</ul>';
+         pTag.innerHTML = formattedContent;
+     });
 
 
         var modal = document.getElementById("myModal");

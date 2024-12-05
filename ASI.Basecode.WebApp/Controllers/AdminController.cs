@@ -194,6 +194,19 @@ namespace ASI.Basecode.WebApp.Controllers
                 return RedirectToAction("Customers", "Admin");
             }
 
+            var ticketsFromCustomer = _ticketRepo.Table.Where(m => m.UserId == CustomerId).ToList();
+            var messages = _ticketMessageRepo.Table.Where(m => m.UserId == CustomerId).ToList();
+
+            foreach (var ticket in ticketsFromCustomer)
+            {
+                _ticketRepo.Delete(ticket);
+            }
+
+            foreach (var message in messages)
+            {
+                _ticketMessageRepo.Delete(message);
+            }
+
             _userRepo.Delete(CustomerId);
 
             TempData["message"] = $"Successfully delete customer {customer.Username}.";
@@ -349,7 +362,6 @@ namespace ASI.Basecode.WebApp.Controllers
 
             agent.Email = email;
             agent.Username = username;
-            agent.Password = password;
             agent.DepartmentId = department;
             _userRepo.Update(AgentId, agent);
 
