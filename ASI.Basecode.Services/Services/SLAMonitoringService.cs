@@ -73,7 +73,7 @@ public class SLAMonitoringService
                 var agent = _userRepo.Get(ticketAssigned.AgentId);
                 if (agent != null && !string.IsNullOrEmpty(agent.Email))
                 {
-                    string errResponse = string.Empty; // Initialize error response
+                    string errResponse = string.Empty;
                     bool emailSent = _mailManager.EmailRespond(
                         recipientEmail: agent.Email,
                         firstName: agent.Username,
