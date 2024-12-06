@@ -532,6 +532,17 @@
             <p style="font-family: Arial !important; color: white; text-transform: none; text-align: left " id="summarycontent">@Model.Ticket.Summary<p>
         </div>
         }
+        else if (Model.Ticket.Status.StatusName.Equals("CLOSED") && (Model.Ticket.Summary == null || Model.Ticket.Summary == ""))
+        {
+            <div style="width: 200%" class="ticket-stub">
+                <h3 style="color: darkgray;">Ticket Summary</h3>
+                <p style="font-family: Arial !important; color: white; text-transform: none; text-align: left " id="summarycontent">No Summary. Try again another time<p>
+                    <div style="text-align: center; margin-top: 10px;">
+                        <button class="btn btn-primary btn-sm retry-button" onclick="retrySummary()">Retry</button>
+                    </div>
+            </div>
+           
+        }
 
         @if (!Model.TicketAssigned.Status.Equals("PENDING"))
         {
@@ -946,6 +957,8 @@
         });
          formattedContent += '</ul>';
          pTag.innerHTML = formattedContent;
+         content = content.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+         content = content.replace(/\n/g, "<br>");
      });
 
 
@@ -1192,5 +1205,36 @@
                 }
             });
         }
+
+            function retrySummary() {
+        // Make an AJAX request to retrieve the ticket summary again
+        $.ajax({
+            url: '/Ticket/RetryTicketSummary',
+            type: 'POST',
+            data: { ticketId: @Model.Ticket.Id }, // Pass the ticket ID to the server
+            success: function (summary) {
+                if(!summary) {
+                    toastr.error(summary.message);
+                }
+                else {
+                    console.log(summary.content);
+                    var Content = $('#summarycontent');
+                    Content.empty(); // Clear existing list items
+                    // append the summary content in a nice and indented way. bold words enclosed with double asterisk
+                    summary.content = summary.content.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+                    summary.content = summary.content.replace(/\n/g, "<br>");
+                    Content.append(summary.content);
+                    // Remove the retry button
+                    $('.retry-button').remove();
+                    toastr.success(summary.message);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // Handle error
+                toastr.error('An error occured while generating ticket summary.')
+                console.log(errorThrown);
+            }
+        });
+    }
 </script>
 

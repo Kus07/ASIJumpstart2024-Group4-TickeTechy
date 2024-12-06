@@ -650,6 +650,10 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return Json(new { success = true, message = "Ticket officially resolved, but failed to send email to the agent: " + errResponse });
             }
+            if (string.IsNullOrEmpty(ticketSummary))
+            {
+                return Json(new { success = true, message = "Ticket officially resolved, but failed to generate ticket summary." });
+            }
 
             return Json(new { success = true, message = "Ticket officially resolved and the agent has been notified." });
         }
@@ -710,41 +714,74 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost]
         public async Task<String> GetTicketSummary(int ticketId)
         {
-            var ticket = _ticketRepo.Get(ticketId);
-            var ticketDescription = ticket.Description;
-            var ticketCategory = ticket.Category.CategoryName;
-            var conversationHistory = _ticketMessageRepo.Table.Where(m => m.TicketId == ticket.Id).OrderBy(m => m.CreatedAt).ToList();
-            var content = new MultipartFormDataContent();
-            var attachment = ticket.Attachments;
-            //declare image as null
-            IFormFile image = null;
-            if (!String.IsNullOrEmpty(attachment))
+            try
             {
-
-                var filePath = Path.Combine(attachment);
-
-                // Get the file info
-                var fileInfo = _fileProvider.GetFileInfo(filePath);
-
-                // Check if file exists
-                if (!fileInfo.Exists)
+                var ticket = _ticketRepo.Get(ticketId);
+                var ticketDescription = ticket.Description;
+                var ticketCategory = ticket.Category.CategoryName;
+                var conversationHistory = _ticketMessageRepo.Table.Where(m => m.TicketId == ticket.Id).OrderBy(m => m.CreatedAt).ToList();
+                var content = new MultipartFormDataContent();
+                var attachment = ticket.Attachments;
+                //declare image as null
+                IFormFile image = null;
+                if (!String.IsNullOrEmpty(attachment))
                 {
-                    throw new FileNotFoundException("File not found", attachment);
+
+                    var filePath = Path.Combine(attachment);
+
+                    // Get the file info
+                    var fileInfo = _fileProvider.GetFileInfo(filePath);
+
+                    // Check if file exists
+                    if (!fileInfo.Exists)
+                    {
+                        throw new FileNotFoundException("File not found", attachment);
+                    }
+
+                    // Open a stream to read the file
+                    using var stream = new FileStream(fileInfo.PhysicalPath, FileMode.Open, FileAccess.Read);
+
+                    // Create an IFormFile using a MemoryStream
+                    var memoryStream = new MemoryStream();
+                    stream.CopyTo(memoryStream);
+                    memoryStream.Position = 0;
+
+                    image = new FormFile(memoryStream, 0, memoryStream.Length, "file", fileInfo.Name);
+
                 }
-
-                // Open a stream to read the file
-                using var stream = new FileStream(fileInfo.PhysicalPath, FileMode.Open, FileAccess.Read);
-
-                // Create an IFormFile using a MemoryStream
-                var memoryStream = new MemoryStream();
-                stream.CopyTo(memoryStream);
-                memoryStream.Position = 0;
-
-                image = new FormFile(memoryStream, 0, memoryStream.Length, "file", fileInfo.Name);
-
+                var ticketSummary = await _geminiService.GenerateTicketSummary(ticketDescription, ticketCategory, conversationHistory, image);
+                if (ticketSummary == null)
+                {
+                    return null;
+                }
+                return ticketSummary;
+                
             }
-            var ticketSummary = await _geminiService.GenerateTicketSummary(ticketDescription, ticketCategory, conversationHistory, image);
-            return ticketSummary;
+            catch (Exception ex) {
+                return null;
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> RetryTicketSummary(int ticketId) {
+            try
+            {
+                var ticket = _ticketRepo.Get(ticketId);
+                var ticketSummary = await GetTicketSummary(ticketId);
+                if (ticketSummary == null)
+                {
+                    return Json(new { success = false, message = "Error generating ticket summary." });
+                }
+                else
+                {
+
+                    ticket.Summary = ticketSummary;
+                    _ticketRepo.Update(ticket.Id, ticket);
+                    return Json(new { success = true, message = "Ticket summary updated successfully.", content = ticketSummary });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error updating ticket summary." });}
         }
 
         

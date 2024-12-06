@@ -105,43 +105,50 @@ namespace ASI.Basecode.Services.Services
         [HttpPost]
         public async Task<string> GenerateTicketSummary(string ticketDescription, string ticketCategory, IEnumerable<TicketMessage> conversationHistory, IFormFile image)
         {
-            var input = $"The ticket description is: {ticketDescription}. The ticket category is: {ticketCategory}.";
-            var conversation_history = StringifyMessages(conversationHistory);
-            dynamic jsonResponse = "";
-            var content = new MultipartFormDataContent();
-            if (image != null)
+            try
             {
-                content.Add(new StringContent(image.FileName), "file");
-            }
+                var input = $"The ticket description is: {ticketDescription}. The ticket category is: {ticketCategory}.";
+                var conversation_history = StringifyMessages(conversationHistory);
+                dynamic jsonResponse = "";
+                var content = new MultipartFormDataContent();
+                if (image != null)
+                {
+                    content.Add(new StringContent(image.FileName), "file");
+                }
 
 
-            using (var client = new HttpClient())
-            {
-                /*var values = new Dictionary<string, string>
+                using (var client = new HttpClient())
+                {
+                    /*var values = new Dictionary<string, string>
+                        {
+                            { "input", input },
+                            { "conversation_history", conversation_history }
+                        };*/
+
+                    //var json = JsonConvert.SerializeObject(values);
+                    //var content = new FormUrlEncodedContent(values);
+                    content.Add(new StringContent(input), "input");
+                    content.Add(new StringContent(conversation_history), "conversation_history");
+
+                    var response = await client.PostAsync("https://proctocodeapis.et.r.appspot.com/generateTicketSummary", content);
+
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        { "input", input },
-                        { "conversation_history", conversation_history }
-                    };*/
-
-                //var json = JsonConvert.SerializeObject(values);
-                //var content = new FormUrlEncodedContent(values);
-                content.Add(new StringContent(input), "input");
-                content.Add(new StringContent(conversation_history), "conversation_history");
-
-                var response = await client.PostAsync("https://proctocodeapis.et.r.appspot.com/generateTicketSummary", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    var jResponse = JObject.Parse(responseBody);
-                    //var responseData = JsonConvert.DeserializeObject<dynamic>(responseBody);
-                    var output = jResponse["response"].ToString();
-                    return output;
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        var jResponse = JObject.Parse(responseBody);
+                        //var responseData = JsonConvert.DeserializeObject<dynamic>(responseBody);
+                        var output = jResponse["response"].ToString();
+                        return output;
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to generate ticket summary");
+                    }
                 }
-                else
-                {
-                    throw new Exception("Failed to generate ticket summary");
-                }
+            }
+            catch (Exception ex) {
+                return null;
             }
         }
 

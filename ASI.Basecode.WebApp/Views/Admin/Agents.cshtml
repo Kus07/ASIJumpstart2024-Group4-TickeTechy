@@ -377,13 +377,71 @@
 
 <!-- Generate Report Modal -->
 <div class="modal fade" id="generateReportModal" tabindex="-1" role="dialog" aria-labelledby="generateReportModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="generateReportModalLabel">@GenerateReport</h5>
             </div>
             <div class="modal-body">
-                <p id="reportList"></p>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card shadow-sm border border-secondary">
+                            <div class="card-header bg-white border-bottom">
+                                <h5 class="card-title">Assigned Tickets</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" id="tickets-assigned">#</p>
+                                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 1 })'">View Details</button> *@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow-sm border border-secondary">
+                            <div class="card-header bg-white border-bottom">
+                                <h5 class="card-title">Tickets with Feedback</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" id="tickets-with-feedback">#</p>
+                                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 2 })'">View Details</button> *@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow-sm border border-secondary">
+                            <div class="card-header bg-white border-bottom">
+                                <h5 class="card-title">Avg. Feedback Rating</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" id="avg-feedback-rating">#</p>
+                                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 3 })'">View Details</button> *@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow-sm border border-secondary">
+                            <div class="card-header bg-white border-bottom">
+                                <h5 class="card-title">Avg. Resolution Time</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" id="avg-resolution-time">#</p>
+                                @* <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("ViewDetails", "Home", new { id = 4 })'">View Details</button> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Tickets Status</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <canvas id="ticketsStatusChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalFooterButtonGenerate">@CloseBtn</button>
@@ -583,7 +641,9 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
 
 
@@ -699,21 +759,29 @@
             type: 'POST',
             data: { agentId: agentId },
             success: function (report) {
-                console.log(report);
-                var reportList = $('#reportList');
-                reportList.empty(); // Clear existing list items
+                console.log(report.ticketsAssigned);
+                var ticketsAssigned = $('#tickets-assigned');
+                var ticketsAssignedInt = $('<li>').text(report.ticketsAssigned !== null && report.ticketsAssigned !== undefined ? `${report.ticketsAssigned}` : '#');
+                ticketsAssigned.empty(); // Clear existing list items
+                ticketsAssigned.append(ticketsAssignedInt);
 
-                var agentName = $('<li>').text(`Agent Name: ${report.agentName}`);
-                reportList.append(agentName);
+                var ticketsWithFeedback = $('#tickets-with-feedback');
+                var ticketsWithFeedbackInt = $('<li>').text(report.ticketsWithFeedback !== null && report.ticketsWithFeedback !== undefined ? `${report.ticketsWithFeedback}` : '#');
+                ticketsWithFeedback.empty(); // Clear existing list items
+                ticketsWithFeedback.append(ticketsWithFeedbackInt);
 
-                var ticketsResolved = $('<li>').text(`Tickets Resolved: ${report.ticketsResolved}`);
-                reportList.append(ticketsResolved);
+                var averageFeedbackRating = $('#avg-feedback-rating');
+                var averageFeedbackRatingInt = $('<li>').text(report.averageFeedbackRating !== null && report.averageFeedbackRating !== undefined ? `${report.averageFeedbackRating.toFixed(2)}` : '#');
+                averageFeedbackRating.empty();
+                averageFeedbackRating.append(averageFeedbackRatingInt);
 
-                var averageResolutionTime = $('<li>').text(`Average Resolution Time: ${report.averageResolutionTime} hours`);
-                reportList.append(averageResolutionTime);
+                var averageResolutionTime = $('#avg-resolution-time');
+                var averageResolutionTimeInt = $('<li>').text(report.averageTicketResolutionTime !== null && report.averageTicketResolutionTime !== undefined ? `${report.averageTicketResolutionTime.toFixed(2)} hours` : '#');
+                averageResolutionTime.empty();
+                averageResolutionTime.append(averageResolutionTimeInt);
 
-                var customerSatisfactionScore = $('<li>').text(`Customer Satisfaction Score: ${report.customerSatisfactionScore}/5`);
-                reportList.append(customerSatisfactionScore);
+                console.log(report.assignedTicketsByCategory);
+                createDonutChart(report);
                 $('#generateReportModal').modal('show');
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -722,5 +790,89 @@
             }
         });
     });
+
+    function createBarChart(report){
+        var chartContainer = document.getElementById('assignedTicketsByCategoryChart').parentNode;
+        chartContainer.innerHTML = '';
+
+        var chartCanvas = document.createElement('canvas');
+        chartCanvas.id = 'assignedTicketsByCategoryChart';
+        chartContainer.appendChild(chartCanvas);
+
+        var ctx = document.getElementById('assignedTicketsByCategoryChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(report.assignedTicketsByCategory),
+            datasets: [{
+                label: 'Assigned Tickets by Category',
+                data: Object.values(report.assignedTicketsByCategory),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    }
+
+    function createDonutChart(report){
+        var chartContainer = document.getElementById('ticketsStatusChart').parentNode;
+        chartContainer.innerHTML = '';
+
+        var chartCanvas = document.createElement('canvas');
+        chartCanvas.id = 'ticketsStatusChart';
+        chartContainer.appendChild(chartCanvas);
+
+        var ctx2 = document.getElementById('ticketsStatusChart').getContext('2d');
+                   var chart2 = new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Resolved', 'Ongoing'],
+                            datasets: [{
+                                label: 'Tickets Status',
+                                data: [report.ticketsResolved, report.ticketsOngoing],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Tickets Status'
+                            }
+                        }
+                    });
+    }
 </script>
+
 

@@ -385,53 +385,50 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost]
         public IActionResult GenerateAgentReport(int agentId)
         {
-            // Get the agent by ID
-            var agent = _userRepo.Table.Where(m => m.Id == agentId && m.RoleId == 2).FirstOrDefault();
-            var agentDetails = _userDetailRepo.Table.Where(m => m.Id == agentId).FirstOrDefault();
-            if (agent == null)
+            try
             {
-                return NotFound();
+                var agent = _userRepo.Table.Where(m => m.Id == agentId && m.RoleId == 2).FirstOrDefault();
+                var tickets = _ticketAssignedRepo.Table
+                                    .Where(m => (m.AgentId == agent.Id || m.ReassignedToId == agent.Id) && m.Status.Equals("APPROVED"))
+                                    .ToList();
+
+                var assignedTicketsByCategory = tickets
+                    .GroupBy(t => t.Ticket.Category)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+
+
+
+                var ticketsWithFeedback = _feedbackRepo.Table.Where(m => m.AgentId == agent.Id).ToList();
+                var averageFeedbackRating = ticketsWithFeedback.Average(m => m.Star);
+                //get the average resolution time of the agent
+                var totalResolutionTime = tickets.Where(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5)
+                .Sum(t =>
+                {
+                    var ticket = _ticketRepo.Get(t.TicketId.Value);
+                    var resolutionTime = ticket.UpdatedAt.Value - ticket.CreatedAt.Value;
+                    return resolutionTime.TotalHours;
+                });
+                var averageResolutionTime = tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) > 0 ? totalResolutionTime / tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) : 0;
+                var ticketsOngoing = tickets.Where(t => t.Ticket.StatusId == Convert.ToInt32(TicketStatus.ONGOING) || t.Ticket.StatusId == Convert.ToInt32(TicketStatus.WAITINGRESPONSE)).ToList().Count();
+                var ticketsResolved = tickets.Where(t => t.Ticket.StatusId == Convert.ToInt32(TicketStatus.CLOSED)).Count();
+                var data = new
+                {
+                    TicketsAssigned = tickets.Count(),
+                    TicketsWithFeedback = ticketsWithFeedback.Count(),
+                    AverageFeedbackRating = averageFeedbackRating,
+                    //TicketsByCategory = assignedTicketsByCategory,
+                    AverageTicketResolutionTime = averageResolutionTime,
+                    TicketsOngoing = ticketsOngoing,
+                    TicketsResolved = ticketsResolved
+                };
+                return Json(data);
             }
-
-            // Get the agent's tickets
-            var tickets = _ticketAssignedRepo.Table.Where(m => m.AgentId == agentId).ToList();
-
-            // Calculate the number of tickets resolved
-            var ticketsResolved = tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5);
-
-            //Calculate the average resolution timeTotalMinutes)
-            var totalResolutionTime = tickets.Where(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5)
-    .Sum(t =>
-    {
-        var ticket = _ticketRepo.Get(t.TicketId.Value);
-        var resolutionTime = ticket.UpdatedAt.Value - ticket.CreatedAt.Value;
-        return resolutionTime.TotalHours;
-    });
-            var averageResolutionTime = tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) > 0 ? totalResolutionTime / tickets.Count(t => t.TicketId.HasValue && _ticketRepo.Get(t.TicketId.Value).StatusId == 5) : 0;
-            var formattedAverageResolutionTime = averageResolutionTime.ToString("F1");
-            
-            // Calculate the customer satisfaction score
-            var feedbacks = _feedbackRepo.Table.Where(m => m.AgentId == agentId).ToList();
-            var totalSatisfactionScore = feedbacks.Sum(f => f.Star);
-            var customerSatisfactionScore = feedbacks.Count > 0 ? totalSatisfactionScore / feedbacks.Count : 0; 
-
-            // Generate the report
-            var report = $"<ul>" +
-                 $"<li>Agent Name: {agentDetails.FirstName} {agentDetails.LastName}</li>" +
-                 $"<li>Tickets Resolved: {ticketsResolved}</li>" +
-                 $"<li>Average Resolution Time: {formattedAverageResolutionTime} hours</li>" +
-                 $"<li>Customer Satisfaction Score: {customerSatisfactionScore}/5</li>" +
-                 "</ul>";
-
-            var report2 = new
+            catch (Exception ex)
             {
-                AgentName = $"{agentDetails.FirstName} {agentDetails.LastName}",
-                TicketsResolved = ticketsResolved,
-                AverageResolutionTime = formattedAverageResolutionTime,
-                CustomerSatisfactionScore = customerSatisfactionScore
-            };
-
-            return Json(report2);
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
 
@@ -443,7 +440,7 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult Admins()
         {
             var modelView = new AdminViewModel();
-
+                
             var admins = _userDetailRepo.Table.Where(m => m.Users.RoleId == 3).Include(m => m.Users).ToList();
 
             modelView.Admins = admins;
