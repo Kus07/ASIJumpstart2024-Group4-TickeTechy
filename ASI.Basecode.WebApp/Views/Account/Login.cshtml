@@ -27,6 +27,11 @@
 
     <!-- Inline CSS -->
     <style>
+        .validation-summary ul{
+            list-style-type: none; /* Removes bullet points */
+            padding: 0; /* Removes default padding */
+            margin: 0; /* Removes default margin */
+        }
         * {
             margin: 0;
             padding: 0;
@@ -297,7 +302,7 @@
         <h1 class="title">@Login</h1>
         <p class="tagline">@Tagline</p>
         <form class="form" action="/Account/Login" method="post">
-            <div asp-validation-summary="ModelOnly" style="color: red !important;"></div>
+            <div asp-validation-summary="ModelOnly" class="validation-summary" style="color: red !important;"></div>
             <div class="input-group">
                 <label for="email">@Email <span style="color: red;">@Asterisk</span></label>
                 <input asp-for="Email" class="form-control" />

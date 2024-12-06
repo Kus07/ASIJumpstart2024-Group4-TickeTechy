@@ -219,6 +219,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 ticket.StatusId = Convert.ToInt32(TicketStatus.ONGOING);
             }
+            ticket.UpdatedAt = PHTIME;
 
             var notif = new Notification()
             {

@@ -154,6 +154,22 @@
                     color: rgba(167, 139, 250, 1);
                     text-decoration: underline;
                 }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+            .input-with-icon .form-control {
+                padding-right: 30px; /* Adjust padding to make space for the icon */
+            }
+
+            .input-with-icon .eye-icon {
+                position: absolute;
+                right: 10px; /* Adjust icon positioning */
+                top: 50%;
+                transform: translateY(-50%); /* Center the icon vertically */
+                cursor: pointer;
+            }
     </style>
 </head>
 <body>
@@ -193,16 +209,27 @@
                     <span asp-validation-for="LastName" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">
-                    <label for="password">@Password <span style="color: red;">@Asterisk</span></label>
-                    <input asp-for="Password" type="password" class="form-control" id="password" />
-                    <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
-                    <span asp-validation-for="Password" style="color: red !important;"></span>
+                    <label for="password">Password <span style="color: red;">*</span></label>
+                    <div class="input-with-icon">
+                        <input type="password" class="form-control" id="password"
+                               data-val="true" data-val-minlength="Password must be at least 6 characters long."
+                               data-val-minlength-min="6" data-val-required="The Password field is required."
+                               name="Password" aria-describedby="password-error" aria-invalid="false">
+                        <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
+                    </div>
+                    <span style="color: red !important;" class="field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
                 </div>
+
                 <div class="input-group">
-                    <label for="password">@ConfirmPass <span style="color: red;">@Asterisk</span></label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="password" />
-                    <i class="fa fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
-                    <span asp-validation-for="ConfirmPassword" style="color: red !important;"></span>
+                    <label for="confirmPassword">Confirm Password <span style="color: red;">*</span></label>
+                    <div class="input-with-icon">
+                        <input type="password" class="form-control" id="confirmPassword"
+                               data-val="true" data-val-equalto="Passwords do not match."
+                               data-val-equalto-other="*.Password" data-val-required="Confirm password field is required."
+                               name="ConfirmPassword" aria-describedby="confirmPassword-error" aria-invalid="false">
+                        <i class="fa fa-eye eye-icon" id="togglePassword2" onclick="togglePassword2()"></i>
+                    </div>
+                    <span style="color: red !important;" class="field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
                 </div>
             </div>
 
@@ -221,6 +248,20 @@
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('togglePassword');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        function togglePassword2() {
+            const passwordInput = document.getElementById('confirmPassword');
+            const eyeIcon = document.getElementById('togglePassword2');
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 eyeIcon.classList.remove('fa-eye');

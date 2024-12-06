@@ -198,6 +198,20 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 TempData["success"] = "Successfully registered! You may log in now.";
 
+                string errResponse = "";
+
+                bool emailSent = _mailManager.SendWelcomeEmail(createdUser.Email, model.FirstName, createdUser.Username, createdUser.Password, "Customer", ref errResponse);
+
+                if (!emailSent)
+                {
+                    // Handle failure
+                    //TempData["error"] = "Failed to send email. " + errResponse;
+                }
+                else
+                {
+                    TempData["message"] = "Welcome to TickeTechy!";
+                }
+
                 // Redirect based on role after registration
                 switch (newUser.RoleId)
                 {
