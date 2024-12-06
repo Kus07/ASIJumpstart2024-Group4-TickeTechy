@@ -348,7 +348,7 @@
 
                     <!-- Select list for categories -->
                     <div class="form-group mb-3">
-                        <label asp-for="@Model.CategoryId" class="form-label fw-bold">Category</label>
+                        <label asp-for="@Model.CategoryId" class="form-label fw-bold">Category <span style="color: red;">@Asterisk</span></label>
                         <br />
                         <select asp-for="@Model.CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "CategoryName"))">
                             <option value="">Select a category</option>
@@ -359,7 +359,7 @@
                     <br />
                     <!-- Description field with TinyMCE -->
                     <div class="form-group mb-3">
-                        <label asp-for="@Model.Description" class="form-label fw-bold">Description</label>
+                        <label asp-for="@Model.Description" class="form-label fw-bold">Description <span style="color: red;">@Asterisk</span></label>
                         <textarea id="description" asp-for="@Model.Description" class="form-control" rows="4" placeholder="Enter a detailed description..."></textarea>
                         <span asp-validation-for="@Model.Description" class="text-danger small"></span>
                     </div>

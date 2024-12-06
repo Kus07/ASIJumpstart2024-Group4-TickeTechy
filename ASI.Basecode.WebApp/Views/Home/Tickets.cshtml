@@ -352,7 +352,7 @@
     <h2>Closed Tickets</h2>
     @if (Model.Any(ticket => ticket.Status == "CLOSED"))
     {
-        <table class="table" id="closedTicketListTable">
+        <table class="table" id="closedTicketListTable" style="width: 100% !important; margin: 0px !important;">
             <thead>
                 <tr>
                     <th>@Category</th>
@@ -415,7 +415,7 @@
     <h2>Ongoing Tickets</h2>
     @if (Model.Any(ticket => ticket.Status == "ONGOING" || ticket.Status == "WAITINGRESPONSE" || ticket.Status == "RESOLVED"))
     {
-        <table class="table" id="ongoingTicketListTable">
+        <table class="table" id="ongoingTicketListTable" style="width: 100% !important; margin: 0px !important;">
             <thead>
                 <tr>
                     <th>@Category</th>
@@ -772,9 +772,9 @@
     });
 
     $(document).ready(function () {
-        // let table = new DataTable('#openTicketsListTable');
-        // let table2 = new DataTable('#closedTicketListTable');
-        // let table3 = new DataTable('#ongoingTicketListTable');
+        let table = new DataTable('#openTicketListTable');
+        let table2 = new DataTable('#closedTicketListTable');
+        let table3 = new DataTable('#ongoingTicketListTable');
 
         $('.dt-length').hide(); 
 

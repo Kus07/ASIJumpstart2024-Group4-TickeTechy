@@ -152,6 +152,20 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="https://cdn.canvasjs.com/ga/canvasjs.min.js"></script>
 
+    @if (User.IsInRole("1"))
+    {
+        <script>
+            window.embeddedChatbotConfig = {
+                chatbotId: "ivVJ_S666Gkzfz9ZREfdR",
+                domain: "www.chatbase.co"
+            }
+        </script>
+        <script src="https://www.chatbase.co/embed.min.js"
+                chatbotId="ivVJ_S666Gkzfz9ZREfdR"
+                domain="www.chatbase.co"
+                defer>
+        </script>
+    }
 
     <script>
         $(document).ready(function () {

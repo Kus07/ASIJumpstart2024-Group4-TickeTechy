@@ -1158,6 +1158,16 @@
         function markAsResolved() {
             var ticketId = @Model.Ticket.Id;
             console.log(ticketId)
+
+            var markResolvedBtn = $('#markResolvedBtn');
+
+            // Add loading spinner to the button and disable it
+            markResolvedBtn.prop('disabled', true);
+            markResolvedBtn.html(`
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Resolving...
+            `);
+
             $.ajax({
                 url: '/Ticket/MarkedAsResolved',
                 type: 'POST',
@@ -1183,6 +1193,15 @@
         function acceptResolution() {
             var ticketId = @Model.Ticket.Id;
             console.log(ticketId)
+
+            var acceptResolutionBtn = $('#markResolvedBtn');
+
+            // Add loading spinner to the button and disable it
+            acceptResolutionBtn.prop('disabled', true);
+            acceptResolutionBtn.html(`
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Accepting...
+                    `);
             $.ajax({
                 url: '/Ticket/AcceptResolution',
                 type: 'POST',

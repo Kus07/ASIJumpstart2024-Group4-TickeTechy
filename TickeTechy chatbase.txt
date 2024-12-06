@@ -1,0 +1,85 @@
+Welcome Messages
+Hi, welcome to TickeTechy: Create. Assign. Track. Close. How can I assist you today?
+With our AI-powered system, your issues will be prioritized and assigned seamlessly.
+Welcome to TickeTechy! Let me guide you in creating or tracking your tickets. Our AI ensures your ticket gets assigned to the right agent with the right priority level. How may I help?
+Hello! Need assistance with your ticket? I’m here to help, powered by AI to make the process smoother and faster for you.
+Ticket Management
+Create a Ticket
+
+How can I create a ticket?
+To create a ticket, click on the "Create Ticket" button. Provide a clear description of your issue, attach files if necessary, and select a category. Our AI will evaluate the details to assign a priority level and route your ticket to the best-fit agent for faster resolution.
+What details should I include in my ticket?
+Please include the following:
+A clear description of the issue.
+Relevant attachments, such as screenshots or files.
+A category that best matches your problem (e.g., Technical Issue, Billing, etc.).
+Edit a Ticket
+
+Can I update or edit my ticket after submitting it?
+Yes, you can edit your ticket by navigating to the "My Tickets" section. However, note that changes to critical fields (e.g., issue description) may prompt AI to reassess the ticket’s priority or reassign it.
+Delete a Ticket
+
+How do I delete a ticket I no longer need?
+You can delete your ticket in the "My Tickets" section. Simply select the ticket and click the "Delete" option. Deleted tickets cannot be recovered.
+View Tickets
+
+Where can I see all my tickets?
+Your tickets, along with their status, priority, and assignment, can be found in the "My Tickets" section.
+Ticket Assignment
+AI-Powered Assignment
+
+How does ticket assignment work?
+Once a ticket is created, our AI evaluates the issue description, category, and urgency to assign the ticket to the most suitable agent. The assignment is then reviewed and approved by the admin for added accuracy.
+Can I choose the agent for my ticket?
+Our system automatically assigns tickets to ensure faster resolutions. However, if you have special preferences, you can note them in the ticket description, and the admin will review them.
+Ticket Tracking
+Track Ticket Status
+
+How do I check the status of my ticket?
+Visit the "My Tickets" section to view the ticket’s status. The system will display one of the following:
+Open: The ticket is awaiting action.
+In Progress: The agent is working on it.
+Resolved: The issue has been addressed.
+AI-Managed Priority
+
+How is the priority of my ticket determined?
+Our AI analyzes the details of your ticket (e.g., keywords in the description, urgency indicators) and assigns a priority level: Low, Medium, High, or Critical. This ensures your ticket gets the attention it needs promptly.
+Can I update the priority of my ticket?
+The AI determines priority based on your input. If you feel the priority needs to change, update your ticket details, and the system will reassess.
+Notifications
+Receive Updates
+
+How will I know if there’s an update on my ticket?
+You’ll receive real-time email notifications for updates, such as changes in ticket status or priority reassignment.
+Reminder Notifications
+
+Will I get reminders for unresolved tickets?
+Yes, our system sends automated reminders for tickets that remain unresolved beyond a certain timeframe.
+Customer Feedback
+Provide Feedback
+
+How can I give feedback on my resolved ticket?
+Once your ticket is resolved, you’ll receive an email notification with a link to the feedback form. You can rate your experience using stars and add comments.
+View Feedback
+
+Can I see my past feedback?
+Yes, your feedback history is available in the "Feedback" section for your review.
+Knowledge Base
+Access Articles
+
+How can I use the Knowledge Base?
+The Knowledge Base is designed to help you with common issues. Just search for your query, and I’ll provide the most relevant articles.
+AI Suggestions
+
+How does the Knowledge Base assist me?
+Our AI recommends articles based on your ticket details or query. This allows you to explore possible solutions even before submitting a ticket.
+Forgot Password Mechanism
+Reset Password
+
+I forgot my password. How do I reset it?
+Click the "Forgot Password" link on the login page. You’ll receive an email with reset instructions. If you face any issues, let me assist you.
+General Assistance
+How do I contact customer support for urgent issues?
+For urgent concerns, create a ticket and ensure your description highlights the urgency. Our AI will mark it as high priority and route it immediately to the appropriate team.
+Can I speak to a human agent?
+Yes, while our AI handles ticket assignments and prioritization, human agents oversee and manage the resolutions. Let me know if you need specific assistance.

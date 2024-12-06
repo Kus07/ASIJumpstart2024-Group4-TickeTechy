@@ -394,6 +394,11 @@ namespace ASI.Basecode.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TicketViewModel viewModel)
         {
+            if (String.IsNullOrEmpty(viewModel.UserId.ToString()) || String.IsNullOrEmpty(viewModel.CategoryId.ToString()) || String.IsNullOrEmpty(viewModel.Description) || String.IsNullOrEmpty(viewModel.UserId.ToString()) || String.IsNullOrEmpty(viewModel.Priority))
+            {
+                TempData["error"] = "Necessary fields must be filled in.";
+                return RedirectToAction("CustomerDashboard", "Home");
+            }
             string attachmentPath = "";
             if (viewModel.Attachments != null && viewModel.Attachments.Length > 0)
             {
@@ -493,10 +498,15 @@ namespace ASI.Basecode.WebApp.Controllers
             var ticket = _ticketRepo.FindByCondition(t => t.Id == viewModel.Id && t.UserId == viewModel.UserId).FirstOrDefault();
             if (ticket == null)
             {
-                return NotFound();
+                TempData["error"] = "Invalid ticket ID!";
+                return RedirectToAction("CustomerDashboard", "Home");
             }
 
-
+            if (String.IsNullOrEmpty(viewModel.Description))
+            {
+                TempData["error"] = "Description must not be empty.";
+                return RedirectToAction("Tickets", "Home");
+            }
             ticket.CategoryId = viewModel.CategoryId;
             ticket.Description = viewModel.Description;
             ticket.Priority = viewModel.Priority;

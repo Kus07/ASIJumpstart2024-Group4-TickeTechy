@@ -317,7 +317,17 @@
                     </div>
                     <div class="form-group">
                         <label for="phone">@ContactNo</label>
-                        @Html.TextBox("contactNo", null, new { @class = "form-control", @id = "phone", @type = "number" })
+                        @Html.TextBox("contactNo", null, new
+                            {
+                                @class = "form-control",
+                                @id = "phone",
+                                @type = "tel",
+                                @pattern = "^\\d{11}$",
+                                @title = "Please enter a valid 11-digit phone number",
+                                @placeholder = "Enter your 11-digit phone number",
+                                @required = "required"
+                            })
+
                     </div>
                     <div class="form-group">
                         <label for="address">@Username</label>
