@@ -221,18 +221,36 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             ticket.UpdatedAt = PHTIME;
 
-            var notif = new Notification()
+            if (User.IsInRole("1"))
             {
-                ToUserId = ticketAssigned.AgentId,
-                FromUserId = ticket.UserId,
-                Content = NotifToAgent + ticket.Id,
-                DateCreated = PHTIME,
-                Status = "UNREAD", 
-                TicketId = ticketId, 
-                Title = $"Ticket #{ticket.Id}"
-            };
+                var notif = new Notification()
+                {
+                    ToUserId = ticketAssigned.AgentId,
+                    FromUserId = ticket.UserId,
+                    Content = "Agent has responded to your ticket: Ticket #" + ticket.Id,
+                    DateCreated = PHTIME,
+                    Status = "UNREAD",
+                    TicketId = ticketId,
+                    Title = $"Ticket #{ticket.Id}"
+                };
+                _notificationRepo.Create(notif);
+            }
+            else if (User.IsInRole("2"))
+            {
+                var notif = new Notification()
+                {
+                    ToUserId = ticket.UserId,
+                    FromUserId = ticketAssigned.AgentId,
+                    Content = NotifToAgent + ticket.Id,
+                    DateCreated = PHTIME,
+                    Status = "UNREAD",
+                    TicketId = ticketId,
+                    Title = $"Ticket #{ticket.Id}"
+                };
+                _notificationRepo.Create(notif);
+            }
 
-            _notificationRepo.Create(notif);
+
 
             _ticketRepo.Update(ticket.Id, ticket);
 

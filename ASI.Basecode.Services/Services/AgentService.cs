@@ -15,7 +15,7 @@ namespace ASI.Basecode.Services.Services
         public int GetUserWithSmallestLoad(int departmentId)
         {
             // Get all users within the department
-            using (var db = new AllianceJumpstartContext())
+            using (var db = new db_aaf86b_alliancejumpstartContext())
             {
                 if(departmentId == 0)
                 {

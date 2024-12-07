@@ -195,7 +195,9 @@
                 </div>
                 <div class="input-group">
                     <label for="contact">@ContactNo <span style="color: red;">@Asterisk</span></label>
-                    <input asp-for="Contact" class="form-control" />
+                    <input asp-for="Contact" class="form-control" type="tel" pattern="^\d{11}$"
+                           title="Please enter a valid 11-digit phone number"
+                           placeholder="Enter your 11-digit phone number" required />
                     <span asp-validation-for="Contact" style="color: red !important;"></span>
                 </div>
                 <div class="input-group">

@@ -23,8 +23,8 @@ namespace ASI.Basecode.Services.ServiceModels
         [DataType(DataType.Text)]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Contact number is required.")]
-        [StringLength(11, ErrorMessage = "Contact number cannot be longer than 11 digits.")]
+        [Required(ErrorMessage = "Phone number is required.")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "Please enter a valid 11-digit phone number.")]
         [DataType(DataType.Text)]
         public string Contact { get; set; }
 

@@ -19,7 +19,7 @@ public class SLAMonitoringBackgroundTask : IHostedService, IDisposable
     {
         Console.WriteLine("Background service started.");
         // Run the SLA checks every 5 minutes
-        _timer = new Timer(PerformSLAChecks, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        _timer = new Timer(PerformSLAChecks, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
         return Task.CompletedTask;
     }
 

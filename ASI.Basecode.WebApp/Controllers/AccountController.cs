@@ -270,7 +270,6 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var userDetails = _userDetailRepo.Table.Where(m => m.UserId == user.Id).FirstOrDefault();
             string otpCode = GenerateOTP();
-
             string errResponse = "";
 
             bool otpSent = _mailManager.SendOtpForgotPassword(email, userDetails.FirstName, otpCode, ref errResponse);
@@ -305,7 +304,6 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             else
             {
-                user.ForgotPassOtp = null;
                 _userRepo.Update(user.Id, user);
                 return Json(new { success = true });
             }

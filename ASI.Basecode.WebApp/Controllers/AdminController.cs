@@ -197,14 +197,23 @@ namespace ASI.Basecode.WebApp.Controllers
             var ticketsFromCustomer = _ticketRepo.Table.Where(m => m.UserId == CustomerId).ToList();
             var messages = _ticketMessageRepo.Table.Where(m => m.UserId == CustomerId).ToList();
 
-            foreach (var ticket in ticketsFromCustomer)
-            {
-                _ticketRepo.Delete(ticket);
-            }
-
             foreach (var message in messages)
             {
-                _ticketMessageRepo.Delete(message);
+                _ticketMessageRepo.Delete(message.Id);
+            }
+
+            foreach (var ticket in ticketsFromCustomer)
+            {
+                var notifs = _notificationRepo.Table.Where(m => m.TicketId == ticket.Id).ToList();
+                foreach (var notif in notifs)
+                {
+                    _notificationRepo.Delete(notif.Id);
+                }
+                var ticketAssigned = _ticketAssignedRepo.Table.Where(m => m.TicketId == ticket.Id).FirstOrDefault();
+
+                _ticketAssignedRepo.Delete(ticketAssigned.Id);
+                
+                _ticketRepo.Delete(ticket.Id);
             }
 
             _userRepo.Delete(CustomerId);
@@ -318,6 +327,12 @@ namespace ASI.Basecode.WebApp.Controllers
                 UserId = createdUser.Id
             };
             _userDetailRepo.Create(newUserDetail);
+
+            string errResponse = "";
+
+            bool emailSent = _mailManager.SendWelcomeEmail(newAgent.Email, firstName, newAgent.Username, newAgent.Password, "Agent", ref errResponse);
+
+
 
             TempData["message"] = $"Successfully created user {firstName}! The user's password is {newAgent.Password}.";
 
@@ -674,7 +689,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 return RedirectToAction("Tickets", "Admin");
             }
 
-            _ticketRepo.Delete(ticketId);
+            ticket.StatusId = 6;
+            _ticketRepo.Update(ticketId, ticket);
 
             TempData["message"] = $"Successfully deleted ticket #{ticket.Id}.";
             return RedirectToAction("Tickets", "Admin");
