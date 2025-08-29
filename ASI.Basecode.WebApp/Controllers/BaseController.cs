@@ -9,7 +9,7 @@ namespace ASI.Basecode.WebApp.Controllers
 {
     public class BaseController : Controller
     {
-        public db_aaf86b_alliancejumpstartContext _db;
+        public AllianceJumpstartContext _db;
         public BaseRepository<User> _userRepo;
         public BaseRepository<UserDetail> _userDetailRepo;
         public BaseRepository<Role> _roleRepo;
@@ -32,7 +32,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             _mailManager = mailManager;
             this._httpContextAccessor = httpContextAccessor;
-            _db = new db_aaf86b_alliancejumpstartContext();
+            _db = new AllianceJumpstartContext();
             _userRepo = new BaseRepository<User>();
             _roleRepo = new BaseRepository<Role>();
             _articleRepo = new BaseRepository<Article>();

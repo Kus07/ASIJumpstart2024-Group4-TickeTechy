@@ -17,7 +17,7 @@ namespace Basecode.Data.Repositories
         public DbSet<T> Table { get { return _table; } }
         public BaseRepository()
         {
-            _db = new db_aaf86b_alliancejumpstartContext();
+            _db = new AllianceJumpstartContext();
             _table = _db.Set<T>();
         }
         public T Get(object id)

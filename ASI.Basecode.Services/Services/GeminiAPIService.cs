@@ -19,86 +19,64 @@ namespace ASI.Basecode.Services.Services
     public class GeminiAPIService : IGeminiAPIService
     {
         /// <summary>
-        /// Assign ticket to a agent using Gemini AI API 
+        /// Assign ticket to a agent using Gemini AI API
         /// </summary>
         [HttpPost]
         public async Task<int> AssignTicket(string description, string category)
         {
             try
             {
-                int departmentId = 0;
-                dynamic jsonResponse = "";
+                string apiKey = "AIzaSyCeTO21VfJNQgZOtZ9XfEB1NQ0wq3Fkan8";
+                string apiUrl = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={apiKey}";
 
-                string input = $"Ticket Description: {description}, Ticket Category: {category}";
+                string input = $"Ticket Description: {description}, Ticket Category: {category}. Based on this ticket description and category, assign it to the most appropriate department. These are the department options: 1-HR, 2-IT/Systems, 3-Facilities, 4-Finance, 5-Project Management, 6-Security, 7-General. Just return the number only (1-7) or 0 if unsure. No explanation needed.";
+
+                var data = new
+                {
+                    contents = new[]
+                    { 
+                        new
+                        {
+                            parts = new[]
+                            {
+                                new
+                                {
+                                    text = input
+                                }
+                            }
+                        }
+                    }
+                };
 
                 using (var client = new HttpClient())
                 {
-                    var values = new Dictionary<string, string>
+                    var json = JsonConvert.SerializeObject(data);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync(apiUrl, content);
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        { "input", input }
-                    };
+                        var responseString = await response.Content.ReadAsStringAsync();
+                        var jResponse = JObject.Parse(responseString);
 
-                    var content = new FormUrlEncodedContent(values);
+                        if (jResponse["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] != null)
+                        {
+                            var aiResponse = jResponse["candidates"][0]["content"]["parts"][0]["text"].ToString().Trim();
 
-                    // Post the request to the external API
-                    var response = await client.PostAsync("https://proctocodeapis.et.r.appspot.com/assignTicket", content);
-                    response.EnsureSuccessStatusCode();
-
-                    // Read the API response
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var jResponse = JObject.Parse(responseString);
-
-                    // Handle Safety Ratings
-                    //var safetyRatings = jResponse["safety_ratings"]?.ToObject<JArray>();
-                    //bool contentFlagged = false;
-
-                    //foreach (var rating in safetyRatings)
-                    //{
-                    //    string categoryGeminiResponse = rating["category"].ToString();
-                    //    string probability = rating["probability"].ToString();
-
-                    //    // Check if dangerous content has MEDIUM or higher probability
-                    //    if (category == "HARM_CATEGORY_DANGEROUS_CONTENT" && (probability == "MEDIUM" || probability == "HIGH"))
-                    //    {
-                    //        return 6;
-                    //    }
-                    //    else if (category == "HARM_CATEGORY_HATE_SPEECH" && (probability == "MEDIUM" || probability == "HIGH"))
-                    //    {
-                    //        return 7;
-                    //    }
-                    //    else if (category == "HARM_CATEGORY_SEXUALLY_EXPLICIT" && (probability == "MEDIUM" || probability == "HIGH"))
-                    //    {
-                    //        return 7;
-                    //    }
-                    //    else if (category == "HARM_CATEGORY_HARASSMENT" && (probability == "MEDIUM" || probability == "HIGH"))
-                    //    {
-                    //        return 6;
-                    //    }
-                    //    else
-                    //    {
-                    //        Console.WriteLine($"Category: {category}, Probability: {probability}");
-                    //    }
-                    //}
-
-                    // Extract the recommendation and safety ratings from the response
-                    var recommendation = jResponse["recommendation"].ToString();
-                    departmentId = int.Parse(recommendation);
-
-                    // Take appropriate action based on safety ratings
-                    //if (contentFlagged)
-                    //{
-                    //    // You could log, reject the request, or notify the admin
-                    //    throw new Exception("Content flagged due to safety concerns.");
-                    //}
+                            // Try to parse the response as an integer
+                            if (int.TryParse(aiResponse, out int departmentId))
+                            {
+                                return departmentId;
+                            }
+                        }
+                    }
                 }
 
-
-                // Return the recommendation as JSON
-                return departmentId;
+                return 0; // Default fallback
             }
             catch (Exception ex)
             {
-                // Return error message as JSON
                 return 0;
             }
         }
@@ -107,48 +85,56 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
+                string apiKey = "AIzaSyCeTO21VfJNQgZOtZ9XfEB1NQ0wq3Fkan8";
+                string apiUrl = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={apiKey}";
+
                 var input = $"The ticket description is: {ticketDescription}. The ticket category is: {ticketCategory}.";
                 var conversation_history = StringifyMessages(conversationHistory);
-                dynamic jsonResponse = "";
-                var content = new MultipartFormDataContent();
-                if (image != null)
-                {
-                    content.Add(new StringContent(image.FileName), "file");
-                }
 
+                string fullPrompt = $"{input}\n\n{conversation_history}\n\nPlease generate a brief summary of this ticket in the following format:\n\nProblem Overview: [brief description]\nImage Details: [if applicable]\nKey Steps Taken: [summary of actions]\nResolution Details: [how it was resolved]";
+
+                var data = new
+                {
+                    contents = new[]
+                    {
+                        new
+                        {
+                            parts = new[]
+                            {
+                                new
+                                {
+                                    text = fullPrompt
+                                }
+                            }
+                        }
+                    }
+                };
 
                 using (var client = new HttpClient())
                 {
-                    /*var values = new Dictionary<string, string>
-                        {
-                            { "input", input },
-                            { "conversation_history", conversation_history }
-                        };*/
+                    var json = JsonConvert.SerializeObject(data);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    //var json = JsonConvert.SerializeObject(values);
-                    //var content = new FormUrlEncodedContent(values);
-                    content.Add(new StringContent(input), "input");
-                    content.Add(new StringContent(conversation_history), "conversation_history");
-
-                    var response = await client.PostAsync("https://proctocodeapis.et.r.appspot.com/generateTicketSummary", content);
-
+                    var response = await client.PostAsync(apiUrl, content);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var responseBody = await response.Content.ReadAsStringAsync();
-                        var jResponse = JObject.Parse(responseBody);
-                        //var responseData = JsonConvert.DeserializeObject<dynamic>(responseBody);
-                        var output = jResponse["response"].ToString();
-                        return output;
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to generate ticket summary");
+                        var responseString = await response.Content.ReadAsStringAsync();
+                        var jResponse = JObject.Parse(responseString);
+
+                        if (jResponse["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] != null)
+                        {
+                            var aiResponse = jResponse["candidates"][0]["content"]["parts"][0]["text"].ToString();
+                            return aiResponse;
+                        }
                     }
                 }
+
+                return "Unable to generate summary at this time.";
             }
-            catch (Exception ex) {
-                return null;
+            catch (Exception ex)
+            {
+                return "Unable to generate summary at this time.";
             }
         }
 
